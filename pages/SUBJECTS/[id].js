@@ -3,7 +3,7 @@ import Head from 'next/head'
 import styles from '../../styles/Home.module.css'
 import Link from 'next/link'
 
-export default function SUBJECTS({ SUBJECTSr }) {
+export default function SUBJECTS({ SUBJECTS }) {
 
     const router = useRouter()
     const { id } = router.query
@@ -19,11 +19,12 @@ export default function SUBJECTS({ SUBJECTSr }) {
                     {id}
                 </h1>
                 <p>{id}</p>
-                <p>{id.Other}</p>
-                <p>{id.Medium}</p>
-                <p>{id.Education}</p>
-                <p>{id.Description}</p>
+                <p>{SUBJECTS.Other}</p>
+                <p>{SUBJECTS.Medium}</p>
+                <p>{SUBJECTS.Education}</p>
+                <p>{SUBJECTS.Description}</p>
                 <Link href="/SUBJECTS"><a className={styles.backbtn}>BACK</a></Link>
+                
                 <br>
 
                 </br>

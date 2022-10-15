@@ -15,14 +15,19 @@ export default function SUBJECTS({ SUBJECTS }) {
       </Head>
 
             <main className={styles.main}>
+            <div className={styles.borderblue}>
                 <h1 className={styles.title}>
                     {id}
                 </h1>
+                <div className={styles.SUBJECTSpage}>
                 <p>{id}</p>
-                <p>{SUBJECTS.Other}</p>
-                <p>{SUBJECTS.Medium}</p>
-                <p>{SUBJECTS.Education}</p>
-                <p>{SUBJECTS.Description}</p>
+                <p>Other:{SUBJECTS.Other}</p>
+                <p>Medium:{SUBJECTS.Medium}</p>
+                <p>Education:{SUBJECTS.Education}</p>
+                <p>Description:{SUBJECTS.Description}</p>
+                </div>
+                <Link href="#"><a className={styles.signup}><h1>SIGN UP NOW</h1></a></Link>
+            </div>
                 <Link href="/SUBJECTS"><a className={styles.backbtn}>BACK</a></Link>
                 
                 <br>

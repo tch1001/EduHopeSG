@@ -8,14 +8,20 @@
 }
 
 .main {
-  padding: 5rem 0;
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
+  background-color:lightblue;
+  border-radius:30px;
+  height: 400px;
 
+}
+.borderblue{
+  background-color:white;
+  margin: 5px 5px;
+  border-radius:30px;
+}
 .footer {
   width: 100%;
   height: 100px;
@@ -120,6 +126,9 @@
   border-radius:50px;
   text-align:center;
 }
+.btn:hover{
+  background-color:grey
+}
 .btn2{
   height:20vh;
   width:50vw;
@@ -140,7 +149,17 @@
   color:black;
   background-color:lightblue;
 }
+.signup{
+  color:lightblue;
+  text-align:center;
+}
+.signup:hover{
+  color:black;
 
+}
+.SUBJECTSpage{
+  text-align:left
+}
 @media (max-width: 600px) {
   .grid {
     width: 100%;

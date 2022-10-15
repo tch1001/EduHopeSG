@@ -127,6 +127,20 @@
   border-radius:50px;
   
 }
+.backbtn{
+  height:10%;
+  width:10%;
+  background-color:grey;
+  border-radius:50px;
+  color:white;
+  text-align:center;
+  align-self:center;
+}
+.backbtn:hover{
+  color:black;
+  background-color:lightblue;
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;

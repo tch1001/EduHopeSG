@@ -29,7 +29,8 @@ export default function SUBJECTSList(props) {
           </li>
         </ul>
         <hr></hr>
-        <Link href="/"><a>BACK</a></Link>
+        <Link href="/"><a className={styles.backbtn}>BACK</a></Link>
+        <br></br>
     </div>
     
   )

@@ -19,7 +19,10 @@ export default function SUBJECTS({ SUBJECTSr }) {
                     {id}
                 </h1>
                 
-                <Link href="/SUBJECTS"><a>BACK</a></Link>
+                <Link href="/SUBJECTS"><a className={styles.backbtn}>BACK</a></Link>
+                <br>
+
+                </br>
             </main>
             
         </div>

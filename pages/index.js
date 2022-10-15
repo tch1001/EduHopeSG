@@ -14,7 +14,14 @@ export default function Home() {
         <h1 className={styles.title}>
           Welcome to EDUHOPE See <Link href="/SUBJECTS">SUBJECTS</Link>
         </h1>
+       
         </main>
+        <h3>
+          About Us:
+        </h3>
+        <p>
+          Eduhope story
+        </p>
     </div>
   )
 }

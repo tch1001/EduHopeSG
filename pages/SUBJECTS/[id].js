@@ -34,7 +34,8 @@ export default function SUBJECTS({ SUBJECTS }) {
 
                 </br>
             </main>
-            
+            <hr></hr>
+            <div className={styles.Profiles}><h3>See Similar Profiles:</h3></div>
         </div>
     )
 }

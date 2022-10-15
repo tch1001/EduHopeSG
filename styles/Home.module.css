@@ -127,7 +127,8 @@
   text-align:center;
 }
 .btn:hover{
-  background-color:grey
+  background-color:grey;
+  color:white
 }
 .btn2{
   height:20vh;

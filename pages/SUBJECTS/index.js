@@ -1,10 +1,17 @@
-
-import Link from 'next/link'
+import { useRouter } from 'next/router'
+import Head from 'next/head'
 import styles from '../../styles/Home.module.css'
+import Link from 'next/link'
 
 export default function SUBJECTSList(props) {
   return (
+    
     <div className={styles.container}>
+    <Head>
+        <title>EDUHOPE</title>
+        <link rel="icon" href="/EDUHOPE.png" />
+      </Head>
+    
         <h1 className={styles.title}>
             MAIN SUBJECTS 
            <hr></hr>

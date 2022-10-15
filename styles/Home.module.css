@@ -114,16 +114,18 @@
   height: 1em;
 }
 .btn{
-  height:20vh;
+  height:30vh;
   width:50vw;
   background-color:lightblue;
-  border-radius:50px
+  border-radius:50px;
+  text-align:center;
 }
 .btn2{
   height:20vh;
   width:50vw;
   background-color:lightblue;
-  border-radius:50px
+  border-radius:50px;
+  
 }
 @media (max-width: 600px) {
   .grid {

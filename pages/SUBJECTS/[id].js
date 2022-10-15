@@ -10,9 +10,9 @@ export default function SUBJECTS({ SUBJECTSr }) {
     return (
         <div className={styles.container}>
             <Head>
-                <title>{SUBJECTS.color} {SUBJECTS.id}</title>
-                <link rel="icon" type="image/x-icon" href="blob:https://web.telegram.org/bcd772a4-1f5c-4951-a5c9-f78775cc7bb7"></link>
-            </Head>
+        <title>EDUHOPE</title>
+        <link rel="icon" href="/EDUHOPE.png" />
+      </Head>
 
             <main className={styles.main}>
                 <h1 className={styles.title}>

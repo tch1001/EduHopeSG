@@ -171,3 +171,16 @@
     flex-direction: column;
   }
 }
+
+.suggestion{
+  height:200px;
+  width:300px;
+  background-color:grey;
+  border-radius:30px
+}
+.profilecontainer{
+  display:flex;
+}
+.spacer{
+  width:20px;
+}

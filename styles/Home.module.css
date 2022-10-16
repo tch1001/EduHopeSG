@@ -180,6 +180,7 @@
 }
 .profilecontainer{
   display:flex;
+  flex-flow:row wrap;
 }
 .spacer{
   width:20px;

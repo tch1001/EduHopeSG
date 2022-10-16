@@ -26,7 +26,7 @@ export default function SUBJECTS({ SUBJECTS }) {
                 <p>Education:{SUBJECTS.Education}</p>
                 <p>Description:{SUBJECTS.Description}</p>
                 </div>
-                <Link href="#"><a className={styles.signup}><h1>SIGN UP NOW</h1></a></Link>
+                <Link href="https://forms.gle/KPySJ4Vh7iw6zjqr9" ><a className={styles.signup}><h1>SIGN UP NOW</h1></a></Link>
             </div>
                 <Link href="/SUBJECTS"><a className={styles.backbtn}>BACK</a></Link>
                 

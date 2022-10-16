@@ -22,6 +22,7 @@ export default function Home() {
         <p>
           Eduhope story
         </p>
+        <iframe src="SUBJECTS\test.html"></iframe>
     </div>
   )
 }

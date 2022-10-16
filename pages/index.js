@@ -22,8 +22,8 @@ export default function Home() {
         <p>
           Eduhope story
         </p>
-        <iframe src="SUBJECTS\test.html"></iframe>
-        
+        <iframe width="1280" height="720" src="https://iamsven2005.github.io/horizontal/test.html"  frameborder="0"  allowfullscreen></iframe>
     </div>
   )
 }
+

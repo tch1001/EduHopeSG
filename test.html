@@ -1,25 +1,21 @@
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
     <link rel="stylesheet" href="https://use.typekit.net/skn8ash.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.css">
     
   <style>
-  :root {
-    --text-color: #111;
-    --bg-color: #b9b3a9;
-  }
-  
-  body {
+  .bodyslider {
     font-family: termina, sans-serif;
-    color: var(--text-color);
-    background: var(--bg-color);
     transition: 0.3s ease-out;
     overflow-x: hidden;
     max-width: 100%;
     width: 100%;
     overscroll-behavior: none;
+    color: #111;
+    background-color: #b9b3a9;
   }
   
-  section:not(#sectionPin) {
+  .sectionslider:not(#sectionPinslider) {
     min-height: 100vh;
     width: 100%;
     position: relative;
@@ -31,60 +27,34 @@
     place-items: center;
   }
   
-  img {
+  .imgslider {
     height: 80vh;
     width: auto;
     object-fit: cover;
   }
-  
-  h1 {
-    font-size: 5rem;
-    line-height: 1;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    position: absolute;
-    top: 10vw;
-    left: 10vw;
-    z-index: 4;
-    overflow-wrap: break-word;
-    hyphens: auto;
-  }
-  @media (max-width: 768px) {
-    h1 {
-      font-size: 16vw;
-    }
-  }
-  h1 span {
-    display: block;
-  }
-  
-  h2 {
+  .h2slider {
     font-size: 2rem;
     max-width: 400px;
   }
-
-  
   * {
     box-sizing: border-box;
   }
   
-  #sectionPin {
+  #sectionPinslider {
     height: 100vh;
     overflow: hidden;
     display: flex;
     left: 0;
-    background: var(--text-color);
-    color: var(--bg-color);
   }
   
-  .pin-wrap {
+  .pin-wrapslider {
     height: 100vh;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     padding: 50px 10vw;
   }
-  .pin-wrap > * {
+  .pin-wrapslider > * {
     min-width: 60vw;
     padding: 0 5vw;
   }
@@ -100,18 +70,21 @@
       window.parent.postMessage("resize", "*");
     }
   </script> 
-  </head>
-  <body translate="no" style="" data-new-gr-c-s-check-loaded="14.1083.0" data-gr-ext-installed="">
-    <div class="container" data-scroll-section-inview="" style="transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); opacity: 1; pointer-events: all; overflow-y: scroll;">
-  <div class="pin-spacer" style="order: 0; place-self: auto; grid-area: auto / auto / auto / auto; z-index: auto; float: none; flex-shrink: 1; display: flex; margin: 0px; inset: auto auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 100vw; height: 3882px; padding: 0px 0px 3333px;"><section id="sectionPin" style="inset: 0px auto auto 0px; margin: 0px; max-width: 100vw; width: 100vw; max-height: 549.333px; height: 549.333px; padding: 0px; transform: translate(0px, 0.001px);">
-        <div class="pin-wrap" style="transform: translate3d(-0.0006px, 0px, 0px);">
-          <h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</h2>
-          <img src="https://images.pexels.com/photos/5207262/pexels-photo-5207262.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=900" alt="">
-          <img src="https://images.pexels.com/photos/3371358/pexels-photo-3371358.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=900" alt="">
-          <img src="https://images.pexels.com/photos/3618545/pexels-photo-3618545.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=900" alt="">
-  
+  <div translate="no" data-new-gr-c-s-check-loaded="14.1083.0" class="bodyslider">
+    <div class="containerslider" style="transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); opacity: 1; pointer-events: all; overflow-y: scroll;">
+      hellohhh
+      <div class="pin-spacerslider" style="order: 0; place-self: auto; grid-area: auto / auto / auto / auto; z-index: auto; float: none; flex-shrink: 1; display: flex; margin: 0px; inset: auto auto auto 0px; position: relative; flex-basis: auto; overflow: visible; box-sizing: border-box; width: 100vw; height: 3882px; padding: 0px 0px 3333px;">
+        <div class="sectionslider"id="sectionPinslider" style="inset: 0px auto auto 0px; margin: 0px; max-width: 100vw; width: 100vw; max-height: 549.333px; height: 549.333px; padding: 0px; transform: translate(0px, 0.001px);">
+        <div class="pin-wrapslider" style="transform: translate3d(-0.0006px, 0px, 0px);">
+          
+          <h2 class="h2slider">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</h2>
+          <img class="imgslider"src="https://images.pexels.com/photos/5207262/pexels-photo-5207262.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=900" alt="">
+          <img class="imgslider"src="https://images.pexels.com/photos/3371358/pexels-photo-3371358.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=900" alt="">
+          <img class="imgslider"src="https://images.pexels.com/photos/3618545/pexels-photo-3618545.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=900" alt="">
+
         </div>
-      </section></div>
+      </div></div>
+
     </div>
       <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-1b93190375e9ccc259df3a57c1abc0e64599724ae30d7ea4c6877eb615f89387.js"></script>
   
@@ -121,7 +94,7 @@
         <script id="rendered-js">
   gsap.registerPlugin(ScrollTrigger);
   
-  const pageContainer = document.querySelector(".container");
+  const pageContainer = document.querySelector(".containerslider");
   
   /* SMOOTH SCROLL */
   const scroller = new LocomotiveScroll({
@@ -151,18 +124,18 @@
   ////////////////////////////////////
   ////////////////////////////////////
   window.addEventListener("load", function () {
-    let pinBoxes = document.querySelectorAll(".pin-wrap > *");
-    let pinWrap = document.querySelector(".pin-wrap");
+    let pinBoxes = document.querySelectorAll(".pin-wrapslider > *");
+    let pinWrap = document.querySelector(".pin-wrapslider");
     let pinWrapWidth = pinWrap.offsetWidth;
     let horizontalScrollLength = pinWrapWidth - window.innerWidth;
   
     // Pinning and horizontal scrolling
   
-    gsap.to(".pin-wrap", {
+    gsap.to(".pin-wrapslider", {
       scrollTrigger: {
         scroller: pageContainer, //locomotive-scroll
         scrub: true,
-        trigger: "#sectionPin",
+        trigger: "#sectionPinslider",
         pin: true,
         // anticipatePin: 1,
         start: "top top",
@@ -177,4 +150,4 @@
     ScrollTrigger.refresh();
   });
   //# sourceURL=pen.js
-      </script><span class="c-scrollbar"><span class="c-scrollbar_thumb" style="height: 77.7283px; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);"></span></span>
+      </script>

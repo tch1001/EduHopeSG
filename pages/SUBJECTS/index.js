@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../../styles/Home.module.css'
 import Link from 'next/link'
+import styles from '../../styles/horizontalscroll.css'
 
 export default function SUBJECTSList(props) {
   return (
@@ -16,10 +17,8 @@ export default function SUBJECTSList(props) {
             MAIN SUBJECTS 
            <hr></hr>
         </h1>
-        <ul>
-        
           <li className={styles.btn}>
-          <h2>O levels</h2><Link  href="/SUBJECTS/MATHEMATICS(H2)"><a className={styles.btn2}> MATHEMATICS(H2)</a></Link><h3>DESCIRPTION</h3>
+          <h2>O levels</h2><Link  href="/SUBJECTS/MATHEMATICS(H2)"><a className={styles.btn2}> MATHEMATICS(H2)</a></Link><h3>DESCIRPTION</h3><br></br>
           </li>
           <li className={styles.btn}>
           <h2>A levels</h2><Link href="/SUBJECTS/CHEMISTRY(H2)"><a className={styles.btn2}> CHEMISTRY(H2)</a></Link><h3>DESCIRPTION</h3>
@@ -27,7 +26,6 @@ export default function SUBJECTSList(props) {
           <li className={styles.btn}>
           <h2>Both</h2> <Link href="/SUBJECTS/ENGLISH"><a className={styles.btn2}>ENGLISH</a></Link><h3>DESCIRPTION</h3>
           </li>
-        </ul>
         <hr></hr>
         <Link href="/"><a className={styles.backbtn}>BACK</a></Link>
         <br></br>

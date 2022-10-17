@@ -10,6 +10,7 @@ export default function Home() {
       <title>EDUHOPE</title>
         <link rel="icon" href="/EDUHOPE.png" />
       </Head>
+      <h1><Link href="/"><a className={styles.hero}>BACK</a></Link></h1>
       <iframe classNmae="full" width='100%' height='1000px' src='https://iamsven2005.github.io/horizontal/test2.html' frameborder='0' allowFullScreen ></iframe>
     </div>
     

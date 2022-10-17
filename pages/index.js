@@ -20,9 +20,12 @@ export default function Home() {
           About Us:
         </h3>
         <p>
-          Eduhope story
+          
         </p>
+        <iframe width="1280" height="720" src="https://iamsven2005.github.io/horizontal/test2.html"  frameborder="0"  allowfullscreen></iframe>
         <iframe width="1280" height="720" src="https://my.spline.design/superkidrobotcopy-d9113a7280fd40fdc29a15abe4be23d4/"  frameborder="0"  allowfullscreen></iframe>
+        
+    
     </div>
   )
 }

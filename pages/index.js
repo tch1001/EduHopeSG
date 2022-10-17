@@ -5,13 +5,12 @@ import styles from '../styles/Home.module.css'
 export default function Home() {
   return (
 
-    <div className={styles.container}>
+    <div>
       <Head>
-
-        <title>EDUHOPE</title>
+      <title>EDUHOPE</title>
         <link rel="icon" href="/EDUHOPE.png" />
       </Head>
-      <iframe src='https://iamsven2005.github.io/horizontal/test2.html' frameborder='0' width='100%' height='100%'></iframe>
+      <iframe classNmae="full" width='100%' height='1000px' src='https://iamsven2005.github.io/horizontal/test2.html' frameborder='0' allowFullScreen ></iframe>
     </div>
     
   )

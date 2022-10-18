@@ -8,7 +8,7 @@ export default function SUBJECTS({ SUBJECTS }) {
     const router = useRouter()
     const { id } = router.query
     return (
-        <div className={styles.container}>
+        <body className={styles.body}>
             <Head>
         <title>EDUHOPE</title>
         <link rel="icon" href="/EDUHOPE.png" />
@@ -37,7 +37,7 @@ export default function SUBJECTS({ SUBJECTS }) {
             
             <div className={styles.Profiles}><hr></hr><h3>See Similar Profiles:</h3><hr></hr></div>
             <div className={styles.profilecontainer}><div className={styles.suggestion}><h3>See Similar Profiles:</h3></div><div className={styles.spacer}></div><div className={styles.suggestion}><h3>See Similar Profiles:</h3></div><div className={styles.spacer}></div><div className={styles.suggestion}><h3>See Similar Profiles:</h3></div></div>
-        </div>
+        </body>
     )
 }
 

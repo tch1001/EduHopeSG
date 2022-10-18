@@ -6,7 +6,7 @@ import Link from 'next/link'
 export default function SUBJECTSList(props) {
   return (
     
-    <div className={styles.container}>
+    <body className={styles.body}>
     <Head>
         <title>EDUHOPE</title>
         <link rel="icon" href="/EDUHOPE.png" />
@@ -19,16 +19,19 @@ export default function SUBJECTSList(props) {
           <li className={styles.btn}>
           <h2>O levels</h2><Link  href="/SUBJECTS/MATHEMATICS(H2)"><a className={styles.btn2}> MATHEMATICS(H2)</a></Link><h3>DESCIRPTION</h3><br></br>
           </li>
+          <br></br>
           <li className={styles.btn}>
           <h2>A levels</h2><Link href="/SUBJECTS/CHEMISTRY(H2)"><a className={styles.btn2}> CHEMISTRY(H2)</a></Link><h3>DESCIRPTION</h3>
           </li>
+          <br></br>
           <li className={styles.btn}>
           <h2>Both</h2> <Link href="/SUBJECTS/ENGLISH"><a className={styles.btn2}>ENGLISH</a></Link><h3>DESCIRPTION</h3>
           </li>
+          <br></br>
         <hr></hr>
         <Link href="/"><a className={styles.backbtn}>BACK</a></Link>
         <br></br>
-    </div>
+    </body>
     
   )
   }

@@ -11,7 +11,8 @@ export default function SUBJECTSList(props) {
         <title>EDUHOPE</title>
         <link rel="icon" href="/EDUHOPE.png" />
       </Head>
-    
+      <div className={styles.profile}><Link href="/"><a className={styles.otherprof}>BACK</a></Link><Link href="/"><a className={styles.otherprof}><br/>BACK</a></Link><Link href="/"><a className={styles.otherprof}>BACK</a></Link><Link href="/"><a className={styles.otherprof}>BACK</a></Link><Link href="/"><a className={styles.profc}>BACK</a></Link></div>
+     <br></br><br></br>
         <h1 className={styles.title}>
             MAIN SUBJECTS 
            <hr></hr>

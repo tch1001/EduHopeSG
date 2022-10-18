@@ -13,10 +13,13 @@ export default function SUBJECTS({ SUBJECTS }) {
         <title>EDUHOPE</title>
         <link rel="icon" href="/EDUHOPE.png" />
       </Head>
-
+      <div className={styles.profile}><Link href="/"><a className={styles.otherprof}>BACK</a></Link><Link href="/"><a className={styles.otherprof}><br/>BACK</a></Link><Link href="/"><a className={styles.otherprof}>BACK</a></Link><Link href="/"><a className={styles.otherprof}>BACK</a></Link><Link href="/"><a className={styles.profc}>BACK</a></Link></div>
+     
             <main className={styles.main}>
+            <br></br><br></br><br></br><br></br><br></br>
             <div className={styles.borderblue}>
                 <h1 className={styles.title}>
+                
                     {id}
                 </h1>
                 <div className={styles.SUBJECTSpage}>
@@ -28,7 +31,7 @@ export default function SUBJECTS({ SUBJECTS }) {
                 </div>
                 <Link href="https://forms.gle/KPySJ4Vh7iw6zjqr9" ><a className={styles.signup}><h1>SIGN UP NOW</h1></a></Link>
             </div>
-                <Link href="/SUBJECTS"><a className={styles.backbtn}>BACK</a></Link>
+                
                 
                 <br>
 
@@ -37,6 +40,7 @@ export default function SUBJECTS({ SUBJECTS }) {
             
             <div className={styles.Profiles}><hr></hr><h3>See Similar Profiles:</h3><hr></hr></div>
             <div className={styles.profilecontainer}><div className={styles.suggestion}><h3>See Similar Profiles:</h3></div><div className={styles.spacer}></div><div className={styles.suggestion}><h3>See Similar Profiles:</h3></div><div className={styles.spacer}></div><div className={styles.suggestion}><h3>See Similar Profiles:</h3></div></div>
+            <Link href="/SUBJECTS"><a className={styles.backbtn}>BACK</a></Link>
         </body>
     )
 }

@@ -13,7 +13,7 @@ export default function SUBJECTS({ SUBJECTS }) {
         <title>EDUHOPE</title>
         <link rel="icon" href="/EDUHOPE.png" />
       </Head>
-      <div className={styles.profile}><Link href="/"><a className={styles.profc}>BACK</a></Link><Link href="/tuteefaq"><a className={styles.otherprof}>Tutee FAQ</a></Link><Link href="/tutorfaq"><a className={styles.otherprof}>Tutor FAQ</a></Link><Link href="/"><a className={styles.otherprof}>SUBJECTS</a></Link><Link href="/subjects/aboutus"><a className={styles.otherprof}>ABOUT US</a></Link></div>
+      <div className={styles.profile}><Link href="/"><a className={styles.profc}>BACK</a></Link><Link href="/tuteefaq"><a className={styles.otherprof}>Tutee FAQ</a></Link><Link href="/tutorfaq"><a className={styles.otherprof}>Tutor FAQ</a></Link><Link href="/"><a className={styles.otherprof}>SUBJECTS</a></Link><Link href="/aboutus"><a className={styles.otherprof}>ABOUT US</a></Link></div>
      
             <main className={styles.main}>
             <br></br><br></br><br></br><br></br><br></br>

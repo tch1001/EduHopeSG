@@ -250,3 +250,43 @@
 width:250px;
   }
 }
+
+
+@import url(https://fonts.googleapis.com/css?family=Oswald:300,400,700);
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic);
+
+.firstau {font-weight:400; float: left; font-size: 84px; line-height: 64px; padding-top: 4px; padding-right: 8px; padding-left: 3px; font-family: 'Source Sans Pro', sans-serif;}
+
+/* Section - Title */
+/**************************/
+.titleau {background: black; padding: 60px; margin:0 auto; text-align:center;font-family:'Oswald', sans-serif; font-size:14px; line-height:0; font-weight:400; letter-spacing:8px; text-transform: uppercase; color:white;}
+
+
+/* Section - Block */
+/**************************/
+.blockau {background: black; padding: 60px; width:820px; margin:0 auto; text-align:justify;}
+
+/* Section - Parallax */
+/**************************/
+.oneau {font-family:'Oswald', sans-serif; font-size:70px; letter-spacing:10px; text-align:center; color:white; font-weight:400; text-transform:uppercase; z-index:10; opacity:.9;padding-top: 200px; padding-bottom: 200px; overflow: hidden; position: relative; width: 100%; background-image: url(https://cdn.discordapp.com/attachments/1014050512347349072/1033327933126885416/Tan_Sven_a_boy_studying_oil_painting_3e3c1f2f-013f-447c-9fea-832876e3c317.png); background-attachment: fixed; background-size: cover; -moz-background-size: cover; -webkit-background-size: cover; background-repeat: no-repeat; background-position: top center;}
+.twoau {font-family:'Oswald', sans-serif; font-size:70px; letter-spacing:10px; text-align:center; color:white; font-weight:400; text-transform:uppercase; z-index:10; opacity:.9;padding-top: 200px; padding-bottom: 200px; overflow: hidden; position: relative; width: 100%; background-image: url(https://cdn.discordapp.com/attachments/1014050512347349072/1033326665213952030/Tan_Sven_a_pencil_drawing_out_a_child_studying_cinematic_realis_4bf6441a-2983-44cb-be0a-22656fc9b144.png); background-attachment: fixed; background-size: cover; -moz-background-size: cover; -webkit-background-size: cover; background-repeat: no-repeat; background-position: center center;}
+.threeau {font-family:'Oswald', sans-serif; font-size:70px; letter-spacing:10px; text-align:center; color:white; font-weight:400; text-transform:uppercase; z-index:10; opacity:.9;padding-top: 200px; padding-bottom: 200px; overflow: hidden; position: relative; width: 100%; background-image: url(https://cdn.discordapp.com/attachments/1014050512347349072/1033320883269406730/Tan_Sven_a_silhouette_of_a_child_studying_in_the_cloud_reflecti_aaf9c5b0-09da-469d-a11f-c84052d5f8c0.png); background-attachment: fixed; background-size: cover; -moz-background-size: cover; -webkit-background-size: cover; background-repeat: no-repeat; background-position: center center;}
+
+/* Extras */
+/**************************/
+.linebreakau {border-bottom:1px solid white; width: 150px; margin:0 auto;padding-top:10px;}
+
+/* Media Queries */
+/**************************/
+@media screen and (max-width: 959px) and (min-width: 768px) {
+.blockau {padding: 40px; width:620px;}
+}
+@media screen and (max-width: 767px) {
+.blockau {padding: 30px; width:420px;}
+.hau{font-size:30px;}
+.blockau {padding: 30px;}
+.oneau, .twoau, .threeau {padding-top:100px; padding-bottom:100px;}
+}
+@media screen and (max-width: 479px) {
+.blockau {padding: 30px 15px; width:290px;}
+}

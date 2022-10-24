@@ -12,9 +12,18 @@ export default function Home() {
 </Head>
 
       <div className={styles.profile}><Link href="/"><a className={styles.profc}>BACK</a></Link><Link href="/FAQ"><a className={styles.otherprof}>FAQ</a></Link><Link href="/CONTACTUS"><a className={styles.otherprof}>CONTACT US</a></Link><Link href="/SUBJECTS"><a className={styles.otherprof}>SUBJECTS</a></Link><Link href="/aboutus"><a className={styles.otherprof}>ABOUT US</a></Link></div>
-     
-      <iframe className={styles.iframe} height='1000px' src='https://iamsven2005.github.io/horizontal/test2.html' frameborder='0' allowFullScreen ></iframe>
-    </body>
+     <div className={styles.spacetab}></div>
+     <h1>CONTACT US</h1>
+     <p><a href="eduhopesg@gmail.com">eduhopesg@gmail.com</a></p>
+     <h1>JOIN US TODAY</h1>
+     <div className={styles.sectionbtn}>
+	<p><a className={styles.abtn}href="https://forms.gle/go6DKruGaZUyQwLp9">TUTEE SIGNUP</a></p><br></br>
+  <div className={styles.spacer}></div>
+  <p><a className={styles.abtn}href="https://forms.gle/rGfEasoyakNT4oMb8">TUTOR SIGNUP</a></p><br></br>
+  <div className={styles.spacer}></div>
+  <p><a className={styles.abtn}href="https://forms.gle/1URf8q3MxHeFzefF9">EXCO SIGNUP</a></p>  
+  </div>
+               </body>
     
   )
 }

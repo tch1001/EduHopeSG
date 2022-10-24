@@ -1,81 +1,47 @@
-<div class="tabs">
-	<input class="input"type="radio" name="tabs" id="tabone" checked="checked">
-	<label class="label"for="tabone">Tab One</label>
-	<div class="tab">
-	  <h1>Tab One Content</h1>
-	  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	</div>
-	
-	<input class="input"type="radio" name="tabs" id="tabtwo">
-	<label class="label"for="tabtwo">Tab Two</label>
-	<div class="tab">
-	  <h1>Tab Two Content</h1>
-	  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	</div>
-	
-	<input class="input"type="radio" name="tabs" id="tabthree">
-	<label class="label"for="tabthree">Tab Three</label>
-	<div class="tab">
-	  <h1>Tab Three Content</h1>
-	  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-	</div>
+<div class="sectionbtn">
+	<p><a class="abtn"href="#">Пример ссылки</a></p>  
   </div>
   <style>
-	/**
- * Tabs
- */
-.tabs {
-	display: flex;
-	flex-wrap: wrap;
-  }
-  
-  .label {
-	order: 1;
-	display: block;
-	padding: 1rem 2rem;
-	margin-right: 0.2rem;
-	cursor: pointer;
-	background: #90CAF9;
-	font-weight: bold;
-	transition: background ease 0.2s;
-  }
-
-  
-  .tab {
-	order: 99;
-	flex-grow: 1;
-	width: 100%;
-	display: none;
-	padding: 1rem;
-	background: #fff;
-  }
-  
-  .input[type=radio] {
-	display: none;
-  }
-  
-  .input[type=radio]:checked + .label {
-	background: #fff;
-  }
-  
-  .input[type=radio]:checked + .label + .tab {
-	display: block;
-  }
-  
-  @media (max-width: 45em) {
-	.tab, .label {
-	  order: initial;
-	}
-  
-	.label {
-	  width: 100%;
-	  margin-right: 0;
-	  margin-top: 0.2rem;
-	}
-  }
-  /**
-   * Generic Styling
-  */
-
+	.sectionbtn {
+		display: flex;
+		width: 100%; height: 100vh;
+		justify-content: center;
+		align-items: center; 
+		font-size: 30px;
+	  }
+	  .abtn {
+		  text-decoration: none;
+		  position: relative;
+		  color: #337ab7;
+	  }
+	  
+	  .abtn:after {
+		  right: 0;
+		  width: 100%;
+		  transition: .2s;
+		  background: #337ab7;
+		  content: '';
+		  position: absolute;
+		  height: 1px; 
+		  bottom: 0;  
+	  }
+	  .abtn:before {
+		  left: 0;
+		  width: 0;
+		  transition: .7s;
+		  background: #23527c;
+		  content: '';
+		  position: absolute;
+		  height: 1px; 
+		  bottom: 0;  
+	  }
+	  .abtn:hover {
+		  color: #23527c;
+	  }
+	  .abtn:hover:after {
+		  width: 0%;
+	  }
+	  .abtn:hover:before {
+		  width: 100%;
+	  }
   </style>

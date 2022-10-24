@@ -1,95 +1,33 @@
+<div class="contact">https://tick.ninja/</div>
+<div class="bigest"><div class="bigger"><div class="big1"></div><div class="big2"></div><div class="big3">hello</div></div><div class="bigger"><div class="big1"></div><div class="big2"></div><div class="big3">hello</div></div><div class="bigger"><div class="big1"></div><div class="big2"></div><div class="big3">hello</div></div></div>
+<style>
+  .bigest{
+    display:flex;
+    flex-flow:row wrap;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .big3{
+    background-color:black;
+    color:white;
+    height:200px;
+    width:200px;
+    border-radius: 70px 10px 70px 10px;
+    text-align:center;
+    transition-duration: 1s;
+  }
+  .big3:hover{
+    border-radius:100%;
+    transition-duration: 1s;
+    background-color:lightblue;
+  }
+  .big2{
+    background-color:rgb(125, 60, 60);
+    height:200px;
+    width:200px;
+    position:absolute;
+    z-index:-1;
+    border-radius:70px 70px 70px 70px
+  }
 
-    <section>
-      <div className={styles.titleau}>
-        <h3>EDUHOPE</h3><br><br>
-        <h1>ABOUT US</h1>
-      </div>
-    </section>
-    
-    <section>
-        <div className={styles.oneau}>
-          <h2>A non-profit peer-to-peer consult project</h2>
-        </div>
-    </section>
-    
-    <section>
-      <div className={styles.blockau}>
-        <p><span className={styles.firstau}>H</span>ello everyone! We are project EduHope, a group of four A-level graduates from RI and HCI. This project hopes to leverage peer-to-peer consults to provide a more affordable option for students.</p>
-        <p className={styles.line-breakau}></p>
-        <p className={styles.margin-top-10au}>It first started when we saw how the cheapest tuition rates go for tens of dollars per hour, which means that many are left out by virtue of their inability to pay.</p>
-      </div>
-    </section>
-    
-    <section>
-      <div className={styles.twoau}>
-        <h2>Our belief</h2>
-      </div>
-    </section>
-    
-    <section>
-      <div className={styles.blockau}>
-        <p><span className={styles.firstau}>W</span>e believe that this put it out of reach of many groups in society, from students from underprivileged backgrounds to others who may have been affected by the pandemic. Is that really fair? Is that how it should be?</p>
-        <p className={styles.line-breakau}></p>
-        <p className={styles.margin-top-10au}>Additionally, we realised that many students do not require full-blown academic tuition, such as high quality notes and prepared lessons. Sometimes, what we need is just a friendly person to answer our occasional queries. At the same time, we hope to create a way for those who want to give back but don’t have the time to create detailed lesson plans and materials.</p>
-      </div>
-    </section>
-    
-    <section>
-      <div className={styles.threeau}>
-        <h2>More info</h2>
-      </div>
-    </section>
-    
-    <section>
-      <div className={styles.blockau}>
-        <p><span className={styles.firstau}>E</span>DUHOPE is a team of volunteers dedicated towards improving the learning experience. Through EDUHOPE, resources can be shared within and across student communities, enabling users to access and build upon a peer-to-peer learning environment. We believe that by facilitating such communal, generational learning, we can help close the loop between students and alumni, creating a learning cycle that grows with each new class of students, rather than simply repeating itself each year.</p>
-        <p className={styles.line-breakau}></p>
-        <p className={styles.margin-top-10au}>Details:
-
-            Open to all secondary school (taking O Lvls) and JC students (taking A Lvls)<br>
-            Will last for one month (around 4 sessions). Volunteers can sign up for a longer duration, but tutees will have to “renew” their subscription<br>
-            1-1 sessions<br>
-            Virtual consults</p>
-      </div>
-    </section>
-
-    <style>
-        @import url(https://fonts.googleapis.com/css?family=Oswald:300,400,700);
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic);
-
-.firstau {font-weight:400; float: left; font-size: 84px; line-height: 64px; padding-top: 4px; padding-right: 8px; padding-left: 3px; font-family: 'Source Sans Pro', sans-serif;}
-
-/* Section - Title */
-/**************************/
-.titleau {background: white; padding: 60px; margin:0 auto; text-align:center;font-family:'Oswald', sans-serif; font-size:14px; line-height:0; font-weight:400; letter-spacing:8px; text-transform: uppercase; color:black;}
-
-
-/* Section - Block */
-/**************************/
-.blockau {background: white; padding: 60px; width:820px; margin:0 auto; text-align:justify;}
-
-/* Section - Parallax */
-/**************************/
-.oneau {font-family:'Oswald', sans-serif; font-size:70px; letter-spacing:10px; text-align:center; color:white; font-weight:400; text-transform:uppercase; z-index:10; opacity:.9;padding-top: 200px; padding-bottom: 200px; overflow: hidden; position: relative; width: 100%; background-image: url(https://cdn.discordapp.com/attachments/1014050512347349072/1033327933126885416/Tan_Sven_a_boy_studying_oil_painting_3e3c1f2f-013f-447c-9fea-832876e3c317.png); background-attachment: fixed; background-size: cover; -moz-background-size: cover; -webkit-background-size: cover; background-repeat: no-repeat; background-position: top center;}
-.twoau {font-family:'Oswald', sans-serif; font-size:70px; letter-spacing:10px; text-align:center; color:white; font-weight:400; text-transform:uppercase; z-index:10; opacity:.9;padding-top: 200px; padding-bottom: 200px; overflow: hidden; position: relative; width: 100%; background-image: url(https://cdn.discordapp.com/attachments/1014050512347349072/1033326665213952030/Tan_Sven_a_pencil_drawing_out_a_child_studying_cinematic_realis_4bf6441a-2983-44cb-be0a-22656fc9b144.png); background-attachment: fixed; background-size: cover; -moz-background-size: cover; -webkit-background-size: cover; background-repeat: no-repeat; background-position: center center;}
-.threeau {font-family:'Oswald', sans-serif; font-size:70px; letter-spacing:10px; text-align:center; color:white; font-weight:400; text-transform:uppercase; z-index:10; opacity:.9;padding-top: 200px; padding-bottom: 200px; overflow: hidden; position: relative; width: 100%; background-image: url(https://cdn.discordapp.com/attachments/1014050512347349072/1033320883269406730/Tan_Sven_a_silhouette_of_a_child_studying_in_the_cloud_reflecti_aaf9c5b0-09da-469d-a11f-c84052d5f8c0.png); background-attachment: fixed; background-size: cover; -moz-background-size: cover; -webkit-background-size: cover; background-repeat: no-repeat; background-position: center center;}
-
-/* Extras */
-/**************************/
-.line-breakau {border-bottom:1px solid black; width: 150px; margin:0 auto;padding-top:10px;}
-
-/* Media Queries */
-/**************************/
-@media screen and (max-width: 959px) and (min-width: 768px) {
-.blockau {padding: 40px; width:620px;}
-}
-@media screen and (max-width: 767px) {
-.blockau {padding: 30px; width:420px;}
-.hau {font-size:30px;}
-.blockau {padding: 30px;}
-.oneau, .twoau, .threeau {padding-top:100px; padding-bottom:100px;}
-}
-@media screen and (max-width: 479px) {
-.blockau {padding: 30px 15px; width:290px;}
-}
-    </style>
+</style>

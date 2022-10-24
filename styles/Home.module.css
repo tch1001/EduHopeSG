@@ -208,6 +208,8 @@
   flex-flow:column wrap;
   align-items:center;
 }
+
+/*nav bar*/
 .profile{
   position:fixed;
   top:0%;
@@ -251,6 +253,8 @@ width:250px;
   }
 }
 
+
+/*start of about us */
 
 @import url(https://fonts.googleapis.com/css?family=Oswald:300,400,700);
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic);

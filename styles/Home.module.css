@@ -294,3 +294,60 @@ width:250px;
 @media screen and (max-width: 479px) {
 .blockau {padding: 30px 15px; width:290px;}
 }
+
+/*fAQ*/
+
+.tabs {
+	display: flex;
+	flex-wrap: wrap;
+  color:black
+  }
+  
+  .label {
+	order: 1;
+	display: block;
+	padding: 1rem 2rem;
+	margin-right: 0.2rem;
+	cursor: pointer;
+	background: #90CAF9;
+	font-weight: bold;
+	transition: background ease 0.2s;
+  }
+
+  
+  .tab {
+	order: 99;
+	flex-grow: 1;
+	width: 100%;
+	display: none;
+	padding: 1rem;
+	background: #fff;
+  }
+  
+  .input[type=radio] {
+	display: none;
+  }
+  
+  .input[type=radio]:checked + .label {
+	background: #fff;
+  }
+  
+  .input[type=radio]:checked + .label + .tab {
+	display: block;
+  }
+  
+  @media (max-width: 45em) {
+	.tab, .label {
+	  order: initial;
+	}
+  
+	.label {
+	  width: 100%;
+	  margin-right: 0;
+	  margin-top: 0.2rem;
+	}
+  }
+  .spacetab{
+    height:200px;
+    width:100vw;
+  }

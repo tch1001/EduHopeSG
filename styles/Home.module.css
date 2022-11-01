@@ -193,7 +193,7 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
   background-color:black;
-  color:white;
+  color:lightblue;
   display:flex;
   flex-flow:column wrap;
   justify-content: center;
@@ -398,3 +398,6 @@ width:250px;
 	  .abtn:hover:before {
 		  width: 100%;
 	  }
+.logos{
+  color:white
+}

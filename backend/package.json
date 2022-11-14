@@ -1,0 +1,12 @@
+{
+  "name": "eduhope-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "EduHope.SG backend server for APIs, database transactions and business logic",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "EduHope Team",
+  "license": "agpl-3.0"
+}

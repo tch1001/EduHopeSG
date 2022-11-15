@@ -1,14 +1,22 @@
 {
   "name": "eduhope-backend",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "description": "EduHope.SG backend server for APIs, database transactions and business logic",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --experimental-json-modules src/index.js",
+    "dev": "node --experimental-json-modules src/index.js",
+    "watch:dev": "nodemon --exec npm run dev"
   },
   "author": "EduHope Team",
   "license": "agpl-3.0",
+  "devDependencies": {
+    "jest": "^29.3.1",
+    "nodemon": "^2.0.20"
+  },
   "dependencies": {
     "bunyan": "^1.8.15",
     "compression": "^1.7.4",

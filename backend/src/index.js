@@ -4,44 +4,12 @@ dotenv.config();
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import bunyan from "bunyan";
 import compression from "compression";
+
 import nodePackage from "../package.json" assert { type: "json" };
+import log from "../src/utils/logging.js";
 
 const app = express();
-const log = bunyan.createLogger({
-    name: "eduhope-server",
-    src: true,
-    serializers: {
-        request: bunyan.stdSerializers.req,
-        response: bunyan.stdSerializers.res
-    },
-    streams: [
-        // can use log rotations when there are a lot of users
-        // and the size of one log file is too big
-        {
-            level: "debug",
-            stream: process.stdout,
-        },
-        {
-            level: "info",
-            path: "./logs/info.log"
-        },
-        {
-            level: "warn",
-            path: "./logs/warn.log"
-
-        },
-        {
-            level: "error",
-            path: "./logs/errors.log"
-        },
-        {
-            level: "fatal",
-            path: "./logs/errors.log"
-        }
-    ]
-})
 
 // Compress responses except for no compression option header request
 app.use(compression({
@@ -77,14 +45,14 @@ app.use((err, req, res, next) => {
         message: err.message || "Something broke!",
         details: "Retry the request, if this continues contact the developers or site admins",
         path: req.path,
-        apiVersion: appVersion
+        apiVersion: nodePackage.version
     })
 
     log.error({ error: err, request: req, response: res });
     next();
 })
 
-const server = app.listen(process.env.PORT || 3000, () => {
+const server = app.listen(process.env.EXPRESS_APP_PORT || 5000, () => {
     const { address, family, port } = server.address();
 
     log.info(

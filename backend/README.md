@@ -31,6 +31,9 @@ as `.env.example`
 3. Run tests before running the code
 
 4. Setup PostgreSQL *USER ACCOUNT* and *DATABASE* <u>**respectively**</u>
+   > <b><u><i>****WARNING/NOTE:</i></u></b> Connect to **TickNinja**'s database instead of creating a new
+   > database as some tables are being referenced to it (subject, courses)
+   > and other previous mappings
 
    ```SQL
    CREATE USER eduhope WITH
@@ -42,23 +45,26 @@ as `.env.example`
       CONNECTION LIMIT -1
       PASSWORD 'xxxxxx';
 
-   COMMENT ON ROLE eduhope IS 'User account for EDUHOPE.SG Production Database';
+   COMMENT ON USER eduhope IS 'User account for EDUHOPE.SG Production Database';
    ```
 
    ```sql
-   CREATE DATABASE eduhopesg
+   CREATE DATABASE IF NOT EXISTS tickninja
       WITH
-      OWNER = eduhope
+      OWNER = tickninja
       ENCODING = 'UTF8'
       CONNECTION LIMIT = -1
       IS_TEMPLATE = False;
 
-   COMMENT ON DATABASE eduhopesg
-      IS 'EDUHOPE.SG Production Database';
+   COMMENT ON DATABASE tickninja
+      IS 'TickNinja x EDUHOPE.SG Production Database';
 
-   GRANT ALL ON DATABASE eduhopesg TO eduhope;
+   GRANT ALL ON DATABASE tickninja TO eduhope;
+   GRANT ALL ON SCHEMA public TO eduhope;
    ```
 
-5. Run `tables.sql` to set up and create necessary tables and relations for PostgreSQL
+5. Run `init_database.sql` to set up and create necessary tables and relations for PostgreSQL
+with the necessary permissions and privileges to create tables.
+You can also use `utils/database.js` and call the `setup()` function to initalise the database.
 
 6. Then `npm run` to run

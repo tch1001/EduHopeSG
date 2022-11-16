@@ -20,8 +20,6 @@ app.use(helmet());
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
-setup()
-
 // Fallback page for routes not found
 app.use((req, res) => {
     res.status(404).send({

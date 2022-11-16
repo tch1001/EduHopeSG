@@ -62,7 +62,12 @@ export function setup() {
             return;
         }
 
-        query(setupSQL);
+        query(setupSQL).then((result) => (
+            log.info({
+                message: "Successfully initalised database",
+                result
+            })
+        ));
     })
 }
 

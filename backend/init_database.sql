@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
 
     ----------- tutor data ------------
     is_tutor BOOLEAN DEFAULT TRUE,
-    tutoring CHAR[] NOT NULL, -- [O, A, P, B, I] (o'levels, n'levels, pri, BI, IP)
+    tutoring CHAR[] NOT NULL, -- [N, O, A, P, B, I] (n', o', a'lvl, pri, BI, IP)
     subjects INT[] NOT NULL, -- subject ids from TickNinja
     tutee_limit INT NOT NULL DEFAULT 3,
     commitment_end TIMESTAMP NOT NULL,

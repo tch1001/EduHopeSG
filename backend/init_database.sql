@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS eduhope_user (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(32) NOT NULL,
     email VARCHAR(320) UNIQUE NOT NULL,
@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS user (
     school VARCHAR(128) NOT NULL,
     level_of_education VARCHAR(64) NOT NULL, -- highest/current level of edu.
     telegram VARCHAR(32) NOT NULL, -- telegram handle
-    bio VARCHAR(500) DEFAULT ''
+    bio VARCHAR(500) DEFAULT '',
 
     referal VARCHAR(64) NOT NULL, -- Reddit, Telegram, etc.
-    tutee_terms BOOLEAN DEFAULT 'yes'
+    tutee_terms BOOLEAN DEFAULT 'yes',
     created_on TIMESTAMP WITH TIME ZONE DEFAULT now(),
     last_login TIMESTAMP WITH TIME ZONE DEFAULT now(),
 
@@ -27,16 +27,15 @@ CREATE TABLE IF NOT EXISTS user (
 );
 
 CREATE TABLE IF NOT EXISTS tutee_tutor_relationship (
-    tutee_id UUID NOT NULL,
-    tutor_id UUID NOT NULL,
+    tutee_id UUID NOT NULL REFERENCES eduhope_user(id)
+        ON DELETE CASCADE,
+    tutor_id UUID NOT NULL REFERENCES eduhope_user(id)
+        ON DELETE CASCADE,
 
     subjects INT[] NOT NULL, -- subject ids from TickNinja
 
     created_on TIMESTAMP WITH TIME ZONE DEFAULT now(),
-    updated_on TIMESTAMP WITH TIME ZONE DEFAULT now(),
-
-    FOREIGN KEY (tutee_id) REFERENCES user (id),
-    FOREIGN KEY (tutor_id) REFERENCES user (id),
+    updated_on TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 ------ level_of_education

@@ -1,6 +1,4 @@
-import * as dotenv from "dotenv";
-dotenv.config();
-
+import "./config.js";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
@@ -8,6 +6,7 @@ import compression from "compression";
 
 import nodePackage from "../package.json" assert { type: "json" };
 import log from "../src/utils/logging.js";
+import { setup } from "../src/utils/database.js";
 
 const app = express();
 
@@ -20,6 +19,8 @@ app.use(cors());
 app.use(helmet());
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
+
+setup()
 
 // Fallback page for routes not found
 app.use((req, res) => {

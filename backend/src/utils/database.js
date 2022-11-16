@@ -1,12 +1,17 @@
-import { Client } from "pg";
-import log from "./logging";
+import path from "path";
+import { fileURLToPath } from 'url';
+import { readFile } from "fs";
+import postgres from 'pg';
+import log from "./logging.js";
 
-export default client = new Client({
+const { Client } = postgres;
+
+const client = new Client({
     user: process.env.POSTGRES_USERNAME,
-    password: process.env.POSTGRES_PASSWORD,
     host: process.env.POSTGRES_HOST,
     database: process.env.POSTGRES_DATABASE,
-    port: process.env.POSTGRES_PORT,
+    password: process.env.POSTGRES_PASSWORD,
+    port: process.env.POSTGRES_PORT
 })
 
 client.connect()
@@ -25,7 +30,8 @@ client.connect()
         })
     ))
 
-export const query = (...args) => {
+// Query wrapper with error handling
+export function query(...args) {
     return new Promise((resolve, reject) => {
         client.query(...args, (err, res) => {
             if (err) {
@@ -33,9 +39,31 @@ export const query = (...args) => {
                     message: "Failed to execute query in database utils",
                     error: err
                 })
+
+                reject(err);
             }
 
             resolve(res);
         })
     })
 }
+
+export function setup() {
+    const FILE = "../../init_database.sql";
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+    readFile(path.resolve(__dirname, FILE), "utf-8", (err, setupSQL) => {
+        if (err) {
+            log.error({
+                message: err.message,
+                stack: err.stack,
+            });
+
+            return;
+        }
+
+        query(setupSQL);
+    })
+}
+
+export default client;

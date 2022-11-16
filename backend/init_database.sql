@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
     telegram VARCHAR(32) NOT NULL, -- telegram handle
     bio VARCHAR(500) DEFAULT '',
 
-    referal VARCHAR(64) NOT NULL, -- Reddit, Telegram, etc.
+    referral VARCHAR(64) NOT NULL, -- Reddit, Telegram, etc.
     tutee_terms BOOLEAN DEFAULT 'yes',
     created_on TIMESTAMP WITH TIME ZONE DEFAULT now(),
     last_login TIMESTAMP WITH TIME ZONE DEFAULT now(),
@@ -49,4 +49,4 @@ CREATE TABLE IF NOT EXISTS tutee_tutor_relationship (
 -- Polytechnic
 -- Awaiting university
 -- University undergraduate
--- University graduate
+-- University graduate  

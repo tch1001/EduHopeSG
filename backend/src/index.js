@@ -6,7 +6,6 @@ import compression from "compression";
 
 import nodePackage from "../package.json" assert { type: "json" };
 import log from "../src/utils/logging.js";
-import { setup } from "../src/utils/database.js";
 
 const app = express();
 

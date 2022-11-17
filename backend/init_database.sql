@@ -11,19 +11,21 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
 
     referral VARCHAR(64) NOT NULL, -- Reddit, Telegram, etc.
     tutee_terms BOOLEAN DEFAULT 'yes',
+
     created_on TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    updated_on TIMESTAMP WITH TIME ZONE DEFAULT now(),
     last_login TIMESTAMP WITH TIME ZONE DEFAULT now(),
 
     ----------- tutor data ------------
-    is_tutor BOOLEAN DEFAULT TRUE,
-    tutoring CHAR[] NOT NULL, -- [N, O, A, P, B, I] (n', o', a'lvl, pri, BI, IP)
-    subjects INT[] NOT NULL, -- subject ids from TickNinja
-    tutee_limit INT NOT NULL DEFAULT 3,
-    commitment_end TIMESTAMP NOT NULL,
-    preferred_communications TEXT[] NOT NULL,
-    avg_response_time VARCHAR(32) NOT NULL,
+    is_tutor BOOLEAN DEFAULT FALSE,
+    tutoring CHAR[] DEFAULT array[]::char[], -- [N, O, A, P, B, I] (n', o', a'lvl, pri, BI, IP)
+    subjects INT[] DEFAULT array[]::int[], -- subject ids from TickNinja
+    tutee_limit INT DEFAULT 3,
+    commitment_end TIMESTAMP,
+    preferred_communications TEXT[],
+    avg_response_time VARCHAR(32) ,
 
-    tutor_terms BOOLEAN DEFAULT 'yes'
+    tutor_terms BOOLEAN DEFAULT 'no'
 );
 
 CREATE TABLE IF NOT EXISTS tutee_tutor_relationship (

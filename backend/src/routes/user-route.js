@@ -13,7 +13,15 @@ router.post("/", (req, res) => {
             res.status(routeError.status || 400)
                 .send(routeError)
                 .end();
-        });
+        })
+})
+
+router.post("/login", (req, res) => {
+    // userService
+})
+
+router.get("/:id", (req, res) => {
+
 })
 
 export default router;

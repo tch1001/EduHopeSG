@@ -4,7 +4,6 @@ import helmet from "helmet";
 import cors from "cors";
 import compression from "compression";
 
-import nodePackage from "../package.json" assert { type: "json" };
 import RouteError from "./utils/RouteError.js";
 import ServiceError from "./utils/ServiceError.js";
 import log from "./utils/logging.js";
@@ -12,6 +11,7 @@ import log from "./utils/logging.js";
 // Import routes
 const apiV1Router = Router()
 import userRoutes from "./routes/user-route.js";
+import pool from "./utils/database.js";
 
 const app = express();
 app.use(express.json());
@@ -65,6 +65,8 @@ app.use((err, req, res, next) => {
     next();
 })
 
+// Events & servers
+
 const server = app.listen(process.env.EXPRESS_APP_PORT || 5000, () => {
     const { address, family, port } = server.address();
 
@@ -73,3 +75,32 @@ const server = app.listen(process.env.EXPRESS_APP_PORT || 5000, () => {
         address, port, family
     );
 });
+
+function safeExit(...props) {
+    pool.end();
+    log.info("Draining and disconnecting active pool clients");
+
+    process.exit(...props)
+}
+
+process.on("warning", (error) => log.warn(error));
+
+process.on('beforeExit', (code) => {
+    log.info('Process beforeExit event with code: %s', code);
+    safeExit();
+});
+
+process.on('exit', (code) => {
+    log.info('Process exit event with code: %s', code);
+});
+
+process.on("uncaughtException", (error, origin) => {
+    log.error({ error, origin });
+    safeExit();
+})
+
+process.on('SIGINT', safeExit);
+process.on('SIGQUIT', safeExit)
+process.on('SIGTERM', safeExit);
+process.on('SIGUSR1', safeExit);
+process.on('SIGUSR2', safeExit);

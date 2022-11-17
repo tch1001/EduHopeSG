@@ -4,9 +4,9 @@ import { readFile } from "fs";
 import postgres from 'pg';
 import log from "./logging.js";
 
-const { Client } = postgres;
+const { Pool } = postgres;
 
-const client = new Client({
+const pool = new Pool({
     user: process.env.POSTGRES_USERNAME,
     host: process.env.POSTGRES_HOST,
     database: process.env.POSTGRES_DATABASE,
@@ -14,7 +14,9 @@ const client = new Client({
     port: process.env.POSTGRES_PORT
 })
 
-client.connect()
+pool.on("error", (err, client) => log.error({ error: err, client }));
+
+pool.connect()
     .then(() => (
         log.info(
             "Server connected to PostgreSQL %s@%s:%s",
@@ -31,21 +33,27 @@ client.connect()
     ))
 
 // Query wrapper with error handling
-export function query(...args) {
-    return new Promise((resolve, reject) => {
-        client.query(...args, (err, res) => {
-            if (err) {
-                log.error({
-                    message: "Failed to execute query in database utils",
-                    error: err
-                })
+export async function query(...args) {
+    const client = await pool.connect();
 
-                reject(err);
-            }
+    try {
+        await client.query('BEGIN');
+        const result = await client.query(...args);
+        await client.query('COMMIT');
 
-            resolve(res);
+        return result;
+    } catch (err) {
+        await client.query('ROLLBACK');
+
+        log.error({
+            message: "Failed to execute query in database utils",
+            error: err
         })
-    })
+
+        throw err;
+    } finally {
+        client.release();
+    }
 }
 
 export function setup() {
@@ -71,4 +79,4 @@ export function setup() {
     })
 }
 
-export default client;
+export default pool;

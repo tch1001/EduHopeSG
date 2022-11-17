@@ -26,5 +26,9 @@
     "helmet": "^6.0.0",
     "pg": "^8.8.0",
     "validator": "^13.7.0"
+  },
+  "nodemonConfig": {
+    "ignore": ["**/test/**", "**/docs/**"],
+    "delay": 11000
   }
 }

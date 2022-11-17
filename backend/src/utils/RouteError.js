@@ -1,5 +1,5 @@
 import nodePackage from "../../package.json" assert { type: "json" };
-import ServiceError from "./ServiceError";
+import ServiceError from "./ServiceError.js";
 
 export default class RouteError extends ServiceError {
     /**
@@ -9,9 +9,15 @@ export default class RouteError extends ServiceError {
      * @param {ServiceError} serviceError Built on top of ServiceError
      */
     constructor(path, details, serviceError) {
-        super(serviceError.code, serviceError.name, serviceError.details);
+        super(
+            serviceError.status || 500,
+            serviceError.code,
+            serviceError.name,
+            serviceError.message,
+            serviceError.details
+        );
 
-        this.details = details;
+        if (details.length) this.details = details;
         this.path = path;
         this.apiVersion = nodePackage.version
     }

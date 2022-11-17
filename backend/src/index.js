@@ -4,8 +4,7 @@ import helmet from "helmet";
 import cors from "cors";
 import compression from "compression";
 
-import RouteError from "./utils/RouteError.js";
-import ServiceError from "./utils/ServiceError.js";
+import RouteError from "./classes/RouteError.js";
 import log from "./utils/logging.js";
 
 // Import routes
@@ -35,13 +34,8 @@ app.use("/api/v0.1", apiV1Router);
 app.use((req, res) => {
     const STATUS_CODE = 404;
 
-    const wrappedError = new RouteError(
-        req.path, "Ensure that you have the correct path",
-        new ServiceError(STATUS_CODE, "page-404", null, "Page or API route not found")
-    );
-
     res.status(STATUS_CODE)
-        .send(wrappedError)
+        .send(new RouteError("page-404", req.path))
         .end()
 
     log.warn({ request: req, response: res });
@@ -51,21 +45,15 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
     const STATUS_CODE = 500;
 
-    const wrappedError = new RouteError(
-        req.path, "Retry the request and contact the site developers or site admins if the problem persists",
-        err instanceof ServiceError ? err :
-            new ServiceError(STATUS_CODE, "page-500", err.name || null, err.message || "Something broke!")
-    );
-
     res.status(STATUS_CODE)
-        .send(wrappedError)
-        .end()
+        .send(new RouteError("page-500", req.path))
+        .end();
 
     log.error({ error: err, request: req, response: res });
     next();
 })
 
-// Events & servers
+// Server and safe existing when process stops/when FATAL error occurs
 
 const server = app.listen(process.env.EXPRESS_APP_PORT || 5000, () => {
     const { address, family, port } = server.address();

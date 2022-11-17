@@ -1,0 +1,86 @@
+{
+    "page-500": {
+        "status": 500,
+        "name": "Internal server error: 500 page status",
+        "message": "An unexpected error occurred which the internal server did not handle properly",
+        "details": "Retry the request and contact the site developers or site admins if the problem persists"
+    },
+    "page-404": {
+        "status": 404,
+        "name": "Not found",
+        "message": "Page or API route not found",
+        "details": "Ensure that you have the correct path"
+    },
+    "funcs-hash-password-invalid": {
+        "status": 400,
+        "name": "Password not provided to hash function",
+        "message": "Password not provided or not found, cannot continue hashing operation",
+        "details": "Provide a password of valid length and retry the request"
+    },
+    "funcs-hash-password-error": {
+        "status": 400,
+        "name": "Error hashing provided password",
+        "message": null,
+        "details": "Retry the request with a different password and contact the site developers or site admins if the problem persists"
+    },
+    "funcs-verify-password-invalid": {
+        "status": 400,
+        "name":  "Password or key not provided to password verification function",
+        "message": "Password or key not provided or found, cannot continue to verify the validity of password",
+        "details": "Provide a password and the key and retry the request"
+    },
+    "user-invalid-name": {
+        "status": 400,
+        "name": "Invalid name",
+        "message": "Name cannot be less than 3 or more than 32 in length",
+        "details": "Provide a name ranging from 3 to 32 characters in length"
+    },
+    "user-invalid-email": {
+        "status": 400,
+        "name": "Invalid email",
+        "message": "Invalid email address format provided",
+        "details": "Provide a valid email address: name@example.com"
+    },
+    "user-weak-password": {
+        "status": 400,
+        "name": "Weak password",
+        "message": "Password does not meet the requirements of a strong password",
+        "details": "Provide a strong password of at least 12 characters in length with a minimum of 2 lowercase, uppercase, numbers and symbols each"
+    },
+    "user-no-school": {
+        "status": 400,
+        "name": "No school provided",
+        "message": "No school or institution is provided",
+        "details": "Provide your current institution in full (e.g. Anglo-Chinese IB Junior College)"
+    },
+    "user-invalid-education": {
+        "status": 400,
+        "name": "Invalid education",
+        "message": "No education provided or is invalid",
+        "details": "Provide a valid education type with correct capitals/letter casing: "
+    },
+    "user-no-telegram": {
+        "status": 400,
+        "name": "Invalid Telegram handle",
+        "message": "No Telegram handle provided or invalid Telegram handle (a-z, 0-9 and underscores)",
+        "details": "Provide a valid Telegram handle without the '@' at the start"
+    },
+    "user-invalid-referral": {
+        "status": 400,
+        "name": "Invalid referral",
+        "message": "No referral provided or is invalid",
+        "details": "Provide a valid referral: "
+    },
+    "user-create-unique": {
+        "status": 409,
+        "name": "Error creating user",
+        "message": "User with the same email address has already registered",
+        "details": "Create a new account with a different email address"
+    },
+    "user-create": {
+        "status": 400,
+        "name": "Error creating user",
+        "message": "Error occurred while trying to create user",
+        "details": "Retry the request and contact the site developers or site admins if the problem persist"
+    }
+}

@@ -68,8 +68,8 @@ function hashPassword(password, salt) {
 
 /**
  * Verify a login request by comparing user's input to stored user's HashedPass in database
- * @param {string} password User password request
- * @param {HashedPass} hashedKey Hashed key, can be HashedPass format
+ * @param {string} inputPassword User password request (to check)
+ * @param {HashedPass} hashedPass Hashed key, can be HashedPass format (correct)
  * @returns {Promise<boolean>}
  */
 function verifyPassword(inputPassword, hashedPass) {
@@ -92,7 +92,7 @@ function verifyPassword(inputPassword, hashedPass) {
 /**
  * Encrypt raw UTF8 text to hex for database storage
  * @param {string} text Raw UTF8 text to encrypt
- * @returns {{encrypted: string, iv: string}}
+ * @returns {string}
  */
 function encrypt(text) {
     const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
@@ -106,7 +106,6 @@ function encrypt(text) {
 /**
  * Decrypts encrypted text
  * @param {string} text Encrypted text to decrypt to UTF8 readable tet
- * @param {string} iv Initialisation vector from the encryption function to decrypt
  * @returns {string}
  */
 function decrypt(text) {
@@ -144,6 +143,47 @@ function decrypt(text) {
  * 
  * @typedef {BasicUser & Tutor} User
  */
+
+/**
+ * Get a user object by their ID
+ * @param {string} id User ID
+ * @param {string} fields Fields to request from database separated by a single space
+ * @returns {Promise<Some<User>?|Error>}
+ */
+async function getByID(id, fields = "id name") {
+    if (!id) throw new ServiceError("user-by-id");
+    fields = fields.split(" ").join(", ")
+
+    const { rows } = await query({
+        name: "fetch-user-by-id",
+        text: `SELECT ${fields} FROM eduhope_user WHERE id = $1`,
+        values: [id]
+    });
+
+    return rows[0];
+}
+
+/**
+ * 
+ * @param {string} email User email address
+ * @param {string=} fields Fields to request from database separated by a single space
+ * @param {{encrypted: boolean}=} options
+ * @returns {Promise<Some<User>?|Error>}
+ */
+async function getByEmail(email, fields = "id name", options = { encrypted: false }) {
+    if (!email) throw new ServiceError("user-by-email");
+    if (!options.encrypted) email = encrypt(email);
+
+    fields = fields.split(" ").join(", ")
+
+    const { rows } = await query({
+        name: "fetch-user-by-email",
+        text: `SELECT ${fields} FROM eduhope_user WHERE email = $1`,
+        values: [email]
+    });
+
+    return rows[0];
+}
 
 /**
  * Creates a user in the database
@@ -226,20 +266,23 @@ export async function create(user) {
     }
 }
 
-// export async function getByID(id, excludedFields = ["email", "password"]) {
-//     if (!id) throw new ServiceError();
+export async function login(email, password) {
+    if (!email || !password || !validator.isEmail(email) || !isStrongPassword(password)) {
+        throw new ServiceError("user-login-invalid");
+    }
 
-//     return query({
-//         name: "fetch-user-by-id",
-//         text: "SELECT * FROM user WHERE id $1",
-//         values: [id]
-//     });
-// }
+    email = validator.normalizeEmail(validator.trim(email));
+    password = validator.trim(password);
 
-// export async function getByEmail(email)
+    const user = await getByEmail(email, "id name password", { encrypted: false });
+    if (!user) throw new ServiceError("user-login-failed");
 
-// export async function login(email, password) {
-//     if (!email && !password) throw new ServiceError();
+    // verify password
+    const correct = await verifyPassword(password, user.password);
+    if (!correct) throw new ServiceError("user-login-failed");
 
-
-// }
+    return {
+        message: `Welcome ${user.name}`,
+        cookie: null
+    }
+}

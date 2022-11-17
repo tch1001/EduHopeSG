@@ -82,5 +82,29 @@
         "name": "Error creating user",
         "message": "Error occurred while trying to create user",
         "details": "Retry the request and contact the site developers or site admins if the problem persist"
+    },
+    "user-by-id": {
+        "status": 400,
+        "name": "User ID not provided",
+        "message": "User ID required to find user by ID",
+        "details": "Provide a user ID"
+    },
+    "user-by-email": {
+        "status": 400,
+        "name": "User email not provided",
+        "message": "User email required to find user by email",
+        "details": "Provide a user email"
+    },
+    "user-login-invalid": {
+        "status": 400,
+        "name": "Invalid email or password",
+        "message": "Either email or password are not provided or they are invalid",
+        "details": "Provide valid emails or password"
+    },
+    "user-login-failed": {
+        "status": 401,
+        "name": "Incorrect email or password",
+        "message": "Incorrect email or password",
+        "details": "Provide the correct email and password combination"
     }
 }

@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import validator from "validator";
 import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
@@ -25,6 +26,56 @@ function isStrongPassword(password) {
     });
 }
 
+/**
+ * @typedef {string} HashedPass 
+ * @example <caption>Format for HashedPass</caption>
+ * "salt:hashed_key"
+ */
+
+/**
+ * Convert raw password to hashed key for storing user passwords
+ * @param {string} password User password to be hashed
+ * @param {string|undefined} salt Salt (Optional)
+ * @returns {Promise<HashedPass>} Hashed key with salt promise
+ */
+function hashPassword(password, salt) {
+    if (!password) throw new ServiceError(
+        400, "funcs-hash-password-invalid", "Password not provided to hash function",
+        "Password not provided or not found, cannot continue hashing operation",
+        "Provide a password of valid length and retry the request"
+    );
+
+    if (!salt) salt = crypto.randomBytes(512);
+
+    return new Promise((resolve, reject) => {
+        /**
+         * N – iterations count (affects memory and CPU usage)
+         * r – block size (affects memory and CPU usage)
+         * p – parallelism factor (threads to run in parallel - affects the memory, CPU usage), usually 1
+         * Memory required = 128 * N * r * p bytes
+         * Current mem. required = 128 * 2048 * 8 * 1 bytes = 2097152 bytes = 2.09 MB
+         * 
+         * Every hashing password, user login would require 2.09 MB from system.
+         * Should be able to handle 1,800 user login requests/second under 4 GB memory constraint
+         * TODO: Rate limit requests
+         */
+
+        crypto.scrypt(password, salt, 128, { N: 2048, r: 8, p: 1 }, (err, result) => {
+            if (err) {
+                log.error({ err, salt })
+
+                reject(new ServiceError(
+                    400, "funcs-hash-password-error", "Error hashing provided password",
+                    err.message,
+                    "Retry the request using a different password and contact the site \
+                    developers or site admins if the problem persists"
+                ));
+            }
+
+            resolve(`${salt.toString("hex")}:${result.toString("hex")}`);
+        })
+    })
+}
 /**
  * @typedef {Object} BasicUser
  * @property {string} name User's name
@@ -55,7 +106,6 @@ function isStrongPassword(password) {
 /**
  * Creates a user in the database
  * @param {BasicUser} user User object
- * TODO: hash password and encrypt email
  */
 export async function createUser(user) {
     // reformat user input
@@ -123,18 +173,18 @@ export async function createUser(user) {
         );
     }
 
+    const hashedPass = await hashPassword(user.password);
+
     try {
         const queryText = `
         INSERT INTO eduhope_user(name, email, password, school, level_of_education, telegram, bio, referral)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *
         `
 
-        // TODO: hash password and encrypt email
-
         await query('BEGIN');
 
         await query(queryText, [
-            user.name, validator.normalizeEmail(user.email), user.password, user.school,
+            user.name, validator.normalizeEmail(user.email), hashedPass, user.school,
             user.level_of_education, user.telegram, user.bio, user.referral
         ]);
 
@@ -155,13 +205,13 @@ export async function createUser(user) {
 
         log.error({
             error: err,
-            user
+            user: { ...user, password: '' }
         });
 
         throw new ServiceError(
             400, "user-create", "Error creating user",
             "Error occurred while trying to create user",
-            "Contact the site developers or site admins if the problem persists"
+            "Retry the request and contact the site developers or site admins if the problem persists"
         );
     }
 }

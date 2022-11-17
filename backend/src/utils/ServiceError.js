@@ -6,6 +6,9 @@ export default class ServiceError extends Error {
      * @param {string} errorName Long error name
      * @param {string} errorMessage Descriptive error message
      * @param {string} errorDetails Steps to fix request and avoid the error
+     * 
+     * TODO: Use the errorCode unique identifier to produce error messages and details
+     * using a error.json mapping to reduce lines of code
      */
     constructor(statusCode, errorCode, errorName, errorMessage, errorDetails) {
         super();

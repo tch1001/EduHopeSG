@@ -52,7 +52,7 @@ app.use((err, req, res, next) => {
     const STATUS_CODE = 500;
 
     const wrappedError = new RouteError(
-        req.path, "Retry the request, if this continues contact the developers or site admins",
+        req.path, "Retry the request and contact the site developers or site admins if the problem persists",
         err instanceof ServiceError ? err :
             new ServiceError(STATUS_CODE, "page-500", err.name || null, err.message || "Something broke!")
     );

@@ -72,19 +72,18 @@ function hashPassword(password, salt) {
  * @param {HashedPass} hashedKey Hashed key, can be HashedPass format
  * @returns {Promise<boolean>}
  */
-function verifyPassword(password, hashedPass) {
-    if (!password || !hashedPass) throw new ServiceError("funcs-verify-password-invalid");
+function verifyPassword(inputPassword, hashedPass) {
+    if (!inputPassword || !hashedPass) throw new ServiceError("funcs-verify-password-invalid");
 
     const [salt, key] = hashedPass.split(":");
 
-
     return new Promise((resolve, reject) => {
-        hashPassword(password, salt)
+        hashPassword(inputPassword, Buffer.from(salt, "hex"))
             .then((result) => {
-                const passwordInput = Buffer.from(key, "hex");
-                const userPassword = Buffer.from(result.split(":")[1], "hex");
+                const input = Buffer.from(result.split(":")[1], "hex");
+                const userPassword = Buffer.from(key, "hex");
 
-                resolve(crypto.timingSafeEqual(passwordInput, userPassword))
+                resolve(crypto.timingSafeEqual(input, userPassword))
             })
             .catch(reject);
     })
@@ -97,15 +96,11 @@ function verifyPassword(password, hashedPass) {
  */
 function encrypt(text) {
     const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
-    const iv = crypto.randomBytes(16);
+    const iv = Buffer.from(process.env.ENCRYPTION_IV, "base64");
     const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
 
     const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
-    
-    return {
-        encrypted: encrypted.toString("hex"),
-        iv: iv.toString("hex")
-    }
+    return encrypted.toString("hex")
 }
 
 /**
@@ -114,8 +109,9 @@ function encrypt(text) {
  * @param {string} iv Initialisation vector from the encryption function to decrypt
  * @returns {string}
  */
-function decrypt(text, iv) {
+function decrypt(text) {
     const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
+    const iv = Buffer.from(process.env.ENCRYPTION_IV, "base64");
     const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
 
     const decrypted = Buffer.concat([decipher.update(text), decipher.final()]);
@@ -198,8 +194,7 @@ export async function create(user) {
     }
 
     const hashedPass = await hashPassword(user.password);
-    const { encrypted, iv } = encrypt(validator.normalizeEmail(user.email));
-    const encryptedEmail = `${iv}:${encrypted}`;
+    const encryptedEmail = encrypt(validator.normalizeEmail(user.email));
 
     try {
         const queryText = `
@@ -222,6 +217,7 @@ export async function create(user) {
         }
 
         log.error({
+            message: "Failed to execute create user in user service",
             error: err,
             user: { ...user, password: '' }
         });

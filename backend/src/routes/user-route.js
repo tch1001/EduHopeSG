@@ -5,7 +5,7 @@ import * as userService from "../services/user-service.js";
 const router = Router();
 
 router.post("/", (req, res) => {
-    userService.createUser(req.body)
+    userService.create(req.body)
         .then(() => res.status(201).send({}))
         .catch(err => {
             const routeError = new RouteError(req.originalUrl, "", err)

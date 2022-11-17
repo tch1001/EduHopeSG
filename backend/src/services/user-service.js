@@ -129,7 +129,7 @@ function verifyPassword(password, hashedPass) {
  * Creates a user in the database
  * @param {BasicUser} user User object
  */
-export async function createUser(user) {
+export async function create(user) {
     // reformat user input
     for (const property in user) {
         user[property] = validator.trim(user[property]);
@@ -173,7 +173,7 @@ export async function createUser(user) {
 
     if (!EDUCATION_TYPES.includes(user.level_of_education || "")) {
         throw new ServiceError(
-            "user-invalid-education", "Invalid education",
+            400, "user-invalid-education", "Invalid education",
             "No education provided or is invalid",
             `Provide a valid education type with correct case: ${EDUCATION_TYPES.join(", ")}`
         );
@@ -203,17 +203,13 @@ export async function createUser(user) {
         VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *
         `
 
-        await query('BEGIN');
-
-        await query(queryText, [
+        const values = [
             user.name, validator.normalizeEmail(user.email), hashedPass, user.school,
             user.level_of_education, user.telegram, user.bio, user.referral
-        ]);
+        ]
 
-        await query('COMMIT');
+        await query(queryText, values);
     } catch (err) {
-        await query('ROLLBACK');
-
         if (err.routine === "_bt_check_unique") {
             // NOTE: this error message exposes to attacks that an account with
             // a valid email of {user.email} is inside the database.
@@ -237,3 +233,21 @@ export async function createUser(user) {
         );
     }
 }
+
+// export async function getByID(id, excludedFields = ["email", "password"]) {
+//     if (!id) throw new ServiceError();
+
+//     return query({
+//         name: "fetch-user-by-id",
+//         text: "SELECT * FROM user WHERE id $1",
+//         values: [id]
+//     });
+// }
+
+// export async function getByEmail(email)
+
+// export async function login(email, password) {
+//     if (!email && !password) throw new ServiceError();
+
+
+// }

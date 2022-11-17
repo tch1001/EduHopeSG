@@ -1,5 +1,6 @@
 
 import errorMappings from "../error_mapping.json" assert { type: "json" };
+import log from "../utils/logging.js";
 
 /**
  * @typedef {object} errorMapping
@@ -26,6 +27,17 @@ export default class ServiceError extends Error {
     constructor(errorCode, errorMessage) {
         /** @type {errorMapping} */
         const errorMapping = errorMappings[errorCode];
+
+        if (!errorMapping) {
+            super();
+
+            this.name = this.name;
+            this.message = errorCode;
+
+            log.warn({ error: this, message: "Encountered error without its map" });
+            return this;
+        }
+
         const message = errorMapping.message || errorMessage;
         const { status, name, details } = errorMapping;
 

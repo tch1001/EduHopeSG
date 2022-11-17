@@ -1,6 +1,6 @@
-import path from "path";
 import { fileURLToPath } from 'url';
 import { readFile } from "fs";
+import path from "path";
 import postgres from 'pg';
 import log from "./logging.js";
 
@@ -32,14 +32,22 @@ pool.connect()
         })
     ))
 
-// Query wrapper with error handling
+/**
+ * Query wrapper with error handling
+ * @param  {...any} args Query arguments
+ * @returns {Promise<any|Error>}
+ */
 export async function query(...args) {
     const client = await pool.connect();
+    const start = Date.now();
 
     try {
         await client.query('BEGIN');
         const result = await client.query(...args);
         await client.query('COMMIT');
+
+        const duration = Date.now() - start;
+        result.duration = duration;
 
         return result;
     } catch (err) {
@@ -47,7 +55,8 @@ export async function query(...args) {
 
         log.error({
             message: "Failed to execute query in database utils",
-            error: err
+            error: err,
+            duration: Date.now() - start
         })
 
         throw err;

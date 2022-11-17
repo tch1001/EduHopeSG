@@ -3,6 +3,7 @@ import express, { Router } from "express";
 import helmet from "helmet";
 import cors from "cors";
 import compression from "compression";
+import cookieParser from "cookie-parser";
 
 import RouteError from "./classes/RouteError.js";
 import log from "./utils/logging.js";
@@ -14,6 +15,7 @@ import pool from "./utils/database.js";
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser())
 
 // Compress responses except for no compression option header request
 app.use(compression({

@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import validator from "validator";
+import jwt from "jsonwebtoken";
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
@@ -266,6 +267,12 @@ export async function create(user) {
     }
 }
 
+/**
+ * Login to a user with email and password, creates a JWT cookie if success
+ * @param {string} email User email
+ * @param {string} password User password
+ * @returns {string} Cookie
+ */
 export async function login(email, password) {
     if (!email || !password || !validator.isEmail(email) || !isStrongPassword(password)) {
         throw new ServiceError("user-login-invalid");
@@ -281,8 +288,26 @@ export async function login(email, password) {
     const correct = await verifyPassword(password, user.password);
     if (!correct) throw new ServiceError("user-login-failed");
 
+    // update last login records
+    query("UPDATE eduhope_user SET last_login = now() WHERE id = $1", [user.id]);
+
+    // returning cookie and success object
+    const cookie = jwt.sign(
+        {
+            id: user.id,
+            name: user.name
+        },
+        process.env.JWT_KEY,
+        {
+            expiresIn: "14d",
+            audience: "ALL_USERS",
+            issuer: "EDUHOPE.SG",
+            subject: "AUTHENTICATION"
+        }
+    )
+
     return {
-        message: `Welcome ${user.name}`,
-        cookie: null
+        expireAt: jwt.decode(cookie).exp,
+        cookie
     }
 }

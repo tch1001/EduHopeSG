@@ -36,8 +36,16 @@ router.post("/login", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
-router.get("/:id", (req, res) => {
+router.put("/tutor/:id", (req, res) => {
+    const user = userService.verifyAuthentication(req.cookies.user);
 
+    if (!user) {
+        res.status(401)
+            .send(new RouteError("user-unauthenticated", req.originalUrl))
+            .end();
+    }
+
+    userService.requestTutor(req.params.id, user.id);
 })
 
 export default router;

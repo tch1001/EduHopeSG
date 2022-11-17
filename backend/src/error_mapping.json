@@ -106,5 +106,11 @@
         "name": "Incorrect email or password",
         "message": "Incorrect email or password",
         "details": "Provide the correct email and password combination"
+    },
+    "user-unauthenticated": {
+        "status": 401,
+        "name": "Not unauthenticated: cannot proceed",
+        "message": "Missing 'Authorization' header or 'user' cookie",
+        "details": "Try logging in again at POST /login"
     }
 }

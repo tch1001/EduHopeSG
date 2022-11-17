@@ -6,8 +6,15 @@ import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
 
 const EDUCATION_TYPES = ["Secondary 3", "Secondary 4", "Secondary 5", "JC 1", "JC 2", "O level Private candidate", "A level Private candidate"];
-const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i'] // n', o', a'lvl, pri, BI, IP
-const REFERRAL = ["Reddit", "Instagram", "TikTok", "Telegram", "Google", "Word of mouth"]
+const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i']; // n', o', a'lvl, pri, BI, IP
+const REFERRAL = ["Reddit", "Instagram", "TikTok", "Telegram", "Google", "Word of mouth"];
+
+const JWT_OPTIONS = {
+    expiresIn: "14d",
+    audience: "ALL_USERS",
+    issuer: "EDUHOPE.SG",
+    subject: "AUTHENTICATION"
+};
 
 /**
  * Check if a password is string via preset requirements
@@ -187,6 +194,22 @@ async function getByEmail(email, fields = "id name", options = { encrypted: fals
 }
 
 /**
+ * 
+ * @param {string} cookie JWT cookie token
+ * @returns {{ id: string, name : string}?}
+ */
+export function verifyAuthentication(cookie) {
+    if (!cookie) return null;
+
+    try {
+        const token = jwt.verify(cookie, process.env.JWT_KEY, { complete: true, ...JWT_OPTIONS });
+        return token;
+    } catch (err) {
+        return null;
+    }
+}
+
+/**
  * Creates a user in the database
  * @param {BasicUser} user User object
  */
@@ -297,17 +320,20 @@ export async function login(email, password) {
             id: user.id,
             name: user.name
         },
-        process.env.JWT_KEY,
-        {
-            expiresIn: "14d",
-            audience: "ALL_USERS",
-            issuer: "EDUHOPE.SG",
-            subject: "AUTHENTICATION"
-        }
+        process.env.JWT_KEY, JWT_OPTIONS
     )
 
     return {
         expireAt: jwt.decode(cookie).exp,
         cookie
     }
+}
+
+/**
+ * Tutee requesting for tutor
+ * @param {string} tutorID Tutor's user ID 
+ * @param {string} tuteeID Tutee's user ID
+ */
+export async function requestTutor(tutorID, tuteeID) {
+    
 }

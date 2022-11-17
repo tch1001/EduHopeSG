@@ -76,6 +76,28 @@ function hashPassword(password, salt) {
         })
     })
 }
+
+/**
+ * Verify a login request by comparing user's input to stored user's HashedPass in database
+ * @param {string} password User password request
+ * @param {HashedPass} hashedKey Hashed key, can be HashedPass format
+ */
+function verifyPassword(password, hashedPass) {
+    if (!password || !hashedPass) throw new ServiceError(
+        400, "funcs-verify-password-invalid", "Password or key not provided to password verification function",
+        "Password or key not provided or found, cannot continue to verify the validity of password",
+        "Provide a password and the key and retry the request"
+    );
+
+    const [salt] = hashedPass.split(":");
+
+    return new Promise((resolve, reject) => {
+        hashPassword(password, salt)
+            .then((result) => resolve(hashedPass === result))
+            .catch(reject);
+    })
+}
+
 /**
  * @typedef {Object} BasicUser
  * @property {string} name User's name

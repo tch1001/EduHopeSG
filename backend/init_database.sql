@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS eduhope_user (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(32) NOT NULL,
-    email VARCHAR(320) UNIQUE NOT NULL,
+    email VARCHAR(672) UNIQUE NOT NULL, -- email address max length of 320 vars, encryption requires 2x
     password TEXT NOT NULL, -- to requirements
 
     school VARCHAR(128) NOT NULL,

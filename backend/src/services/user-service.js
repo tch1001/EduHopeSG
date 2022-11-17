@@ -70,17 +70,56 @@ function hashPassword(password, salt) {
  * Verify a login request by comparing user's input to stored user's HashedPass in database
  * @param {string} password User password request
  * @param {HashedPass} hashedKey Hashed key, can be HashedPass format
+ * @returns {Promise<boolean>}
  */
 function verifyPassword(password, hashedPass) {
     if (!password || !hashedPass) throw new ServiceError("funcs-verify-password-invalid");
 
-    const [salt] = hashedPass.split(":");
+    const [salt, key] = hashedPass.split(":");
+
 
     return new Promise((resolve, reject) => {
         hashPassword(password, salt)
-            .then((result) => resolve(hashedPass === result))
+            .then((result) => {
+                const passwordInput = Buffer.from(key, "hex");
+                const userPassword = Buffer.from(result.split(":")[1], "hex");
+
+                resolve(crypto.timingSafeEqual(passwordInput, userPassword))
+            })
             .catch(reject);
     })
+}
+
+/**
+ * Encrypt raw UTF8 text to hex for database storage
+ * @param {string} text Raw UTF8 text to encrypt
+ * @returns {{encrypted: string, iv: string}}
+ */
+function encrypt(text) {
+    const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
+
+    const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
+    
+    return {
+        encrypted: encrypted.toString("hex"),
+        iv: iv.toString("hex")
+    }
+}
+
+/**
+ * Decrypts encrypted text
+ * @param {string} text Encrypted text to decrypt to UTF8 readable tet
+ * @param {string} iv Initialisation vector from the encryption function to decrypt
+ * @returns {string}
+ */
+function decrypt(text, iv) {
+    const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
+    const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
+
+    const decrypted = Buffer.concat([decipher.update(text), decipher.final()]);
+    return decrypted.toString("utf8");
 }
 
 /**
@@ -159,6 +198,8 @@ export async function create(user) {
     }
 
     const hashedPass = await hashPassword(user.password);
+    const { encrypted, iv } = encrypt(validator.normalizeEmail(user.email));
+    const encryptedEmail = `${iv}:${encrypted}`;
 
     try {
         const queryText = `
@@ -167,7 +208,7 @@ export async function create(user) {
         `
 
         const values = [
-            user.name, validator.normalizeEmail(user.email), hashedPass, user.school,
+            user.name, encryptedEmail, hashedPass, user.school,
             user.level_of_education, user.telegram, user.bio, user.referral
         ]
 

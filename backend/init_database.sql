@@ -20,10 +20,10 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
     is_tutor BOOLEAN DEFAULT FALSE,
     tutoring CHAR[] DEFAULT array[]::char[], -- [N, O, A, P, B, I] (n', o', a'lvl, pri, BI, IP)
     subjects INT[] DEFAULT array[]::int[], -- subject ids from TickNinja
-    tutee_limit INT DEFAULT 3,
+    tutee_limit INT DEFAULT 3 CHECK (tutee_limit BETWEEN 1 AND 5),
     commitment_end TIMESTAMP,
     preferred_communications TEXT[],
-    avg_response_time VARCHAR(32) ,
+    avg_response_time VARCHAR(32),
 
     tutor_terms BOOLEAN DEFAULT 'no'
 );

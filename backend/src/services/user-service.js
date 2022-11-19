@@ -8,6 +8,7 @@ import log from "../utils/logging.js";
 const EDUCATION_TYPES = ["Secondary 3", "Secondary 4", "Secondary 5", "JC 1", "JC 2", "O level Private candidate", "A level Private candidate"];
 const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i']; // n', o', a'lvl, pri, BI, IP
 const REFERRAL = ["Reddit", "Instagram", "TikTok", "Telegram", "Google", "Word of mouth"];
+const COMMUNICATIONS = ["Text", "Virtual Consult", "Face-to-face", ""]
 
 const JWT_OPTIONS = {
     expiresIn: "14d",
@@ -142,7 +143,7 @@ function decrypt(text) {
 /**
  * @typedef {Object} Tutor
  * @property {boolean} is_tutor Tutor status for user
- * @property {char[]} tutoring An array of character representing courses
+ * @property {string[]} tutoring An array of `chars` representing courses
  * @property {string[]} subjects subject IDs corresponding from EduHope
  * @property {number} tutee_limit Maximum number of tutees to be taken on
  * @property {Date} commitment_end Expected date when tutor stops volunteering with Eduhope
@@ -224,6 +225,10 @@ function validateUserObject(user, validate = {
     telegram: true,
     referral: true,
     tutoring: false,
+    subjects: false,
+    tutee_limit: false,
+    commitment_end: false,
+    preferred_communications: false
 }) {
     // validate user input
     if (validate.name) {
@@ -244,12 +249,8 @@ function validateUserObject(user, validate = {
         }
     }
 
-    if (validate.school) {
-        if (!user.school) {
-            // TODO: Validate school in the future
-            throw new ServiceError("user-no-school");
-        }
-    }
+    // TODO: Validate school in the future
+    if (validate.school && !user.school) throw new ServiceError("user-no-school");
 
     if (validate.level_of_education) {
         if (!EDUCATION_TYPES.includes(user.level_of_education || "")) {
@@ -269,6 +270,42 @@ function validateUserObject(user, validate = {
         error.details += REFERRAL.join(", ");
 
         throw error;
+    }
+
+    if (validate.tutoring) {
+        const invalid = user?.tutoring?.some((stream) => !STREAMS.includes(stream.toUpperCase()));
+        
+        if (invalid) {
+            const error = new ServiceError("user-invalid-tutoring");
+            error.details += STREAMS.join(", ");
+            
+            throw error;
+        }
+    }
+
+    if (validate.tutee_limit && user?.tutee_limit >= 1 && user?.tutee_limit <= 5) {
+        throw new ServiceError("user-invalid-tutee-limit");
+    }
+
+    if (
+        validate.commitment_end &&
+        validator.isAfter(user?.commitment_end, new Date(Date.now() + 2.628e+9))
+    ) {
+        // at least 1 month
+        throw new ServiceError("user-invalid-commitment")    
+    }
+
+    if (validate.preferred_communications) {
+        const invalid = user?.preferred_communications.some((communication) => (
+            !COMMUNICATIONS.includes(communication
+        )));
+
+        if (invalid) {
+            const error = new ServiceError("user-invalid-communications");
+            error.details += COMMUNICATIONS.join(", ");
+
+            throw error;
+        }
     }
 
     return true;
@@ -305,6 +342,11 @@ export async function create(user) {
         ]
 
         await query(queryText, values);
+
+        return {
+            success: true,
+            message: "Created user"
+        }
     } catch (err) {
         if (err.routine === "_bt_check_unique") {
             // NOTE: this error message exposes to attacks that an account with
@@ -413,7 +455,12 @@ export async function update(userID, attributes = {}) {
             await query("UPDATE eduhope_user SET bio = $1 WHERE id = $2", [attributes.bio, userID]);
         }
 
-        await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID])
+        await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
+
+        return {
+            success: true,
+            message: `Updated the following attributes: ${Object.keys(attributes)}`
+        }
     } catch (err) {
         throw new ServiceError("user-update");
     }
@@ -425,6 +472,42 @@ export async function update(userID, attributes = {}) {
  * @param {Tutor} attributes Tutor attributes
  */
 export async function becomeTutor(userID, attributes) {
-    if (!userID) {}
+    if (!userID || !attributes || !Object.keys(attributes).length) {
+        throw new ServiceError("user-invalid")
+    }
+    
+    const valid = validateUserObject(attributes, {
+        tutoring: true,
+        subjects: true,
+        tutee_limit: true,
+        commitment_end: true,
+        preferred_communications: true
+    });
+
+    if (!valid) throw new ServiceError("user-invalid");
+
+    try {
+        const result = await query(`
+            UPDATE eduhope_user SET is_tutor = TRUE, tutor_terms = 'yes', 
+            tutoring = $1, subjects = $2, tutee_limit = $3, commitment_end = $4,
+            preferred_communications = $5, avg_response_time = 6
+
+            WHERE id = $7
+        `,
+            [
+                attributes.tutoring, attributes.subjects, attributes.tutee_limit,
+                attributes.commitment_end, attributes.preferred_communications,
+                attributes.avg_response_time, userID
+            ]
+        );
+
+        return {
+            success: true,
+            message: "User is now Tutor status",
+            result
+        }
+    } catch (err) {
+
+    }
 }
 

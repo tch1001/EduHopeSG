@@ -77,6 +77,30 @@
         "message": "No referral provided or is invalid",
         "details": "Provide a valid referral: "
     },
+    "user-invalid-tutoring": {
+        "status": 400,
+        "name": "Invalid streams",
+        "message": "No stream(s) provided or they are invalid",
+        "details": "Provide valid streams to tutor: "
+    },
+    "user-invalid-tutee-limit": {
+        "status": 400,
+        "name": "invalid tutee limit",
+        "message": "Tutee limit too high or low",
+        "details": "Tutee limit should be between 1 and 5"
+    },
+    "user-invalid-commitment": {
+        "status": 400,
+        "name": "Invalid commitment time",
+        "message": "Commitment time too short",
+        "details": "We require a minimum of 1 month commitment for our tutors"
+    },
+    "user-invalid-communications": {
+        "status": 400,
+        "name": "Invalid communication(s)",
+        "message": "Invalid communication(s) provided",
+        "details": "We only accept the following modes of communication: "
+    },
     "user-create-unique": {
         "status": 409,
         "name": "Error creating user",

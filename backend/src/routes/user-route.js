@@ -47,7 +47,7 @@ router.patch("/:id", (req, res) => {
     }
 
     userService.update(req.params.id, req.body)
-        .then(() => res.status(200).send({}))
+        .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 

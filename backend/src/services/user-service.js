@@ -519,3 +519,34 @@ export async function becomeTutor(userID, attributes) {
     }
 }
 
+export async function requestTutor(userID, tutorID, subjects = []) {
+    if (!userID || !tutorID || subjects.length)
+        throw new ServiceError("user-request-tutor-missing");
+
+    const user = await getByID(userID);
+    const tutor = await getByID(tutorID, "is_tutor subjects");
+
+    if (!user || !tutor) throw new ServiceError("user-tutor-not-found");
+    if (!tutor.is_tutor) throw new ServiceError("user-not-tutor");
+    if (userID === tutorID) throw new ServiceError("user-tutor-same");
+
+    // check if subjects being requested is offered by tutor
+    const notOffered = subjects.some(subject => !tutor.subjects.includes(subject));
+    if (notOffered) throw new ServiceError("user-tutor-subject-unoffered")
+
+    // TODO: email request to tutor: tutor to accept/decline
+    // change status of relationship if accepted, delete row if decline
+    const queryText = `
+        INSERT INTO tutee_tutor_relationship(tutee_id, tutor_id, subjects)
+        VALUES($1, $2, $3) RETURNING *
+    `
+
+    const queryValues = [userID, tutorID, subjects];
+    const result = await query(queryText, queryValues)
+
+    console.log(result)
+    return {
+        success: true,
+        message: "Request for tuition sent to tutor"
+    }
+}

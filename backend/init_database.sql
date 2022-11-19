@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS tutee_tutor_relationship (
         ON DELETE CASCADE,
 
     subjects INT[] NOT NULL, -- subject ids from TickNinja
+    relationship_status INT NOT NULL DEFAULT 0, -- 0 pending tutor accept, 1 accepted and in effect
 
     created_on TIMESTAMP WITH TIME ZONE DEFAULT now(),
     updated_on TIMESTAMP WITH TIME ZONE DEFAULT now()

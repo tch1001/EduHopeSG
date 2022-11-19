@@ -87,7 +87,7 @@
         "status": 400,
         "name": "Error creating user",
         "message": "Error occurred while trying to create user",
-        "details": "Retry the request and contact the site developers or site admins if the problem persist"
+        "details": "Retry the request with values following the rules and contact the site developers or site admins if the problem persist"
     },
     "user-by-id": {
         "status": 400,
@@ -123,6 +123,6 @@
         "status": 400,
         "name": "Error modifying user",
         "message": "Error occurred while trying to update or modify user attributes",
-        "details": "Retry the request and contact the site developers or site admins if the problem persist"
+        "details": "Retry the request with values following the rules and contact the site developers or site admins if the problem persist"
     }
 }

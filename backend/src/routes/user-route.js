@@ -40,8 +40,7 @@ router.patch("/:id", (req, res) => {
 
     if (!user) {
         standardRouteErrorCallback(
-            res, req,
-            new RouteError("user-unauthenticated", req.originalUrl),
+            res, req, new RouteError("user-unauthenticated", req.originalUrl)
         );
 
         return;
@@ -56,9 +55,11 @@ router.put("/tutor/:id", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 
     if (!user) {
-        res.status(401)
-            .send(new RouteError("user-unauthenticated", req.originalUrl))
-            .end();
+        standardRouteErrorCallback(
+            res, req, new RouteError("user-unauthenticated", req.originalUrl)
+        );
+
+        return;
     }
 
     // userService.requestTutor(req.params.id, user.id);

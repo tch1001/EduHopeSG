@@ -61,6 +61,8 @@ as `.env.example`
 
    GRANT ALL ON DATABASE tickninja TO eduhope;
    GRANT ALL ON SCHEMA public TO eduhope;
+   GRANT ALL ON TABLE public.eduhope_user TO eduhope;GRANT ALL ON TABLE public.tutee_tutor_relationship TO eduhope;
+
    ```
 
 5. Run `init_database.sql` to set up and create necessary tables and relations for PostgreSQL

@@ -215,14 +215,15 @@ export function verifyAuthentication(cookie) {
  * @param {[key: string]: boolean} validate
  * @returns {true}
  */
-function validateUser(user, validate = {
+function validateUserObject(user, validate = {
     name: true,
     email: true,
     password: true,
     school: true,
     level_of_education: true,
     telegram: true,
-    referral: true
+    referral: true,
+    tutoring: false,
 }) {
     // validate user input
     if (validate.name) {
@@ -260,7 +261,7 @@ function validateUser(user, validate = {
     }
 
     if (validate.telegram && !user.telegram) {
-        throw new ServiceError("user-no-telegram",);
+        throw new ServiceError("user-no-telegram");
     }
 
     if (validate.referral && !REFERRAL.includes(user.referral || "")) {
@@ -286,11 +287,11 @@ export async function create(user) {
     user.telegram = validator.whitelist(user?.telegram || "", "abcdefghijklmnopqrstuvwxyz0123456789_");
 
     // validate user input
-    const valid = validateUser(user);
+    const valid = validateUserObject(user);
+    if (!valid) throw new ServiceError("user-invalid");
+
     const hashedPass = await hashPassword(user.password);
     const encryptedEmail = encrypt(validator.normalizeEmail(user.email));
-
-    if (!valid) throw new ServiceError("user-invalid");
 
     try {
         const queryText = `
@@ -311,12 +312,6 @@ export async function create(user) {
             // Solution: spoof/fake the success response
             throw new ServiceError("user-create-unique");
         }
-
-        log.error({
-            message: "Failed to execute create user in user service",
-            error: err,
-            user: { ...user, password: '' }
-        });
 
         throw new ServiceError("user-create");
     }
@@ -344,7 +339,7 @@ export async function login(email, password) {
     if (!correct) throw new ServiceError("user-login-failed");
 
     // update last login records
-    query("UPDATE eduhope_user SET last_login = now() WHERE id = $1", [user.id]);
+    await query("UPDATE eduhope_user SET last_login = now() WHERE id = $1", [user.id]);
 
     // returning cookie and success object
     const cookie = jwt.sign(
@@ -361,58 +356,75 @@ export async function login(email, password) {
     }
 }
 
-export async function becomeTutor(userID, attributes) {
-
-}
-
 /**
  * Update user attributes in the database
  * @param {string} userID User ID
  * @param {User} attributes User object
  */
-export async function update(userID, attributes) {
+export async function update(userID, attributes = {}) {
     if (!userID || !attributes || !Object.keys(attributes).length) {
         throw new ServiceError("user-invalid")
     }
 
+    if (attributes.telegram) {
+        attributes.telegram = validator.whitelist(
+            attributes.telegram || "",
+            "abcdefghijklmnopqrstuvwxyz0123456789_"
+        );
 
-    const valid = validateUser(attributes, attributes);
+        console.log(attributes.telegram);
+    }
+
+    const valid = validateUserObject(attributes, attributes);
     if (!valid) throw new ServiceError("user-invalid");
 
     try {
         if (attributes.name) {
-            query("UPDATE eduhope_user SET name = $1 WHERE id = $2", [attributes.name, userID]);
+            await query("UPDATE eduhope_user SET name = $1 WHERE id = $2", [attributes.name, userID]);
+        }
+
+        if (attributes.password) {
+            // TODO: send verification email
+            return { message: "This service is unavailable" }
+        }
+
+        if (attributes.email) {
+            // TODO: send verification email to old and new email addresses
+            return { message: "This service is unavailable" }
         }
 
         if (attributes.school) {
-            query("UPDATE eduhope_user SET school = $1 WHERE id = $2", [attributes.school, userID]);
+            await query("UPDATE eduhope_user SET school = $1 WHERE id = $2", [attributes.school, userID]);
         }
 
         if (attributes.level_of_education) {
             // TODO: validate schools
-            query(
+            await query(
                 "UPDATE eduhope_user SET level_of_education = $1 WHERE id = $2",
                 [attributes.level_of_education, userID]
             );
         }
 
         if (attributes.telegram) {
-            const telegram = validator.whitelist(attributes.telegram || "", "abcdefghijklmnopqrstuvwxyz0123456789_");
-            query("UPDATE eduhope_user SET telegram = $1 WHERE id = $2", [telegram, userID]);
+            await query("UPDATE eduhope_user SET telegram = $1 WHERE id = $2", [attributes.telegram, userID]);
         }
 
         if (attributes.bio) {
-            query("UPDATE eduhope_user SET bio = $1 WHERE id = $2", [attributes.bio, userID]);
+            await query("UPDATE eduhope_user SET bio = $1 WHERE id = $2", [attributes.bio, userID]);
         }
 
-        query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID])
+        await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID])
     } catch (err) {
-        log.error({
-            message: "Failed to execute update user in user service",
-            error: err,
-            user: { ...user, password: '' }
-        });
-
         throw new ServiceError("user-update");
     }
-}   
+}
+
+/**
+ * Converts a normal account to a Tutor status account
+ * @param {string} userID User ID
+ * @param {Tutor} attributes Tutor attributes
+ */
+export async function becomeTutor(userID, attributes) {
+    if (!userID) {}
+}
+

@@ -50,12 +50,12 @@ router.patch("/:id", (req, res) => {
         );
     }
 
-    userService.update(user.id, req.body)
+    userService.update(user.payload.id, req.body)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
-router.put("/tutor/:id", (req, res) => {
+router.post("/tutor", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 
     if (!user) {
@@ -64,13 +64,23 @@ router.put("/tutor/:id", (req, res) => {
         );
     }
 
-    if (user.payload.id !== req.params.id) {
+    userService.becomeTutor(user.payload.id, req.body)
+        .then(response => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+})
+
+router.put("/tutor/:tutorID", (req, res) => {
+    const user = userService.verifyAuthentication(req.cookies.user);
+
+    if (!user) {
         return standardRouteErrorCallback(
-            res, req, new RouteError("user-unauthorized", req.originalUrl)
+            res, req, new RouteError("user-unauthenticated", req.originalUrl)
         );
     }
 
-    // userService.requestTutor(req.params.id, user.id);
+    userService.requestTutor(user.payload.id, req.params.tutorID, req.body?.subjects)
+        .then(response => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
 export default router;

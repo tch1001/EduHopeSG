@@ -156,16 +156,17 @@ function decrypt(text) {
 /**
  * Get a user object by their ID
  * @param {string} id User ID
- * @param {string} fields Fields to request from database separated by a single space
- * @returns {Promise<Some<User>?|Error>}
+ * @param {string=} additionalFields Fields to request from database separated by a single space
+ * @returns {Promise<User?|Error>}
  */
-async function getByID(id, fields = "id name") {
+async function getByID(id, additionalFields = "") {
     if (!id) throw new ServiceError("user-by-id");
-    fields = fields.split(" ").join(", ")
+
+    const fields = additionalFields ? additionalFields.split(" ") : [];
+    fields.unshift("name", "id");
 
     const { rows } = await query({
-        name: "fetch-user-by-id",
-        text: `SELECT ${fields} FROM eduhope_user WHERE id = $1`,
+        text: `SELECT ${fields.join(", ")} FROM eduhope_user WHERE id = $1`,
         values: [id]
     });
 
@@ -177,17 +178,18 @@ async function getByID(id, fields = "id name") {
  * @param {string} email User email address
  * @param {string=} fields Fields to request from database separated by a single space
  * @param {{encrypted: boolean}=} options
- * @returns {Promise<Some<User>?|Error>}
+ * @returns {Promise<User>?|Error>}
  */
-async function getByEmail(email, fields = "id name", options = { encrypted: false }) {
+async function getByEmail(email, additionalFields = "", options = { encrypted: false }) {
     if (!email) throw new ServiceError("user-by-email");
     if (!options.encrypted) email = encrypt(email);
 
-    fields = fields.split(" ").join(", ")
+    const fields = additionalFields ? additionalFields.split(" ") : [];
+    fields.unshift("name", "id");
 
     const { rows } = await query({
         name: "fetch-user-by-email",
-        text: `SELECT ${fields} FROM eduhope_user WHERE email = $1`,
+        text: `SELECT ${fields.join(", ")} FROM eduhope_user WHERE email = $1`,
         values: [email]
     });
 
@@ -276,6 +278,7 @@ function validateUserObject(user, validate = {
         throw error;
     }
 
+    // Tutor object validation
     if (validate.tutoring) {
         const invalid = user?.tutoring?.some((stream) => !STREAMS.includes(stream.toUpperCase()));
 
@@ -377,7 +380,7 @@ export async function login(email, password) {
     email = validator.normalizeEmail(validator.trim(email));
     password = validator.trim(password);
 
-    const user = await getByEmail(email, "id name password", { encrypted: false });
+    const user = await getByEmail(email, "password", { encrypted: false });
     if (!user) throw new ServiceError("user-login-failed");
 
     // verify password
@@ -397,6 +400,7 @@ export async function login(email, password) {
     )
 
     return {
+        success: true,
         expireAt: jwt.decode(cookie).exp,
         cookie
     }
@@ -489,19 +493,21 @@ export async function becomeTutor(userID, attributes) {
     if (!valid) throw new ServiceError("user-invalid");
 
     try {
-        const result = await query(`
+        const text = `
             UPDATE eduhope_user SET is_tutor = TRUE, tutor_terms = 'yes', 
             tutoring = $1, subjects = $2, tutee_limit = $3, commitment_end = $4,
             preferred_communications = $5, avg_response_time = 6
 
             WHERE id = $7
-        `,
-            [
-                attributes.tutoring, attributes.subjects, attributes.tutee_limit,
-                attributes.commitment_end, attributes.preferred_communications,
-                attributes.avg_response_time, userID
-            ]
-        );
+        `;
+
+        const values = [
+            attributes.tutoring, attributes.subjects, attributes.tutee_limit,
+            attributes.commitment_end, attributes.preferred_communications,
+            attributes.avg_response_time, userID
+        ];
+
+        const result = await query(text, values);
 
         return {
             success: true,

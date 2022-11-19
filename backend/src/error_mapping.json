@@ -160,5 +160,11 @@
         "name": "Error registering tutor",
         "message": "Error occurred while trying to register a tutor",
         "details": "Provide the necessary Tutor attributes and retry the request"
+    },
+    "json-malformed": {
+        "status": 400,
+        "name": "JSON is malformed",
+        "message": "JSON in request body is malformed and thus, cannot be parsed properly",
+        "details": "Provide a valid JSON object in the request body"
     }
 }

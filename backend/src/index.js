@@ -45,6 +45,11 @@ app.use((req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
+    if (err?.type === "entity.parse.failed") {
+        res.status(400).send(new RouteError("json-malformed", req.path));
+        return next();
+    };
+
     const STATUS_CODE = 500;
 
     res.status(STATUS_CODE)

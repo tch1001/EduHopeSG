@@ -34,7 +34,7 @@ export default class ServiceError extends Error {
             this.name = this.name;
             this.message = errorCode;
 
-            log.warn({ error: this, message: "Encountered error without its map" });
+            log.warn({ error: this, message: "Encountered error without its mapping" });
             return this;
         }
 

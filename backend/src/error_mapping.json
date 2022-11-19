@@ -29,6 +29,12 @@
         "message": "Password or key not provided or found, cannot continue to verify the validity of password",
         "details": "Provide a password and the key and retry the request"
     },
+    "user-invalid": {
+        "status": 400,
+        "name": "Invalid user",
+        "message": "Invalid user",
+        "details": "Provide a valid user with proper keys and values"
+    },
     "user-invalid-name": {
         "status": 400,
         "name": "Invalid name",
@@ -112,5 +118,11 @@
         "name": "Not unauthenticated: cannot proceed",
         "message": "Missing 'Authorization' header or 'user' cookie",
         "details": "Try logging in again at POST /login"
+    },
+    "user-update": {
+        "status": 400,
+        "name": "Error modifying user",
+        "message": "Error occurred while trying to update or modify user attributes",
+        "details": "Retry the request and contact the site developers or site admins if the problem persist"
     }
 }

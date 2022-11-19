@@ -19,7 +19,7 @@ const JWT_OPTIONS = {
 /**
  * Check if a password is string via preset requirements
  * @param {string} password Password
- * @returns Boolean
+ * @returns {boolean}
  */
 function isStrongPassword(password) {
     // optional to add scoring in the future
@@ -210,6 +210,70 @@ export function verifyAuthentication(cookie) {
 }
 
 /**
+ * Validates a object
+ * @param {User} user User object
+ * @param {[key: string]: boolean} validate
+ * @returns {true}
+ */
+function validateUser(user, validate = {
+    name: true,
+    email: true,
+    password: true,
+    school: true,
+    level_of_education: true,
+    telegram: true,
+    referral: true
+}) {
+    // validate user input
+    if (validate.name) {
+        if (!validator.isLength(user.name || "", { min: 3, max: 32 })) {
+            throw new ServiceError("user-invalid-name");
+        }
+    }
+
+    if (validate.email) {
+        if (!validator.isEmail(user.email || "")) {
+            throw new ServiceError("user-invalid-email");
+        }
+    }
+
+    if (validate.password) {
+        if (!isStrongPassword(user.password || "")) {
+            throw new ServiceError("user-weak-password");
+        }
+    }
+
+    if (validate.school) {
+        if (!user.school) {
+            // TODO: Validate school in the future
+            throw new ServiceError("user-no-school");
+        }
+    }
+
+    if (validate.level_of_education) {
+        if (!EDUCATION_TYPES.includes(user.level_of_education || "")) {
+            const error = new ServiceError("user-invalid-education");
+            error.details += EDUCATION_TYPES.join(", ");
+
+            throw error;
+        }
+    }
+
+    if (validate.telegram && !user.telegram) {
+        throw new ServiceError("user-no-telegram",);
+    }
+
+    if (validate.referral && !REFERRAL.includes(user.referral || "")) {
+        const error = new ServiceError("user-invalid-referral");
+        error.details += REFERRAL.join(", ");
+
+        throw error;
+    }
+
+    return true;
+}
+
+/**
  * Creates a user in the database
  * @param {BasicUser} user User object
  */
@@ -222,43 +286,11 @@ export async function create(user) {
     user.telegram = validator.whitelist(user?.telegram || "", "abcdefghijklmnopqrstuvwxyz0123456789_");
 
     // validate user input
-    if (!validator.isLength(user.name || "", { min: 3, max: 32 })) {
-        throw new ServiceError("user-invalid-name");
-    }
-
-    if (!validator.isEmail(user.email || "")) {
-        throw new ServiceError("user-invalid-email");
-    }
-
-    if (!isStrongPassword(user.password || "")) {
-        throw new ServiceError("user-weak-password");
-    }
-
-    if (!user.school) {
-        // TODO: Validate school in the future
-        throw new ServiceError("user-no-school");
-    }
-
-    if (!EDUCATION_TYPES.includes(user.level_of_education || "")) {
-        const error = new ServiceError("user-invalid-education");
-        error.details += EDUCATION_TYPES.join(", ");
-
-        throw error;
-    }
-
-    if (!user.telegram) {
-        throw new ServiceError("user-no-telegram",);
-    }
-
-    if (!REFERRAL.includes(user.referral || "")) {
-        const error = new ServiceError("user-invalid-referral");
-        error.details += REFERRAL.join(", ");
-
-        throw error;
-    }
-
+    const valid = validateUser(user);
     const hashedPass = await hashPassword(user.password);
     const encryptedEmail = encrypt(validator.normalizeEmail(user.email));
+
+    if (!valid) throw new ServiceError("user-invalid");
 
     try {
         const queryText = `
@@ -329,11 +361,58 @@ export async function login(email, password) {
     }
 }
 
-/**
- * Tutee requesting for tutor
- * @param {string} tutorID Tutor's user ID 
- * @param {string} tuteeID Tutee's user ID
- */
-export async function requestTutor(tutorID, tuteeID) {
-    
+export async function becomeTutor(userID, attributes) {
+
 }
+
+/**
+ * Update user attributes in the database
+ * @param {string} userID User ID
+ * @param {User} attributes User object
+ */
+export async function update(userID, attributes) {
+    if (!userID || !attributes || !Object.keys(attributes).length) {
+        throw new ServiceError("user-invalid")
+    }
+
+
+    const valid = validateUser(attributes, attributes);
+    if (!valid) throw new ServiceError("user-invalid");
+
+    try {
+        if (attributes.name) {
+            query("UPDATE eduhope_user SET name = $1 WHERE id = $2", [attributes.name, userID]);
+        }
+
+        if (attributes.school) {
+            query("UPDATE eduhope_user SET school = $1 WHERE id = $2", [attributes.school, userID]);
+        }
+
+        if (attributes.level_of_education) {
+            // TODO: validate schools
+            query(
+                "UPDATE eduhope_user SET level_of_education = $1 WHERE id = $2",
+                [attributes.level_of_education, userID]
+            );
+        }
+
+        if (attributes.telegram) {
+            const telegram = validator.whitelist(attributes.telegram || "", "abcdefghijklmnopqrstuvwxyz0123456789_");
+            query("UPDATE eduhope_user SET telegram = $1 WHERE id = $2", [telegram, userID]);
+        }
+
+        if (attributes.bio) {
+            query("UPDATE eduhope_user SET bio = $1 WHERE id = $2", [attributes.bio, userID]);
+        }
+
+        query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID])
+    } catch (err) {
+        log.error({
+            message: "Failed to execute update user in user service",
+            error: err,
+            user: { ...user, password: '' }
+        });
+
+        throw new ServiceError("user-update");
+    }
+}   

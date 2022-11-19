@@ -5,7 +5,6 @@ import * as userService from "../services/user-service.js";
 const router = Router();
 
 function standardRouteErrorCallback(res, req, err) {
-    console.error(err);
     const routeError = new RouteError(err, req.originalUrl)
 
     res.status(routeError.status || 400)
@@ -36,6 +35,23 @@ router.post("/login", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
+router.patch("/:id", (req, res) => {
+    const user = userService.verifyAuthentication(req.cookies.user);
+
+    if (!user) {
+        standardRouteErrorCallback(
+            res, req,
+            new RouteError("user-unauthenticated", req.originalUrl),
+        );
+
+        return;
+    }
+
+    userService.update(req.params.id, req.body)
+        .then(() => res.status(200).send({}))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+})
+
 router.put("/tutor/:id", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 
@@ -45,7 +61,7 @@ router.put("/tutor/:id", (req, res) => {
             .end();
     }
 
-    userService.requestTutor(req.params.id, user.id);
+    // userService.requestTutor(req.params.id, user.id);
 })
 
 export default router;

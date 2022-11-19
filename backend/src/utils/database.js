@@ -51,6 +51,7 @@ export async function query(...args) {
 
         return result;
     } catch (err) {
+        console.error(err);
         await client.query('ROLLBACK');
 
         log.error({

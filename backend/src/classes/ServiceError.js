@@ -41,7 +41,7 @@ export default class ServiceError extends Error {
         const message = errorMapping.message || errorMessage;
         const { status, name, details } = errorMapping;
 
-        super(message);
+        super();
 
         /** @type {number} Status code for the API to response with */
         this.status = status;
@@ -59,5 +59,6 @@ export default class ServiceError extends Error {
         this.details = details;
 
         this.timestamp = new Date();
+        this.message = message;
     }
 }

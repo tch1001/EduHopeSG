@@ -197,7 +197,11 @@ async function getByEmail(email, fields = "id name", options = { encrypted: fals
 /**
  * 
  * @param {string} cookie JWT cookie token
- * @returns {{ id: string, name : string}?}
+ * @returns {{
+ *     header: jwt.JwtHeader,
+ *     payload: jwt.JwtPayload & { id: string, name: string },
+ *     signature: string
+ * }?}
  */
 export function verifyAuthentication(cookie) {
     if (!cookie) return null;
@@ -274,11 +278,11 @@ function validateUserObject(user, validate = {
 
     if (validate.tutoring) {
         const invalid = user?.tutoring?.some((stream) => !STREAMS.includes(stream.toUpperCase()));
-        
+
         if (invalid) {
             const error = new ServiceError("user-invalid-tutoring");
             error.details += STREAMS.join(", ");
-            
+
             throw error;
         }
     }
@@ -292,13 +296,13 @@ function validateUserObject(user, validate = {
         validator.isAfter(user?.commitment_end, new Date(Date.now() + 2.628e+9))
     ) {
         // at least 1 month
-        throw new ServiceError("user-invalid-commitment")    
+        throw new ServiceError("user-invalid-commitment")
     }
 
     if (validate.preferred_communications) {
         const invalid = user?.preferred_communications.some((communication) => (
             !COMMUNICATIONS.includes(communication
-        )));
+            )));
 
         if (invalid) {
             const error = new ServiceError("user-invalid-communications");
@@ -413,8 +417,6 @@ export async function update(userID, attributes = {}) {
             attributes.telegram || "",
             "abcdefghijklmnopqrstuvwxyz0123456789_"
         );
-
-        console.log(attributes.telegram);
     }
 
     const valid = validateUserObject(attributes, attributes);
@@ -426,12 +428,12 @@ export async function update(userID, attributes = {}) {
         }
 
         if (attributes.password) {
-            // TODO: send verification email
+            // TODO: require password: send verification email
             return { message: "This service is unavailable" }
         }
 
         if (attributes.email) {
-            // TODO: send verification email to old and new email addresses
+            // TODO: require password: send verification email to old and new email addresses
             return { message: "This service is unavailable" }
         }
 
@@ -475,7 +477,7 @@ export async function becomeTutor(userID, attributes) {
     if (!userID || !attributes || !Object.keys(attributes).length) {
         throw new ServiceError("user-invalid")
     }
-    
+
     const valid = validateUserObject(attributes, {
         tutoring: true,
         subjects: true,
@@ -507,7 +509,7 @@ export async function becomeTutor(userID, attributes) {
             result
         }
     } catch (err) {
-
+        throw new ServiceError("user-update");
     }
 }
 

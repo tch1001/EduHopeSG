@@ -143,10 +143,22 @@
         "message": "Missing 'Authorization' header or 'user' cookie",
         "details": "Try logging in again at POST /login"
     },
+    "user-unauthorized": {
+        "status": 403,
+        "name": "Unauthorized: not allowed",
+        "message": "Either this resource is forbidden for this user or the action is not permitted for this user",
+        "details": "Login with the account that has access to this action or resource"
+    },
     "user-update": {
         "status": 400,
         "name": "Error modifying user",
         "message": "Error occurred while trying to update or modify user attributes",
         "details": "Retry the request with values following the rules and contact the site developers or site admins if the problem persist"
+    },
+    "user-tutor-register": {
+        "status": 400,
+        "name": "Error registering tutor",
+        "message": "Error occurred while trying to register a tutor",
+        "details": "Provide the necessary Tutor attributes and retry the request"
     }
 }

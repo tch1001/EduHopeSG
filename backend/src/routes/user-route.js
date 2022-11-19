@@ -39,14 +39,18 @@ router.patch("/:id", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 
     if (!user) {
-        standardRouteErrorCallback(
+        return standardRouteErrorCallback(
             res, req, new RouteError("user-unauthenticated", req.originalUrl)
         );
-
-        return;
     }
 
-    userService.update(req.params.id, req.body)
+    if (user.payload.id !== req.params.id) {
+        return standardRouteErrorCallback(
+            res, req, new RouteError("user-unauthorized", req.originalUrl)
+        );
+    }
+
+    userService.update(user.id, req.body)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
@@ -55,11 +59,15 @@ router.put("/tutor/:id", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 
     if (!user) {
-        standardRouteErrorCallback(
+        return standardRouteErrorCallback(
             res, req, new RouteError("user-unauthenticated", req.originalUrl)
         );
+    }
 
-        return;
+    if (user.payload.id !== req.params.id) {
+        return standardRouteErrorCallback(
+            res, req, new RouteError("user-unauthorized", req.originalUrl)
+        );
     }
 
     // userService.requestTutor(req.params.id, user.id);

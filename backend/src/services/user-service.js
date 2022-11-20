@@ -280,7 +280,8 @@ function validateUserObject(user, validate = {
 
     // Tutor object validation
     if (validate.tutoring) {
-        const invalid = user?.tutoring?.some((stream) => !STREAMS.includes(stream.toUpperCase()));
+        const invalid = !user?.tutoring?.length ||
+            user?.tutoring?.some((stream) => !STREAMS.includes(stream.toUpperCase()));
 
         if (invalid) {
             const error = new ServiceError("user-invalid-tutoring");
@@ -290,22 +291,30 @@ function validateUserObject(user, validate = {
         }
     }
 
-    if (validate.tutee_limit && user?.tutee_limit >= 1 && user?.tutee_limit <= 5) {
-        throw new ServiceError("user-invalid-tutee-limit");
+    if (validate.tutee_limit) {
+        if (!user?.tutee_limit || !(user?.tutee_limit >= 1 && user?.tutee_limit <= 5)) {
+            throw new ServiceError("user-invalid-tutee-limit");
+        }
     }
 
-    if (
-        validate.commitment_end &&
-        validator.isAfter(user?.commitment_end, new Date(Date.now() + 2.628e+9))
-    ) {
-        // at least 1 month
-        throw new ServiceError("user-invalid-commitment")
+    if (validate.subjects) {
+        if (!user?.subjects?.length) throw new ServiceError("user-invalid-subjects");
+        // TODO: add validation for subjects from tickninja
+    }
+
+    if (validate.commitment_end) {
+        // at least roughly a month (here is 29 days due to > instead of >= in date comparison)
+        const minimumCommitment = new Date(Date.now() + 2.5056e+9).toString();
+        const validCommitment = validator.isAfter(user?.commitment_end || "", minimumCommitment)
+
+        if (!validCommitment) throw new ServiceError("user-invalid-commitment");
     }
 
     if (validate.preferred_communications) {
-        const invalid = user?.preferred_communications.some((communication) => (
-            !COMMUNICATIONS.includes(communication
-            )));
+        const invalid = !user?.preferred_communications?.length ||
+            user.preferred_communications?.some((communication) => (
+                !COMMUNICATIONS.includes(communication
+                )));
 
         if (invalid) {
             const error = new ServiceError("user-invalid-communications");
@@ -477,7 +486,7 @@ export async function update(userID, attributes = {}) {
  * @param {string} userID User ID
  * @param {Tutor} attributes Tutor attributes
  */
-export async function becomeTutor(userID, attributes) {
+export async function registerTutor(userID, attributes) {
     if (!userID || !attributes || !Object.keys(attributes).length) {
         throw new ServiceError("user-invalid")
     }
@@ -491,6 +500,10 @@ export async function becomeTutor(userID, attributes) {
     });
 
     if (!valid) throw new ServiceError("user-invalid");
+
+    // filter out valid subjects
+    const subjects = await getSubjects(attributes.subjects);
+    attributes.subjects = subjects.map(({ id }) => id);
 
     try {
         const text = `
@@ -507,12 +520,11 @@ export async function becomeTutor(userID, attributes) {
             attributes.avg_response_time, userID
         ];
 
-        const result = await query(text, values);
+        await query(text, values);
 
         return {
             success: true,
-            message: "User is now Tutor status",
-            result
+            message: "User is now Tutor status"
         }
     } catch (err) {
         throw new ServiceError("user-update");

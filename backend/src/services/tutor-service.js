@@ -32,3 +32,19 @@ export async function rejectTutee(relationshipID) {
         message: "Rejected tutee. Tutee has been notified of the rejection with apologies"
     }
 }
+
+export async function removeTutee(tuteeID, tutorID) {
+    const relationshipID = `${tuteeID}:${tutorID}`;
+    const { rowCount } =
+        await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+    
+    if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
+
+    // TODO: notify tutee of removal
+
+    return {
+        success: true,
+        message: "Removed tutee. Tutee has been notified of this change"
+    }
+}
+

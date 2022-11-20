@@ -7,7 +7,7 @@ import { getByID } from "./user-service.js";
  * @param {string} tutorID Tutor's user ID 
  * @param {string} tuteeID Tutee's user ID
  * @param {number[]} subjects List of subject IDs
- * @returns {{success: true, message: string}}
+ * @returns {{success: true, message: string}} Success message
  */
 export async function requestTutor(tuteeID, tutorID, subjects = []) {
     if (!tuteeID || !tutorID || !subjects.length)
@@ -22,13 +22,22 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 
     // check if subjects being requested is offered by tutor
     const notOffered = subjects.some(subject => !tutor.subjects.includes(subject));
-    const requestID = `${tuteeID}:${tutorID}`
+    const relationshipID = `${tuteeID}:${tutorID}`
     if (notOffered) throw new ServiceError("tutee-tutor-subject-unoffered");
 
-    // check already similar request
+    // check if tutor has hit the limit
+    const { rows: count } = await query(
+        "SELECT count(id) FROM tutee_tutor_relationship WHERE id = $1",
+        [relationshipID]
+    )
+
+    if (parseInt(count[0].count) >= tutor.tutee_limit)
+        throw new ServiceError("tutor-hit-tutee-limit");
+
+    // check already a request with the same subjects
     const { rows: requests } = await query(
         "SELECT * FROM tutee_tutor_relationship WHERE id = $1",
-        [requestID]
+        [relationshipID]
     );
 
     if (requests.length) {
@@ -42,7 +51,7 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 
             await query(
                 `UPDATE tutee_tutor_relationship SET subjects = $1 WHERE id = $2`,
-                [subjects, requestID]
+                [subjects, relationshipID]
             )
 
             return {
@@ -75,16 +84,17 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 /**
  * Tutee withdraws a tutor
  * @param {string} relationshipID Tutor's user ID
- * TODO: survey/feedback/reason why withdrawing
+ * @returns {{success: true, message: string}} Success message
+ * TODO: survey/review/feedback/reason why withdrawing see reviewTutor func
  */
 export async function withdrawTutor(relationshipID) {
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
 
     const { rowCount } =
         await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
-    
+
     if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
-    
+
     return {
         success: true,
         message: "Terminated the Tutee-Tutor relationship. Your tutor has been notified of this change"

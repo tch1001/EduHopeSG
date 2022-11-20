@@ -20,7 +20,7 @@ const JWT_OPTIONS = {
 /**
  * Check if a password is string via preset requirements
  * @param {string} password Password
- * @returns {boolean}
+ * @returns {boolean} Whether strong or not strong
  */
 function isStrongPassword(password) {
     // optional to add scoring in the future
@@ -79,7 +79,7 @@ function hashPassword(password, salt) {
  * Verify a login request by comparing user's input to stored user's HashedPass in database
  * @param {string} inputPassword User password request (to check)
  * @param {HashedPass} hashedPass Hashed key, can be HashedPass format (correct)
- * @returns {Promise<boolean>}
+ * @returns {Promise<boolean>} Returns boolean whether the 2 password matches
  */
 function verifyPassword(inputPassword, hashedPass) {
     if (!inputPassword || !hashedPass) throw new ServiceError("funcs-verify-password-invalid");
@@ -101,7 +101,7 @@ function verifyPassword(inputPassword, hashedPass) {
 /**
  * Encrypt raw UTF8 text to hex for database storage
  * @param {string} text Raw UTF8 text to encrypt
- * @returns {string}
+ * @returns {string} Encrypted string
  */
 function encrypt(text) {
     const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
@@ -115,7 +115,7 @@ function encrypt(text) {
 /**
  * Decrypts encrypted text
  * @param {string} text Encrypted text to decrypt to UTF8 readable tet
- * @returns {string}
+ * @returns {string} Decrypted string
  */
 function decrypt(text) {
     const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
@@ -127,7 +127,15 @@ function decrypt(text) {
 }
 
 /**
+ * @typedef {Object} Subject
+ * @property {string} id Subject's ID in the database
+ * @property {string} name Subject name
+ * @property {string} course Subject's course ID
+ */
+
+/**
  * @typedef {Object} BasicUser
+ * @property {string} id User's ID
  * @property {string} name User's name
  * @property {string} email User's email address
  * @property {string} password User's account password
@@ -157,7 +165,7 @@ function decrypt(text) {
  * Get a user object by their ID
  * @param {string} id User ID
  * @param {string=} additionalFields Fields to request from database separated by a single space
- * @returns {Promise<User?|Error>}
+ * @returns {Promise<User?|Error>} Returns possible User with fields requested ONLY
  */
 export async function getByID(id, additionalFields = "") {
     if (!id) throw new ServiceError("user-by-id");
@@ -178,7 +186,7 @@ export async function getByID(id, additionalFields = "") {
  * @param {string} email User email address
  * @param {string=} fields Fields to request from database separated by a single space
  * @param {{encrypted: boolean}=} options
- * @returns {Promise<User>?|Error>}
+ * @returns {Promise<User>?|Error>} Returns possible User with fields requested ONLY
  */
 export async function getByEmail(email, additionalFields = "", options = { encrypted: false }) {
     if (!email) throw new ServiceError("user-by-email");
@@ -203,7 +211,7 @@ export async function getByEmail(email, additionalFields = "", options = { encry
  *     header: jwt.JwtHeader,
  *     payload: jwt.JwtPayload & { id: string, name: string },
  *     signature: string
- * }?}
+ * }?} JWT token object
  */
 export function verifyAuthentication(cookie) {
     if (!cookie) return null;
@@ -219,6 +227,7 @@ export function verifyAuthentication(cookie) {
 /**
  * Convert an array of subjects to names
  * @param {number[]} subjects List of subject IDs
+ * @returns {Subject[]} Array of subject(s) information
  */
 export async function getSubjects(subjects) {
     const queryText = "SELECT id, name, course FROM subjects WHERE id = $1";
@@ -233,7 +242,7 @@ export async function getSubjects(subjects) {
  * Validates a object
  * @param {User} user User object
  * @param {[key: string]: boolean} validate
- * @returns {true}
+ * @returns {true} True only if validate, not valid throws errors
  */
 function validateUserObject(user, validate = {
     name: true,
@@ -344,6 +353,7 @@ function validateUserObject(user, validate = {
 /**
  * Creates a user in the database
  * @param {BasicUser} user User object
+ * @returns {{success: true, message: string}} Success message
  */
 export async function create(user) {
     // reformat user input
@@ -393,7 +403,7 @@ export async function create(user) {
  * Login to a user with email and password, creates a JWT cookie if success
  * @param {string} email User email
  * @param {string} password User password
- * @returns {string} Cookie
+ * @returns {{expireAt: number, cookie: string}} Success body with JWT cookie
  */
 export async function login(email, password) {
     if (!email || !password || !validator.isEmail(email) || !isStrongPassword(password)) {
@@ -423,7 +433,6 @@ export async function login(email, password) {
     )
 
     return {
-        success: true,
         expireAt: jwt.decode(cookie).exp,
         cookie
     }
@@ -433,6 +442,7 @@ export async function login(email, password) {
  * Update user attributes in the database
  * @param {string} userID User ID
  * @param {User} attributes User object
+ * @returns {{success: true, message: string}} Success message
  */
 export async function update(userID, attributes = {}) {
     if (!userID || !attributes || !Object.keys(attributes).length) {
@@ -499,6 +509,7 @@ export async function update(userID, attributes = {}) {
  * Converts a normal account to a Tutor status account
  * @param {string} userID User ID
  * @param {Tutor} attributes Tutor attributes
+ * @returns {{success: true, message: string}} Success message
  */
 export async function registerTutor(userID, attributes) {
     if (!userID || !attributes || !Object.keys(attributes).length) {

@@ -16,14 +16,14 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
     const user = await getByID(tuteeID);
     const tutor = await getByID(tutorID, "is_tutor subjects");
 
-    if (!user || !tutor) throw new ServiceError("user-tutor-not-found");
+    if (!user || !tutor) throw new ServiceError("tutee-tutor-not-found");
     if (!tutor.is_tutor) throw new ServiceError("user-not-tutor");
-    if (tuteeID === tutorID) throw new ServiceError("user-tutor-same");
+    if (tuteeID === tutorID) throw new ServiceError("tutee-tutor-same");
 
     // check if subjects being requested is offered by tutor
     const notOffered = subjects.some(subject => !tutor.subjects.includes(subject));
     const requestID = `${tuteeID}:${tutorID}`
-    if (notOffered) throw new ServiceError("user-tutor-subject-unoffered");
+    if (notOffered) throw new ServiceError("tutee-tutor-subject-unoffered");
 
     // check already similar request
     const { rows: requests } = await query(
@@ -51,7 +51,7 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
             }
         } else {
             // throw duplicate error
-            throw new ServiceError("user-request-tutor-unique")
+            throw new ServiceError("tutee-request-tutor-unique")
         }
     };
 
@@ -74,11 +74,21 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 
 /**
  * Tutee withdraws a tutor
- * @param {string} tutorID Tutor's user ID 
- * @param {string} tuteeID Tutee's user ID
+ * @param {string} relationshipID Tutor's user ID
+ * TODO: survey/feedback/reason why withdrawing
  */
-export async function withdrawTutor(tutorID, tuteeID) {
+export async function withdrawTutor(relationshipID) {
+    if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
 
+    const { rowCount } =
+        await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+    
+    if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
+    
+    return {
+        success: true,
+        message: "Terminated the Tutee-Tutor relationship. Your tutor has been notified of this change"
+    }
 }
 
 /**

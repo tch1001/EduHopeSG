@@ -167,10 +167,10 @@
         "message": "User ID or Tutor ID is not provided in the paramters",
         "details": "Provide the necessary User and Tutor ID and retry your request"
     },
-    "user-tutor-not-found": {
+    "tutee-tutor-not-found": {
         "status": 404,
-        "name": "User or Tutor not found",
-        "message": "Provided User ID or Tutor ID yielded no valid records of such users in the database",
+        "name": "Tutee or Tutor not found",
+        "message": "Provided Tutee ID or Tutor ID yielded no valid records of such users in the database",
         "details": "Provide valid User and Tutor IDs that are existing inside the database"
     },
     "user-not-tutor": {
@@ -179,13 +179,13 @@
         "message": "The requested user is not a Tutor account or has no Tutor status",
         "details": "Provided User/Tutor ID is not a tutor. Request a valid Tutor account"
     },
-    "user-tutor-same": {
+    "tutee-tutor-same": {
         "status": 400,
         "name": "Tutee and tutor cannot be the same",
         "message": "The provided user and tutor are of the same account",
         "details": "Provide a different account"
     },
-    "user-tutor-subject-unoffered": {
+    "tutee-tutor-subject-unoffered": {
         "status": 400,
         "name": "Requested subject not offered",
         "message": "The requested subject is not offered by the tutor",
@@ -203,10 +203,16 @@
         "message": "Subjects provided are not in the database",
         "details": "If you believe this is a mistake, please contact the site developers or admins"
     },
-    "user-request-tutor-unique": {
+    "tutee-request-tutor-unique": {
         "status": 409,
         "name": "Error modifying Tutor-Tutee agreement",
         "message": "The current agreeable subjects and requested subjects are the same (no changes)",
         "details": "To update the agreement, please choose a different subject combination"
+    },
+    "invalid-tutee-tutor-relationship": {
+        "status": 400,
+        "name": "Invalid Tutor-Tutee relationship",
+        "message": "Relationship either not found or was deleted, or not the ID was not provided for query",
+        "details": "To terminate the Tutor-Tutee relationship, provide the relationship ID"
     }
 }

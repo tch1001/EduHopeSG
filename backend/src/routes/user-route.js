@@ -84,4 +84,18 @@ router.put("/tutor/:tutorID", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
+router.delete("/tutor/:tutorID", (req, res) => {
+    const user = userService.verifyAuthentication(req.cookies.user);
+
+    if (!user) {
+        return standardRouteErrorCallback(
+            res, req, new RouteError("user-unauthenticated", req.originalUrl)
+        );
+    }
+
+    tuteeService.withdrawTutor(`${user.payload.id}:${req.params.tutorID}`)
+        .then(response => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+})
+
 export default router;

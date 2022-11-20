@@ -48,3 +48,20 @@ export async function removeTutee(tuteeID, tutorID) {
     }
 }
 
+export async function removeAllTutees(tutorID) {
+    const { rowCount } =
+        await query("DELETE FROM tutee_tutor_relationship WHERE tutor_id = $1", [tutorID]);
+
+    if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
+
+    // TODO: notify tutees of removal
+
+    return {
+        success: true,
+        message: "Removed tutees. All tutees has been notified of this change"
+    }
+}
+
+export async function feedbackTutee(tuteeID, tutorID) {
+
+}

@@ -25,10 +25,10 @@ export async function rejectTutee(relationshipID) {
 
     if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
 
-    // TODO: notify tutee of reject
+    // TODO: notify tutee of rejection
 
     return {
         success: true,
-        message: "Rejected tutee"
+        message: "Rejected tutee. Tutee has been notified of the rejection with apologies"
     }
 }

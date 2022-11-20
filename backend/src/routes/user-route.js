@@ -1,17 +1,9 @@
 import { Router } from "express";
+import { standardRouteErrorCallback } from "../index.js";
 import RouteError from "../classes/RouteError.js";
 import * as userService from "../services/user-service.js";
-import * as tuteeService from "../services/tutee-service.js";
 
 const router = Router();
-
-function standardRouteErrorCallback(res, req, err) {
-    const routeError = new RouteError(err, req.originalUrl)
-
-    res.status(routeError.status || 400)
-        .send(routeError)
-        .end();
-}
 
 router.post("/", (req, res) => {
     userService.create(req.body)
@@ -66,34 +58,6 @@ router.post("/tutor", (req, res) => {
     }
 
     userService.registerTutor(user.payload.id, req.body)
-        .then(response => res.status(200).send(response))
-        .catch((err) => standardRouteErrorCallback(res, req, err));
-})
-
-router.put("/tutor/:tutorID", (req, res) => {
-    const user = userService.verifyAuthentication(req.cookies.user);
-
-    if (!user) {
-        return standardRouteErrorCallback(
-            res, req, new RouteError("user-unauthenticated", req.originalUrl)
-        );
-    }
-
-    tuteeService.requestTutor(user.payload.id, req.params.tutorID, req.body?.subjects)
-        .then(response => res.status(200).send(response))
-        .catch((err) => standardRouteErrorCallback(res, req, err));
-})
-
-router.delete("/tutor/:tutorID", (req, res) => {
-    const user = userService.verifyAuthentication(req.cookies.user);
-
-    if (!user) {
-        return standardRouteErrorCallback(
-            res, req, new RouteError("user-unauthenticated", req.originalUrl)
-        );
-    }
-
-    tuteeService.withdrawTutor(`${user.payload.id}:${req.params.tutorID}`)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })

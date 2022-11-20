@@ -11,6 +11,7 @@ import log from "./utils/logging.js";
 // Import routes
 const apiV1Router = Router()
 import userRoutes from "./routes/user-route.js";
+import tuteeRoutes from "./routes/tutee-route.js";
 import pool from "./utils/database.js";
 
 const app = express();
@@ -30,7 +31,16 @@ app.set('trust proxy', 1);
 
 // Routers
 apiV1Router.use("/user", userRoutes);
+apiV1Router.use("/tutee", tuteeRoutes);
 app.use("/api/v0.1", apiV1Router);
+
+export function standardRouteErrorCallback(res, req, err) {
+    const routeError = new RouteError(err, req.originalUrl)
+
+    res.status(routeError.status || 400)
+        .send(routeError)
+        .end();
+}
 
 // Fallback page for routes not found
 app.use((req, res) => {

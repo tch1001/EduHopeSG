@@ -64,7 +64,7 @@ router.post("/tutor", (req, res) => {
         );
     }
 
-    userService.becomeTutor(user.payload.id, req.body)
+    userService.registerTutor(user.payload.id, req.body)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })

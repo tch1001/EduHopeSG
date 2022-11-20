@@ -8,7 +8,7 @@ import log from "../utils/logging.js";
 const EDUCATION_TYPES = ["Secondary 3", "Secondary 4", "Secondary 5", "JC 1", "JC 2", "O level Private candidate", "A level Private candidate"];
 const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i']; // n', o', a'lvl, pri, BI, IP
 const REFERRAL = ["Reddit", "Instagram", "TikTok", "Telegram", "Google", "Word of mouth"];
-const COMMUNICATIONS = ["Text", "Virtual Consult", "Face-to-face", ""]
+const COMMUNICATIONS = ["Text", "Virtual Consult", "Face-to-face"]
 
 const JWT_OPTIONS = {
     expiresIn: "14d",
@@ -217,6 +217,19 @@ export function verifyAuthentication(cookie) {
 }
 
 /**
+ * Convert an array of subjects to names
+ * @param {number[]} subjects List of subject IDs
+ */
+export async function getSubjects(subjects) {
+    const queryText = "SELECT id, name, course FROM subjects WHERE id = $1";
+    const queries = subjects.map(subjectsID => query(queryText, [subjectsID]));
+    const results = await Promise.all(queries);
+    const data = results.map(({ rows }) => rows[0]);
+
+    return data.filter((d) => d);
+}
+
+/**
  * Validates a object
  * @param {User} user User object
  * @param {[key: string]: boolean} validate
@@ -286,6 +299,7 @@ function validateUserObject(user, validate = {
         if (invalid) {
             const error = new ServiceError("user-invalid-tutoring");
             error.details += STREAMS.join(", ");
+
 
             throw error;
         }
@@ -509,7 +523,7 @@ export async function registerTutor(userID, attributes) {
         const text = `
             UPDATE eduhope_user SET is_tutor = TRUE, tutor_terms = 'yes', 
             tutoring = $1, subjects = $2, tutee_limit = $3, commitment_end = $4,
-            preferred_communications = $5, avg_response_time = 6
+            preferred_communications = $5, avg_response_time = $6
 
             WHERE id = $7
         `;
@@ -531,8 +545,15 @@ export async function registerTutor(userID, attributes) {
     }
 }
 
+/**
+ * Tutee requests for a tutor for selected subject(s)
+ * @param {string} userID User ID
+ * @param {string} tutorID Tutor ID
+ * @param {number[]} subjects List of subject IDs
+ * @returns {{success: true, message: string}}
+ */
 export async function requestTutor(userID, tutorID, subjects = []) {
-    if (!userID || !tutorID || subjects.length)
+    if (!userID || !tutorID || !subjects.length)
         throw new ServiceError("user-request-tutor-missing");
 
     const user = await getByID(userID);
@@ -544,19 +565,50 @@ export async function requestTutor(userID, tutorID, subjects = []) {
 
     // check if subjects being requested is offered by tutor
     const notOffered = subjects.some(subject => !tutor.subjects.includes(subject));
-    if (notOffered) throw new ServiceError("user-tutor-subject-unoffered")
+    const requestID = `${userID}:${tutorID}`
+    if (notOffered) throw new ServiceError("user-tutor-subject-unoffered");
+
+    // check already similar request
+    const { rows: requests } = await query(
+        "SELECT * FROM tutee_tutor_relationship WHERE id = $1",
+        [requestID]
+    );
+
+    if (requests.length) {
+        const { subjects: tutoredSubjects } = requests[0];
+        const requestedSubjects = subjects.length === tutoredSubjects.length &&
+            subjects.every(subject => tutoredSubjects.includes(subject));
+
+        if (!requestedSubjects) {
+            // update subjects
+            // TODO: email tutor of the change of subjects
+
+            await query(
+                `UPDATE tutee_tutor_relationship SET subjects = $1 WHERE id = $2`,
+                [subjects, requestID]
+            )
+
+            return {
+                success: true,
+                message: "Updated tuition subjects. Your tutor is notified of the changes"
+            }
+        } else {
+            // throw duplicate error
+            throw new ServiceError("user-request-tutor-unique")
+        }
+    };
 
     // TODO: email request to tutor: tutor to accept/decline
     // change status of relationship if accepted, delete row if decline
+
     const queryText = `
         INSERT INTO tutee_tutor_relationship(tutee_id, tutor_id, subjects)
         VALUES($1, $2, $3) RETURNING *
     `
 
     const queryValues = [userID, tutorID, subjects];
-    const result = await query(queryText, queryValues)
+    await query(queryText, queryValues)
 
-    console.log(result)
     return {
         success: true,
         message: "Request for tuition sent to tutor"

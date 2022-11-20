@@ -92,7 +92,7 @@
     "user-invalid-commitment": {
         "status": 400,
         "name": "Invalid commitment time",
-        "message": "Commitment time too short",
+        "message": "Commitment time not provided, invalid or too short",
         "details": "We require a minimum of 1 month commitment for our tutors"
     },
     "user-invalid-communications": {
@@ -196,5 +196,17 @@
         "name": "JSON is malformed",
         "message": "JSON in request body is malformed and thus, cannot be parsed properly",
         "details": "Provide a valid JSON object in the request body"
+    },
+    "user-invalid-subjects": {
+        "status": 400,
+        "name": "Invalid subjects",
+        "message": "Subjects provided are not in the database",
+        "details": "If you believe this is a mistake, please contact the site developers or admins"
+    },
+    "user-request-tutor-unique": {
+        "status": 409,
+        "name": "Error modifying Tutor-Tutee agreement",
+        "message": "The current agreeable subjects and requested subjects are the same (no changes)",
+        "details": "To update the agreement, please choose a different subject combination"
     }
 }

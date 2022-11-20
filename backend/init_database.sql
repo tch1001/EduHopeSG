@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
     ----------- tutor data ------------
     is_tutor BOOLEAN DEFAULT FALSE,
     tutoring CHAR[] DEFAULT array[]::char[], -- [N, O, A, P, B, I] (n', o', a'lvl, pri, BI, IP)
-    subjects INT[] DEFAULT array[]::int[], -- subject ids from TickNinja
+    subjects INT[] DEFAULT array[]::int[] check(), -- subject ids from TickNinja
     tutee_limit INT DEFAULT 3 CHECK (tutee_limit BETWEEN 1 AND 5),
     commitment_end TIMESTAMP,
     preferred_communications TEXT[],
@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
 );
 
 CREATE TABLE IF NOT EXISTS tutee_tutor_relationship (
+    id VARCHAR(73) PRIMARY KEY GENERATED ALWAYS AS (TEXT(tutee_id) || ':' || TEXT(tutor_id)) STORED,    
     tutee_id UUID NOT NULL REFERENCES eduhope_user(id)
         ON DELETE CASCADE,
     tutor_id UUID NOT NULL REFERENCES eduhope_user(id)

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import RouteError from "../classes/RouteError.js";
 import * as userService from "../services/user-service.js";
+import * as tuteeService from "../services/tutee-service.js";
 
 const router = Router();
 
@@ -78,7 +79,7 @@ router.put("/tutor/:tutorID", (req, res) => {
         );
     }
 
-    userService.requestTutor(user.payload.id, req.params.tutorID, req.body?.subjects)
+    tuteeService.requestTutor(user.payload.id, req.params.tutorID, req.body?.subjects)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })

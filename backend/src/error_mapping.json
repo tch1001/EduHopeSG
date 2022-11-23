@@ -104,8 +104,8 @@
     "user-create-unique": {
         "status": 409,
         "name": "Error creating user",
-        "message": "User with the same email address has already registered",
-        "details": "Create a new account with a different email address"
+        "message": "User with the same email address or Telegram username has already been registered",
+        "details": "Create a new account with a different email address or Telegram username"
     },
     "user-create": {
         "status": 400,

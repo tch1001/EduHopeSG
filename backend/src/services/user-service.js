@@ -292,11 +292,13 @@ function validateUserObject(user, validate = {
         throw new ServiceError("user-no-telegram");
     }
 
-    if (validate.referral && !REFERRAL.includes(user.referral || "")) {
-        const error = new ServiceError("user-invalid-referral");
-        error.details += REFERRAL.join(", ");
+    if (validate.referral && !user.referral) {
+        if (REFERRAL.includes(user.referral || "")) {
+            const error = new ServiceError("user-invalid-referral");
+            error.details += REFERRAL.join(", ");
 
-        throw error;
+            throw error;
+        }
     }
 
     // Tutor object validation

@@ -1,6 +1,6 @@
 {
-    "include": "src",
-    "exclude": "tests",
+    "include": ["src"],
+    "exclude": ["tests", "src/classes"],
     "check-coverage": true,
     "statements": 90,
     "branches": 90,

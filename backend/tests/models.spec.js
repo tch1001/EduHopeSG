@@ -151,10 +151,11 @@ describe("Testing database models", () => {
             ];
 
             try {
-                await query(queryText, queryValues)
-            } catch (err) {
+                const result = await query(queryText, queryValues);
                 expect(result.command).to.equal("INSERT");
                 expect(result.rowCount).to.equal(1);
+            } catch (err) {
+                expect(err).to.be.undefined();
             }
         })
 

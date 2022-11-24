@@ -1,7 +1,7 @@
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 import { readFile } from "fs";
 import path from "path";
-import postgres from 'pg';
+import postgres from "pg";
 import log from "./logging.js";
 
 const { Pool } = postgres;
@@ -51,7 +51,6 @@ export async function query(...args) {
 
         return result;
     } catch (err) {
-        console.error(err);
         await client.query('ROLLBACK');
 
         log.error({

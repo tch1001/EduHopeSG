@@ -6,7 +6,9 @@
   "description": "EduHope.SG backend server for APIs, database transactions and business logic",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha -r dotenv/config ./tests/*.spec.js --exit",
+    "watch:test": "mocha --watch -r dotenv/config ./tests/*.spec.js --exit",
+    "coverage": "nyc --reporter=text npm test",
     "start": "node --experimental-json-modules src/index.js",
     "dev": "node --experimental-json-modules src/index.js",
     "watch:dev": "nodemon --exec npm run dev"
@@ -21,6 +23,7 @@
     "prettier": "2.7.1",
     "rewire": "^6.0.0",
     "sinon": "^14.0.2",
+    "sinon-chai": "^3.7.0",
     "supertest": "^6.3.1"
   },
   "dependencies": {

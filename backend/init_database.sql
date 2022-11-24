@@ -1,15 +1,15 @@
 CREATE TABLE IF NOT EXISTS eduhope_user (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(32) NOT NULL,
-    email VARCHAR(672) UNIQUE NOT NULL, -- email address max length of 320 vars, encryption requires 2x
-    password TEXT NOT NULL, -- to requirements
+    name VARCHAR(32) NOT NULL CHECK (length(name) BETWEEN 3 AND 32),
+    email VARCHAR(672) UNIQUE NOT NULL, -- email address max length of 320 vars, encryption returns 2x
+    password TEXT NOT NULL,
 
     school VARCHAR(128) NOT NULL,
     level_of_education VARCHAR(64) NOT NULL, -- highest/current level of edu.
     telegram VARCHAR(32) NOT NULL UNIQUE, -- telegram handle
     bio VARCHAR(500) DEFAULT '',
 
-    referral VARCHAR(64) NOT NULL, -- Reddit, Telegram, etc.
+    referral VARCHAR(64), -- Reddit, Telegram, etc.
     tutee_terms BOOLEAN DEFAULT 'yes',
 
     created_on TIMESTAMP WITH TIME ZONE DEFAULT now(),
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
     ----------- tutor data ------------
     is_tutor BOOLEAN DEFAULT FALSE,
     tutoring CHAR[] DEFAULT array[]::char[], -- [N, O, A, P, B, I] (n', o', a'lvl, pri, BI, IP)
-    subjects INT[] DEFAULT array[]::int[] check(), -- subject ids from TickNinja
+    subjects INT[] DEFAULT array[]::int[], -- subject ids from TickNinja
     tutee_limit INT DEFAULT 3 CHECK (tutee_limit BETWEEN 1 AND 5),
     commitment_end TIMESTAMP,
     preferred_communications TEXT[],

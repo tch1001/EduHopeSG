@@ -196,7 +196,6 @@ export async function getByEmail(email, additionalFields = "", options = { encry
     fields.unshift("name", "id");
 
     const { rows } = await query({
-        name: "fetch-user-by-email",
         text: `SELECT ${fields.join(", ")} FROM eduhope_user WHERE email = $1`,
         values: [email]
     });

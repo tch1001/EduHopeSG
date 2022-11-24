@@ -28,55 +28,49 @@ describe("Testing database models", () => {
     })
 
     describe("Testing EduHope User model constraints", () => {
-        it("should not accept due to missing name", (done) => {
+        it("should not accept due to missing name", async () => {
             const queryText = "INSERT INTO eduhope_user(name) VALUES ($1)";
             const queryValues = [null];
 
-            query(queryText, queryValues)
-                .then(() => done(new Error("Unexpected success")))
-                .catch((err) => {
-                    expect(err.schema).to.equal("public");
-                    expect(err.table).to.equal("eduhope_user");
-                    expect(err.column).to.equal("name");
-                    expect(err.routine).to.equal("ExecConstraints");
-
-                    done()
-                });
+            try {
+                await query(queryText, queryValues)
+            } catch (err) {
+                expect(err.schema).to.equal("public");
+                expect(err.table).to.equal("eduhope_user");
+                expect(err.column).to.equal("name");
+                expect(err.routine).to.equal("ExecConstraints");
+            }
         })
 
-        it("should not accept due to missing email", (done) => {
+        it("should not accept due to missing email", async () => {
             const queryText = "INSERT INTO eduhope_user(name, email) VALUES ($1, $2)";
             const queryValues = [fakeUser.name, null];
 
-            query(queryText, queryValues)
-                .then(() => done(new Error("Unexpected success")))
-                .catch((err) => {
-                    expect(err.schema).to.equal("public");
-                    expect(err.table).to.equal("eduhope_user");
-                    expect(err.column).to.equal("email");
-                    expect(err.routine).to.equal("ExecConstraints");
-
-                    done()
-                });
+            try {
+                await query(queryText, queryValues)
+            } catch (err) {
+                expect(err.schema).to.equal("public");
+                expect(err.table).to.equal("eduhope_user");
+                expect(err.column).to.equal("email");
+                expect(err.routine).to.equal("ExecConstraints");
+            }
         })
 
-        it("should not accept due to missing password", (done) => {
+        it("should not accept due to missing password", async () => {
             const queryText = `INSERT INTO eduhope_user(name, email, password) VALUES ($1, $2, $3)`;
             const queryValues = [fakeUser.name, fakeUser.email, null];
 
-            query(queryText, queryValues)
-                .then(() => done(new Error("Unexpected success")))
-                .catch((err) => {
-                    expect(err.schema).to.equal("public");
-                    expect(err.table).to.equal("eduhope_user");
-                    expect(err.column).to.equal("password");
-                    expect(err.routine).to.equal("ExecConstraints");
-
-                    done()
-                });
+            try {
+                await query(queryText, queryValues)
+            } catch (err) {
+                expect(err.schema).to.equal("public");
+                expect(err.table).to.equal("eduhope_user");
+                expect(err.column).to.equal("password");
+                expect(err.routine).to.equal("ExecConstraints");
+            }
         })
 
-        it("should not accept due to missing school", (done) => {
+        it("should not accept due to missing school", async () => {
             const queryText = `
                 INSERT INTO eduhope_user(name, email, password, school)
                 VALUES ($1, $2, $3, $4)
@@ -84,19 +78,17 @@ describe("Testing database models", () => {
 
             const queryValues = [fakeUser.name, fakeUser.email, fakeUser.password, null];
 
-            query(queryText, queryValues)
-                .then(() => done(new Error("Unexpected success")))
-                .catch((err) => {
-                    expect(err.schema).to.equal("public");
-                    expect(err.table).to.equal("eduhope_user");
-                    expect(err.column).to.equal("school");
-                    expect(err.routine).to.equal("ExecConstraints");
-
-                    done()
-                });
+            try {
+                await query(queryText, queryValues)
+            } catch (err) {
+                expect(err.schema).to.equal("public");
+                expect(err.table).to.equal("eduhope_user");
+                expect(err.column).to.equal("school");
+                expect(err.routine).to.equal("ExecConstraints");
+            }
         })
 
-        it("should not accept due to missing education", (done) => {
+        it("should not accept due to missing education", async () => {
             const queryText = `
                 INSERT INTO eduhope_user(name, email, password, school, level_of_education)
                 VALUES ($1, $2, $3, $4, $5)
@@ -106,19 +98,17 @@ describe("Testing database models", () => {
                 fakeUser.name, fakeUser.email, fakeUser.password, fakeUser.school, null
             ];
 
-            query(queryText, queryValues)
-                .then(() => done(new Error("Unexpected success")))
-                .catch((err) => {
-                    expect(err.schema).to.equal("public");
-                    expect(err.table).to.equal("eduhope_user");
-                    expect(err.column).to.equal("level_of_education");
-                    expect(err.routine).to.equal("ExecConstraints");
-
-                    done()
-                });
+            try {
+                await query(queryText, queryValues)
+            } catch (err) {
+                expect(err.schema).to.equal("public");
+                expect(err.table).to.equal("eduhope_user");
+                expect(err.column).to.equal("level_of_education");
+                expect(err.routine).to.equal("ExecConstraints");
+            }
         })
 
-        it("should not accept due to missing telegram", (done) => {
+        it("should not accept due to missing telegram", async () => {
             const queryText = `
                 INSERT INTO eduhope_user(name, email, password, school, level_of_education, telegram)
                 VALUES ($1, $2, $3, $4, $5, $6)
@@ -129,19 +119,17 @@ describe("Testing database models", () => {
                 fakeUser.level_of_education, null
             ];
 
-            query(queryText, queryValues)
-                .then(() => done(new Error("Unexpected success")))
-                .catch((err) => {
-                    expect(err.schema).to.equal("public");
-                    expect(err.table).to.equal("eduhope_user");
-                    expect(err.column).to.equal("telegram");
-                    expect(err.routine).to.equal("ExecConstraints");
-
-                    done()
-                });
+            try {
+                await query(queryText, queryValues)
+            } catch (err) {
+                expect(err.schema).to.equal("public");
+                expect(err.table).to.equal("eduhope_user");
+                expect(err.column).to.equal("telegram");
+                expect(err.routine).to.equal("ExecConstraints");
+            }
         })
 
-        it("should accept username length", (done) => {
+        it("should accept username length", async () => {
             const queryText = `
                 INSERT INTO eduhope_user(name, email, password, school, level_of_education, telegram)
                 VALUES ($1, $2, $3, $4, $5, $6)
@@ -152,17 +140,15 @@ describe("Testing database models", () => {
                 fakeUser.level_of_education, fakeUser.telegram
             ];
 
-            query(queryText, queryValues)
-                .then((result) => {
-                    expect(result.command).to.equal("INSERT");
-                    expect(result.rowCount).to.equal(1);
-
-                    done();
-                })
-                .catch(done);
+            try {
+                await query(queryText, queryValues)
+            } catch (err) {
+                expect(result.command).to.equal("INSERT");
+                expect(result.rowCount).to.equal(1);
+            }
         })
 
-        it("should not accept username length below 3 characters", (done) => {
+        it("should not accept username length below 3 characters", async () => {
             const queryText = `
                 INSERT INTO eduhope_user(name, email, password, school, level_of_education, telegram)
                 VALUES ($1, $2, $3, $4, $5, $6)
@@ -173,16 +159,64 @@ describe("Testing database models", () => {
                 fakeUser.level_of_education, fakeUser.telegram
             ];
 
-            query(queryText, queryValues)
-                .then(() => done(new Error("Unexpected success")))
-                .catch((err) => {
-                    expect(err.schema).to.equal("public");
-                    expect(err.table).to.equal("eduhope_user");
-                    expect(err.constraint).to.equal("eduhope_user_name_check");
-                    expect(err.routine).to.equal("ExecConstraints");
+            try {
+                await query(queryText, queryValues);
+            } catch (err) {
+                expect(err.schema).to.equal("public");
+                expect(err.table).to.equal("eduhope_user");
+                expect(err.constraint).to.equal("eduhope_user_name_check");
+                expect(err.routine).to.equal("ExecConstraints");
+            }
+        })
+    })
 
-                    done()
-                });
+    describe("Testing Tutee-Tutor model constraints", () => {
+        it("should not accept due to missing tutee ID", async () => {
+            const queryText = `
+                    INSERT INTO tutee_tutor_relationship(tutee_id)
+                    VALUES ($1)
+                `;
+
+            const queryValues = [null];
+
+            try {
+                await query(queryText, queryValues);
+            } catch (err) {
+                expect(err.schema).to.equal("public");
+                expect(err.table).to.equal("tutee_tutor_relationship");
+                expect(err.column).to.equal("id");
+                expect(err.routine).to.equal("ExecConstraints");
+            }
+        })
+
+        it("should not accept due to missing tutee ID", async () => {
+            const queryText = `
+                    INSERT INTO tutee_tutor_relationship(tutee_id, tutor_id)
+                    VALUES ($1, $2)
+                `;
+
+            const queryValues = [fakeUser.id, null];
+
+            try {
+                await query(queryText, queryValues);
+            } catch (err) {
+                expect(err.code).to.equal("22P02");
+            }
+        })
+
+        it("should not accept due to missing subjects", async () => {
+            const queryText = `
+                    INSERT INTO tutee_tutor_relationship(tutee_id, tutor_id, subjects)
+                    VALUES ($1, $2, $3)
+                `;
+
+            const queryValues = [fakeUser.id, fakeUser.id, null];
+
+            try {
+                await query(queryText, queryValues);
+            } catch (err) {
+                expect(err.code).to.equal("22P02");
+            }
         })
     })
 })

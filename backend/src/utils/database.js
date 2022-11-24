@@ -26,6 +26,7 @@ pool.connect()
         )
     ))
     .catch((error) => (
+        /* c8 ignore next 4 */
         log.error({
             message: "Error connecting to PostgreSQL",
             error
@@ -60,13 +61,13 @@ export async function query(...args) {
         })
 
         throw err;
+        /* c8 ignore next 3 */
     } finally {
         client.release();
     }
 }
 
-export function setup() {
-    const FILE = "../../init_database.sql";
+export function setup(FILE = "../../init_database.sql", callback) {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
     readFile(path.resolve(__dirname, FILE), "utf-8", (err, setupSQL) => {
@@ -76,7 +77,7 @@ export function setup() {
                 stack: err.stack,
             });
 
-            return;
+            if (callback) callback(err);
         }
 
         query(setupSQL).then((result) => (

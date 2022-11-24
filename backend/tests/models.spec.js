@@ -27,6 +27,16 @@ describe("Testing database models", () => {
         sinon.restore();
     })
 
+    describe("Testing SQL Setup", () => {
+        it("should fail when no SQL file is found", () => {
+            setupDatabase("./not-found.sql", (err) => {
+                expect(err.errno).to.equal(-4058);
+                expect(err.code).to.equal("ENOENT");
+                expect(err.syscall).to.equal("open");
+            });
+        })
+    })
+
     describe("Testing EduHope User model constraints", () => {
         it("should not accept due to missing name", async () => {
             const queryText = "INSERT INTO eduhope_user(name) VALUES ($1)";

@@ -13,12 +13,13 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
     if (!tuteeID || !tutorID || !subjects.length)
         throw new ServiceError("user-request-tutor-missing");
 
+    if (tuteeID === tutorID) throw new ServiceError("tutee-tutor-same");
+
     const user = await getByID(tuteeID);
     const tutor = await getByID(tutorID, "is_tutor subjects");
 
     if (!user || !tutor) throw new ServiceError("tutee-tutor-not-found");
     if (!tutor.is_tutor) throw new ServiceError("user-not-tutor");
-    if (tuteeID === tutorID) throw new ServiceError("tutee-tutor-same");
 
     // check if subjects being requested is offered by tutor
     const notOffered = subjects.some(subject => !tutor.subjects.includes(subject));

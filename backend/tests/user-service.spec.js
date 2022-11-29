@@ -1,9 +1,9 @@
 import sinon from "sinon";
 import { expect } from "chai";
 import log from "../src/utils/logging.js";
+import pool from "../src/utils/database.js";
 import ServiceError from "../src/classes/ServiceError.js";
 import * as UserService from "../src/services/user-service.js";
-import pool from "../src/utils/database.js";
 
 describe("Testing user service", () => {
     const fakeUser = {

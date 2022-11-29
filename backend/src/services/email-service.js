@@ -33,14 +33,14 @@ async function sendEmail(email, subject, text, html) {
     try {
         const response = await mg.messages.create(process.env.MAILGUN_DOMAIN, {
             to: email,
-            subject, text, html,
+            from: `EduhopeSG Notifications <notifications@${process.env.MAILGUN_DOMAIN}>`,
             "o:testmode": process.env.NODE_ENV === "development",
             "o:tracking": "yes",
             "o:tracking-clicks": "yes",
-            "o:tracking-opens": "yes"
+            "o:tracking-opens": "yes",
+            subject, text, html,
         })
 
-        console.log(response);
         return response;
     } catch (err) {
         log.error({
@@ -63,11 +63,12 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
 
     const subjects = await UserService.getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `${d.course} ${d.name}`).join(", ");
+    const relationshipID = `${tutee.id}:${tutor.id}`;
 
     const text = [
         `You have a tuition request from ${tutee.name} for ${formattedSubjects}.\n\n`,
-        `To accept, click http://localhost:5000/api/v0.1/tutor/accept/${tutee.id}\n`,
-        `To reject, click http://localhost:5000/api/v0.1/tutor/reject/${tutee.id}`
+        `To accept, click http://localhost:5000/api/v0.1/tutor/accept/${relationshipID}\n`,
+        `To reject, click http://localhost:5000/api/v0.1/tutor/reject/${relationshipID}`
     ]
 
     return await sendEmail(

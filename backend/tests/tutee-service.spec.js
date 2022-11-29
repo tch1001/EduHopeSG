@@ -191,4 +191,36 @@ describe("Testing tutee service", () => {
             }
         })
     })
+
+    describe("withdraw from tutor", () => {
+        const RELATIONSHIP_ID = `${fakeTutee.id}:${fakeTutor.id}`;
+
+        it("should not withdraw due to missing parameters", async () => {
+            try {
+                const res = await TuteeService.withdrawTutor();
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("invalid-tutee-tutor-relationship");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not withdraw due to relationship not found", async () => {
+            try {
+                const res = await TuteeService.withdrawTutor(RELATIONSHIP_ID);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("invalid-tutee-tutor-relationship");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+    })
 });

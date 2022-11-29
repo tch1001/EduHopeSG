@@ -167,4 +167,28 @@ describe("Testing tutee service", () => {
             }
         })
 
+        it("should not request due to tutor not offering subject", async () => {
+            try {
+                const res = await TuteeService.requestTutor(fakeTutee.id, fakeTutor.id, invalidSubjects);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("tutee-tutor-subject-unoffered");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should request tutor", async () => {
+            try {
+                const res = await TuteeService.requestTutor(fakeTutee.id, fakeTutor.id, validSubjects);
+                expect(res.success).to.be.true;
+                expect(res.message).to.be.equal("Request for tuition sent to tutor");
+            } catch (err) {
+                expect(err).to.be.undefined();
+            }
+        })
+    })
 });

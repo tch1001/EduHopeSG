@@ -71,6 +71,12 @@
         "message": "No Telegram handle provided or invalid Telegram handle (a-z, 0-9 and underscores)",
         "details": "Provide a valid Telegram handle without the '@' at the start"
     },
+    "user-invalid-bio": {
+        "status": 400,
+        "name": "Invalid bio length",
+        "message": "Profile bio cannot exceed 500 characters in length",
+        "details": "Provide a bio with a length of at most 500 characters"
+    },
     "user-invalid-referral": {
         "status": 400,
         "name": "Invalid referral",
@@ -164,7 +170,7 @@
     "user-request-tutor-missing": {
         "status": 400,
         "name": "Missing User ID, Tutor ID or needed subjects",
-        "message": "User ID or Tutor ID is not provided in the paramters",
+        "message": "User ID or Tutor ID is not provided in the parameters",
         "details": "Provide the necessary User and Tutor ID and retry your request"
     },
     "tutee-tutor-not-found": {

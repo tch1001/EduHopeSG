@@ -250,6 +250,7 @@ function validateUserObject(user, validate = {
     school: true,
     level_of_education: true,
     telegram: true,
+    bio: true,
     referral: true,
     tutoring: false,
     subjects: false,
@@ -294,6 +295,10 @@ function validateUserObject(user, validate = {
         if (!validator.isLength(user.telegram || "", { min: 5, max: 32 })) {
             throw new ServiceError("user-no-telegram")
         }
+    }
+
+    if (validate.bio && !validator.isLength(user.bio || "", { min: 0, max: 500 })) {
+        throw new ServiceError("user-invalid-bio")
     }
 
     if (validate.referral && !user.referral) {

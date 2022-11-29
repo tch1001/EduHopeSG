@@ -108,10 +108,10 @@ function verifyPassword(inputPassword, hashedPass) {
 export function encrypt(text) {
     const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
     const iv = Buffer.from(process.env.ENCRYPTION_IV, "base64");
-    const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
+    const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
 
     const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
-    return encrypted.toString("hex")
+    return encrypted.toString("hex");
 }
 
 /**
@@ -122,9 +122,10 @@ export function encrypt(text) {
 export function decrypt(text) {
     const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
     const iv = Buffer.from(process.env.ENCRYPTION_IV, "base64");
-    const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
+    const bufferText = Buffer.from(text, "hex")
+    const decipher = crypto.createDecipheriv(process.env.ENCRYPTION_ALGO, key, iv);
 
-    const decrypted = Buffer.concat([decipher.update(text), decipher.final()]);
+    const decrypted = Buffer.concat([decipher.update(bufferText), decipher.final()]);
     return decrypted.toString("utf8");
 }
 
@@ -230,10 +231,16 @@ export function verifyAuthentication(cookie) {
 /**
  * Convert an array of subjects to names
  * @param {number[]} subjects List of subject IDs
- * @returns {Subject[]} Array of subject(s) information
+ * @returns {Promise<Subject[]>} Array of subject(s) information
  */
 export async function getSubjects(subjects) {
-    const queryText = "SELECT id, name, course FROM subjects WHERE id = $1";
+    const queryText = `
+    SELECT subjects.id, subjects.name, courses.name AS course
+    FROM subjects
+    INNER JOIN courses ON courses.id = subjects.course
+    WHERE subjects.id = $1;
+    `;
+
     const queries = subjects.map(subjectsID => query(queryText, [subjectsID]));
     const results = await Promise.all(queries);
     const data = results.map(({ rows }) => rows[0]);

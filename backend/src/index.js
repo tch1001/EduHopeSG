@@ -12,6 +12,7 @@ import log from "./utils/logging.js";
 const apiV1Router = Router()
 import userRoutes from "./routes/user-route.js";
 import tuteeRoutes from "./routes/tutee-route.js";
+import tutorRoutes from "./routes/tutor-route.js";
 import pool from "./utils/database.js";
 
 const app = express();
@@ -32,6 +33,7 @@ app.set('trust proxy', 1);
 // Routers
 apiV1Router.use("/user", userRoutes);
 apiV1Router.use("/tutee", tuteeRoutes);
+apiV1Router.use("/tutor", tutorRoutes);
 app.use("/api/v0.1", apiV1Router);
 
 export function standardRouteErrorCallback(res, req, err) {

@@ -1,9 +1,11 @@
 import FormData from "form-data";
 import Mailgun from "mailgun.js";
-import { isEmail } from "validator";
+import validator from "validator";
+import * as UserService from "./user-service.js";
 import ServiceError from "../classes/ServiceError.js";
-import { BasicUser, User, decrypt, getSubjects } from "./user-service.js";
 import log from "../utils/logging.js";
+
+const { isEmail } = validator;
 
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
@@ -52,24 +54,25 @@ async function sendEmail(email, subject, text, html) {
 /**
  * Sends an email request to Tutor and system notification to let Tutee know
  * of request
- * @param {BasicUser} tutee Tutee object
- * @param {User} tutor Tutor object
+ * @param {UserService.BasicUser} tutee Tutee object
+ * @param {UserService.User} tutor Tutor object
  * @param {number[]} subjectIDs Array of subjects IDs
  */
 export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     if (!tutee || !tutor) throw new ServiceError("missing-arguments");
 
-    const subjects = getSubjects(subjectIDs);
-    const formattedSubjects = subjects.map(d => `${d.name} at ${d.course}`).join(", ");
+    const subjects = await UserService.getSubjects(subjectIDs);
+    const formattedSubjects = subjects.map(d => `${d.course} ${d.name}`).join(", ");
 
     const text = [
         `You have a tuition request from ${tutee.name} for ${formattedSubjects}.\n\n`,
-        `To accept, click http://localhost:5000/api/v0.1/tutor/accecpt/${tutee.id}\n`,
+        `To accept, click http://localhost:5000/api/v0.1/tutor/accept/${tutee.id}\n`,
         `To reject, click http://localhost:5000/api/v0.1/tutor/reject/${tutee.id}`
     ]
 
-    console.log(
-        decrypt(tutor.email), `EduhopeSG: You have a new tuition request!`,
+    return await sendEmail(
+        UserService.decrypt(tutor.email.trim().toString()),
+        "EduhopeSG: You have a new tuition request!",
         text.join(" ")
     )
 }

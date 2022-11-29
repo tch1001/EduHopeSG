@@ -1,5 +1,6 @@
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
+import { sendTuitionRequest } from "./email-service.js";
 import { getByID } from "./user-service.js";
 
 /**
@@ -65,9 +66,7 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
         }
     };
 
-    // TODO: email request to tutor: tutor to accept/decline
     // change status of relationship if accepted, delete row if decline
-
     const queryText = `
         INSERT INTO tutee_tutor_relationship(tutee_id, tutor_id, subjects)
         VALUES($1, $2, $3) RETURNING *
@@ -75,6 +74,7 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 
     const queryValues = [tuteeID, tutorID, subjects];
     await query(queryText, queryValues)
+    await sendTuitionRequest(user, tutor, subjects);
 
     return {
         success: true,

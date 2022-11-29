@@ -288,8 +288,12 @@ function validateUserObject(user, validate = {
         }
     }
 
-    if (validate.telegram && !user.telegram) {
-        throw new ServiceError("user-no-telegram");
+    if (validate.telegram) {
+        if (!user.telegram) throw new ServiceError("user-no-telegram");
+
+        if (!validator.isLength(user.telegram || "", { min: 5, max: 32 })) {
+            throw new ServiceError("user-no-telegram")
+        }
     }
 
     if (validate.referral && !user.referral) {
@@ -476,11 +480,11 @@ export async function update(userID, attributes = {}) {
         }
 
         if (attributes.school) {
+            // TODO: validate schools
             await query("UPDATE eduhope_user SET school = $1 WHERE id = $2", [attributes.school, userID]);
         }
 
         if (attributes.level_of_education) {
-            // TODO: validate schools
             await query(
                 "UPDATE eduhope_user SET level_of_education = $1 WHERE id = $2",
                 [attributes.level_of_education, userID]

@@ -163,6 +163,46 @@ describe("Testing user service", () => {
             }
         })
 
+        it("should not create user due to invalid Telegram handle (length < 5)", async () => {
+            try {
+                await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email,
+                    password: fakeUser.password,
+                    school: fakeUser.school,
+                    level_of_education: fakeUser.level_of_education,
+                    telegram: "ddd"
+                });
+            } catch (err) {
+                const expectedError = new ServiceError("user-no-telegram");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to invalid Telegram handle (length > 32)", async () => {
+            try {
+                await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email,
+                    password: fakeUser.password,
+                    school: fakeUser.school,
+                    level_of_education: fakeUser.level_of_education,
+                    telegram: "d".repeat(33)
+                });
+            } catch (err) {
+                const expectedError = new ServiceError("user-no-telegram");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
         it("should create user", async () => {
             try {
                 await UserService.create(fakeUser);
@@ -224,6 +264,7 @@ describe("Testing user service", () => {
                 expect(err.status).to.equal(expectedError.status);
             }
         })
+    })
 
         it("should login", async () => {
             try {
@@ -231,7 +272,6 @@ describe("Testing user service", () => {
                 const d = await UserService.login(fakeUser.email, fakeUser.password);
                 console.log(d);
             } catch (err) {
-                console.log(err);
                 expect(err).to.be.undefined();
             }
         })

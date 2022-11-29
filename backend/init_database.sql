@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
 
     school VARCHAR(128) NOT NULL,
     level_of_education VARCHAR(64) NOT NULL, -- highest/current level of edu.
-    telegram VARCHAR(32) NOT NULL UNIQUE, -- telegram handle
+    telegram VARCHAR(32) NOT NULL UNIQUE CHECK (length(name) BETWEEN 5 AND 32), -- telegram handle
     bio VARCHAR(500) DEFAULT '',
 
     referral VARCHAR(64), -- Reddit, Telegram, etc.

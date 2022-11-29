@@ -32,7 +32,42 @@ describe("Testing user service", () => {
     describe("Creating user", () => {
         it("should not create user due to missing name", async () => {
             try {
-                await UserService.create({});
+                const res = await UserService.create({});
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-name");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to length (> 3)", async () => {
+            try {
+                const res = await UserService.create({
+                    name: "d"
+                });
+
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-name");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to length (< 32)", async () => {
+            try {
+                const res = await UserService.create({
+                    name: "d".repeat(33)
+                });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-invalid-name");
 
@@ -45,9 +80,11 @@ describe("Testing user service", () => {
 
         it("should not create user due to missing email", async () => {
             try {
-                await UserService.create({
+                const res = await UserService.create({
                     name: fakeUser.name
                 });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-invalid-email");
 
@@ -60,10 +97,12 @@ describe("Testing user service", () => {
 
         it("should not create user due to missing password", async () => {
             try {
-                await UserService.create({
+                const res = await UserService.create({
                     name: fakeUser.name,
                     email: fakeUser.email
                 });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-weak-password");
 
@@ -76,11 +115,13 @@ describe("Testing user service", () => {
 
         it("should not create user due to weak password", async () => {
             try {
-                await UserService.create({
+                const res = await UserService.create({
                     name: fakeUser.name,
                     email: fakeUser.email,
                     password: "weak password"
                 });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-weak-password");
 
@@ -93,11 +134,13 @@ describe("Testing user service", () => {
 
         it("should not create user due to missing school", async () => {
             try {
-                await UserService.create({
+                const res = await UserService.create({
                     name: fakeUser.name,
                     email: fakeUser.email,
                     password: fakeUser.password
                 });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-no-school");
 
@@ -110,12 +153,14 @@ describe("Testing user service", () => {
 
         it("should not create user due to missing education", async () => {
             try {
-                await UserService.create({
+                const res = await UserService.create({
                     name: fakeUser.name,
                     email: fakeUser.email,
                     password: fakeUser.password,
                     school: fakeUser.school
                 });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-invalid-education");
 
@@ -128,13 +173,15 @@ describe("Testing user service", () => {
 
         it("should not create user due to invalid education stream, etc.", async () => {
             try {
-                await UserService.create({
+                const res = await UserService.create({
                     name: fakeUser.name,
                     email: fakeUser.email,
                     password: fakeUser.password,
                     school: fakeUser.school,
                     level_of_education: "Invalid"
                 });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-invalid-education");
 
@@ -146,13 +193,15 @@ describe("Testing user service", () => {
 
         it("should not create user due to missing Telegram handle", async () => {
             try {
-                await UserService.create({
+                const res = await UserService.create({
                     name: fakeUser.name,
                     email: fakeUser.email,
                     password: fakeUser.password,
                     school: fakeUser.school,
                     level_of_education: fakeUser.level_of_education
                 });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-no-telegram");
 
@@ -165,7 +214,7 @@ describe("Testing user service", () => {
 
         it("should not create user due to invalid Telegram handle (length < 5)", async () => {
             try {
-                await UserService.create({
+                const res = await UserService.create({
                     name: fakeUser.name,
                     email: fakeUser.email,
                     password: fakeUser.password,
@@ -173,6 +222,8 @@ describe("Testing user service", () => {
                     level_of_education: fakeUser.level_of_education,
                     telegram: "ddd"
                 });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-no-telegram");
 
@@ -185,7 +236,7 @@ describe("Testing user service", () => {
 
         it("should not create user due to invalid Telegram handle (length > 32)", async () => {
             try {
-                await UserService.create({
+                const res = await UserService.create({
                     name: fakeUser.name,
                     email: fakeUser.email,
                     password: fakeUser.password,
@@ -193,6 +244,8 @@ describe("Testing user service", () => {
                     level_of_education: fakeUser.level_of_education,
                     telegram: "d".repeat(33)
                 });
+
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-no-telegram");
 
@@ -215,7 +268,8 @@ describe("Testing user service", () => {
     describe("User login", () => {
         it("should not login as missing email parameter", async () => {
             try {
-                await UserService.login()
+                const res = await UserService.login()
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-login-invalid");
 
@@ -228,7 +282,8 @@ describe("Testing user service", () => {
 
         it("should not login as missing password parameter", async () => {
             try {
-                await UserService.login(fakeUser.email);
+                const res = await UserService.login(fakeUser.email);
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-login-invalid");
 
@@ -241,7 +296,8 @@ describe("Testing user service", () => {
 
         it("should not login as user does not exist", async () => {
             try {
-                await UserService.login("fake_email@email.com", fakeUser.password);
+                const res = await UserService.login("fake_email@email.com", fakeUser.password);
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-login-failed");
 
@@ -254,7 +310,8 @@ describe("Testing user service", () => {
 
         it("should not login due to wrong password", async () => {
             try {
-                await UserService.login(fakeUser.email, fakeUser.password);
+                const res = await UserService.login(fakeUser.email, fakeUser.password);
+                expect(res).to.be.undefined();
             } catch (err) {
                 const expectedError = new ServiceError("user-login-failed");
 

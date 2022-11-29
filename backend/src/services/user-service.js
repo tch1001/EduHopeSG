@@ -338,7 +338,7 @@ function validateUserObject(user, validate = {
     if (validate.commitment_end) {
         // at least roughly a month (here is 29 days due to > instead of >= in date comparison)
         const minimumCommitment = new Date(Date.now() + 2.5056e+9).toString();
-        const validCommitment = validator.isAfter(user?.commitment_end || "", minimumCommitment)
+        const validCommitment = validator.isAfter(user?.commitment_end?.toString() || "", minimumCommitment)
 
         if (!validCommitment) throw new ServiceError("user-invalid-commitment");
     }

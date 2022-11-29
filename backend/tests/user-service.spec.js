@@ -508,4 +508,215 @@ describe("Testing user service", () => {
             }
         })
     })
+
+    describe("Registering as a tutor", () => {
+        it("should not register due to missing tutoring subject streams", async () => {
+            try {
+                const attributes = {}
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid tutoring subjects streams (1)", async () => {
+            try {
+                const attributes = { tutoring: ["invalid stream"] }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-tutoring");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid tutoring subjects streams (2)", async () => {
+            try {
+                const attributes = { tutoring: ['O', 'N', "invalid stream"] }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-tutoring");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid tutee limit (< 0)", async () => {
+            try {
+                const attributes = {
+                    tutoring: ['O', 'N'],
+                    tutee_limit: 0
+                }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-tutee-limit");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid tutee limit (> 5)", async () => {
+            try {
+                const attributes = {
+                    tutoring: ['O', 'N'],
+                    tutee_limit: 6
+                }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-tutee-limit");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid tutoring subjects (1)", async () => {
+            try {
+                const attributes = {
+                    tutoring: ['O', 'N'],
+                    tutee_limit: 3,
+                    subjects: []
+                }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-subjects");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid tutoring subjects (2)", async () => {
+            try {
+                const attributes = {
+                    tutoring: ['O', 'N'],
+                    tutee_limit: 3
+                }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-subjects");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid commitment end (1)", async () => {
+            try {
+                const attributes = {
+                    tutoring: ['O', 'N'],
+                    tutee_limit: 3,
+                    subjects: [1, 2, 3, 4],
+                    commitment_end: new Date()
+                }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-commitment");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid commitment end (2)", async () => {
+            try {
+                const attributes = {
+                    tutoring: ['O', 'N'],
+                    tutee_limit: 3,
+                    subjects: [1, 2, 3, 4],
+                    commitment_end: new Date(Date.now() + (60 ^ 2) * 24 * 14 * 1000) // 2 weeks
+                }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-commitment");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid preferred communications (1)", async () => {
+            try {
+                const attributes = {
+                    tutoring: ['O', 'N'],
+                    tutee_limit: 3,
+                    subjects: [1, 2, 3, 4],
+                    commitment_end: new Date(Date.now() + (60 ^ 2) * 24 * 30 * 1000), // 1 month
+                    preferred_communications: ["Invalid"]
+                }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-commitment");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not register due to invalid preferred communications (2)", async () => {
+            try {
+                const attributes = {
+                    tutoring: ['O', 'N'],
+                    tutee_limit: 3,
+                    subjects: [1, 2, 3, 4],
+                    commitment_end: new Date(Date.now() + (60 ^ 2) * 24 * 30 * 1000), // 1 month
+                    preferred_communications: ["Text", "Virtual Consult", "Invalid"]
+                }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes)
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-commitment");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+    })
 })

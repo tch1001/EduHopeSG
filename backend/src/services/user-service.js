@@ -49,7 +49,7 @@ function isStrongPassword(password) {
  * @param {string|undefined} salt Salt (Optional)
  * @returns {Promise<HashedPass>} Hashed key with salt promise
  */
-function hashPassword(password, salt) {
+export function hashPassword(password, salt) {
     if (!password) throw new ServiceError("funcs-hash-password-invalid");
     if (!salt) salt = crypto.randomBytes(512);
 
@@ -105,7 +105,7 @@ function verifyPassword(inputPassword, hashedPass) {
  * @param {string} text Raw UTF8 text to encrypt
  * @returns {string} Encrypted string
  */
-function encrypt(text) {
+export function encrypt(text) {
     const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
     const iv = Buffer.from(process.env.ENCRYPTION_IV, "base64");
     const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
@@ -119,7 +119,7 @@ function encrypt(text) {
  * @param {string} text Encrypted text to decrypt to UTF8 readable tet
  * @returns {string} Decrypted string
  */
-function decrypt(text) {
+export function decrypt(text) {
     const key = Buffer.from(process.env.ENCRYPTION_KEY, "base64");
     const iv = Buffer.from(process.env.ENCRYPTION_IV, "base64");
     const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);

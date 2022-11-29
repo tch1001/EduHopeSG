@@ -15,8 +15,8 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 
     if (tuteeID === tutorID) throw new ServiceError("tutee-tutor-same");
 
-    const user = await getByID(tuteeID);
-    const tutor = await getByID(tutorID, "is_tutor subjects");
+    const user = await getByID(tuteeID, "email");
+    const tutor = await getByID(tutorID, "is_tutor subjects email");
 
     if (!user || !tutor) throw new ServiceError("tutee-tutor-not-found");
     if (!tutor.is_tutor) throw new ServiceError("user-not-tutor");

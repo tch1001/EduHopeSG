@@ -22,6 +22,22 @@ router.get("/reject/:tuteeID", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
+router.get("/accept/:tuteeID", (req, res) => {
+    const user = verifyAuthentication(req.cookies.user);
+
+    if (!user) {
+        return standardRouteErrorCallback(
+            res, req, new RouteError("user-unauthenticated", req.originalUrl)
+        );
+    }
+
+    const relationshipID = `${req.params.tuteeID}:${user.payload.id}`
+
+    tutorService.acceptTutee(relationshipID)
+        .then(response => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+})
+
 router.delete("/relationship/:tuteeID", (req, res) => {
     const user = verifyAuthentication(req.cookies.user);
 

@@ -41,6 +41,8 @@ function isStrongPassword(password) {
  * "salt:hashed_key"
  */
 
+/* c8 ignore start */
+
 /**
  * Convert raw password to hashed key for storing user passwords
  * @param {string} password User password to be hashed
@@ -181,6 +183,8 @@ export async function getByID(id, additionalFields = "") {
     return rows[0];
 }
 
+/* c8 ignore stop */
+
 /**
  * 
  * @param {string} email User email address
@@ -301,8 +305,8 @@ function validateUserObject(user, validate = {
         throw new ServiceError("user-invalid-bio")
     }
 
-    if (validate.referral && !user.referral) {
-        if (REFERRAL.includes(user.referral || "")) {
+    if (validate.referral && user.referral) {
+        if (!REFERRAL.includes(user.referral || "")) {
             const error = new ServiceError("user-invalid-referral");
             error.details += REFERRAL.join(", ");
 

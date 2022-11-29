@@ -279,6 +279,29 @@ describe("Testing user service", () => {
             }
         })
 
+        it("should not create user due to invalid referral", async () => {
+            try {
+                const res = await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email,
+                    password: fakeUser.password,
+                    school: fakeUser.school,
+                    level_of_education: fakeUser.level_of_education,
+                    telegram: fakeUser.telegram,
+                    bio: fakeUser.bio,
+                    referral: "Invalid"
+                });
+
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-referral");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
         it("should create user", async () => {
             try {
                 await UserService.create(fakeUser);
@@ -502,7 +525,7 @@ describe("Testing user service", () => {
                     bio: "New user bio"
                 }
 
-                await UserService.update(fakeUser.id, newAttributes);
+                const res = await UserService.update(fakeUser.id, newAttributes);
             } catch (err) {
                 expect(err).to.be.undefined();
             }
@@ -660,7 +683,7 @@ describe("Testing user service", () => {
                     tutoring: ['O', 'N'],
                     tutee_limit: 3,
                     subjects: [1, 2, 3, 4],
-                    commitment_end: new Date(Date.now() + (60 ^ 2) * 24 * 14 * 1000) // 2 weeks
+                    commitment_end: new Date(Date.now() + (60 ** 2) * 24 * 14 * 1000) // 2 weeks
                 }
 
                 const res = await UserService.registerTutor(fakeUser.id, attributes)
@@ -681,17 +704,16 @@ describe("Testing user service", () => {
                     tutoring: ['O', 'N'],
                     tutee_limit: 3,
                     subjects: [1, 2, 3, 4],
-                    commitment_end: new Date(Date.now() + (60 ^ 2) * 24 * 30 * 1000), // 1 month
+                    commitment_end: new Date(Date.now() + (60 ** 2) * 24 * 30 * 1000), // 1 month
                     preferred_communications: ["Invalid"]
                 }
 
                 const res = await UserService.registerTutor(fakeUser.id, attributes)
                 expect(res).to.be.undefined();
             } catch (err) {
-                const expectedError = new ServiceError("user-invalid-commitment");
+                const expectedError = new ServiceError("user-invalid-communications");
 
                 expect(err.code).to.equal(expectedError.code);
-                expect(err.details).to.equal(expectedError.details);
                 expect(err.message).to.equal(expectedError.message);
                 expect(err.status).to.equal(expectedError.status);
             }
@@ -703,19 +725,36 @@ describe("Testing user service", () => {
                     tutoring: ['O', 'N'],
                     tutee_limit: 3,
                     subjects: [1, 2, 3, 4],
-                    commitment_end: new Date(Date.now() + (60 ^ 2) * 24 * 30 * 1000), // 1 month
+                    commitment_end: new Date(Date.now() + (60 ** 2) * 24 * 30 * 1000), // 1 month
                     preferred_communications: ["Text", "Virtual Consult", "Invalid"]
                 }
 
                 const res = await UserService.registerTutor(fakeUser.id, attributes)
                 expect(res).to.be.undefined();
             } catch (err) {
-                const expectedError = new ServiceError("user-invalid-commitment");
+                const expectedError = new ServiceError("user-invalid-communications");
 
                 expect(err.code).to.equal(expectedError.code);
-                expect(err.details).to.equal(expectedError.details);
                 expect(err.message).to.equal(expectedError.message);
                 expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should register as a tutor", async () => {
+            try {
+                const attributes = {
+                    tutoring: ['O', 'N'],
+                    tutee_limit: 3,
+                    subjects: [1, 2, 3, 4],
+                    commitment_end: new Date(Date.now() + (60 ** 2) * 24 * 30 * 1000), // 1 month
+                    preferred_communications: ["Text", "Virtual Consult"]
+                }
+
+                const res = await UserService.registerTutor(fakeUser.id, attributes);
+                expect(res.success).to.be.true;
+                expect(res.message).to.equal("User is now Tutor status");
+            } catch (err) {
+                expect(err).to.be.undefined();
             }
         })
     })

@@ -256,6 +256,29 @@ describe("Testing user service", () => {
             }
         })
 
+        it("should not create user due to invalid bio length", async () => {
+            try {
+                const res = await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email,
+                    password: fakeUser.password,
+                    school: fakeUser.school,
+                    level_of_education: fakeUser.level_of_education,
+                    telegram: fakeUser.telegram,
+                    bio: "d".repeat(501)
+                });
+
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-bio");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
         it("should create user", async () => {
             try {
                 await UserService.create(fakeUser);
@@ -323,11 +346,163 @@ describe("Testing user service", () => {
         })
     })
 
-        it("should login", async () => {
+    describe("User update", () => {
+        it("should not update user name due to missing parameters", async () => {
             try {
-                await UserService.create(fakeUser);
-                const d = await UserService.login(fakeUser.email, fakeUser.password);
-                console.log(d);
+                const res = await UserService.update(fakeUser.id);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not update user name due to missing update attributes", async () => {
+            try {
+                const newAttributes = {}
+
+                const res = await UserService.update(fakeUser.id, newAttributes);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not update user name due to length (> 3)", async () => {
+            try {
+                const newAttributes = { name: "d" }
+
+                const res = await UserService.update(fakeUser.id, newAttributes);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-name");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not update user name due to length (< 32)", async () => {
+            try {
+                const newAttributes = { name: "d".repeat(33) }
+
+                const res = await UserService.update(fakeUser.id, newAttributes);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-name");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not update user name due to invalid education stream", async () => {
+            try {
+                const newAttributes = {
+                    name: "New Fake User Name",
+                    school: "New Fake School",
+                    level_of_education: "Invalid"
+                }
+
+                const res = await UserService.update(fakeUser.id, newAttributes);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-education");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to invalid Telegram handle (length < 5)", async () => {
+            try {
+                const newAttributes = {
+                    name: "New Fake User Name",
+                    school: "New Fake School",
+                    level_of_education: "Secondary 4",
+                    telegram: "ddd"
+                }
+
+                const res = await UserService.update(fakeUser.id, newAttributes);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-no-telegram");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to invalid Telegram handle (length < 32)", async () => {
+            try {
+                const newAttributes = {
+                    name: "New Fake User Name",
+                    school: "New Fake School",
+                    level_of_education: "Secondary 4",
+                    telegram: "d".repeat(33)
+                }
+
+                const res = await UserService.update(fakeUser.id, newAttributes);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-no-telegram");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to invalid bio length", async () => {
+            try {
+                const newAttributes = {
+                    name: "New Fake User Name",
+                    school: "New Fake School",
+                    level_of_education: "Secondary 4",
+                    telegram: "new_telegram_fake",
+                    bio: "d".repeat(501)
+                }
+
+                const res = await UserService.update(fakeUser.id, newAttributes);
+                expect(res).to.be.undefined();
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-bio");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should update user attributes", async () => {
+            try {
+                const newAttributes = {
+                    name: "New Fake User Name",
+                    school: "New Fake School",
+                    level_of_education: "Secondary 4",
+                    telegram: "new_telegram_fake",
+                    bio: "New user bio"
+                }
+
+                await UserService.update(fakeUser.id, newAttributes);
             } catch (err) {
                 expect(err).to.be.undefined();
             }

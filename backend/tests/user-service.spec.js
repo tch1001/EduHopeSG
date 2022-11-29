@@ -1,9 +1,9 @@
 import sinon from "sinon";
 import { expect } from "chai";
 import log from "../src/utils/logging.js";
-import { query } from "../src/utils/database.js";
 import ServiceError from "../src/classes/ServiceError.js";
 import * as UserService from "../src/services/user-service.js";
+import pool from "../src/utils/database.js";
 
 describe("Testing user service", () => {
     const fakeUser = {
@@ -19,155 +19,221 @@ describe("Testing user service", () => {
     }
 
     before(() => {
-        // sinon.stub(Database);
+        const fakeClient = { query: () => ({ rows: [] }), release: () => { } };
+
         sinon.stub(log);
+        sinon.stub(pool, "connect").resolves(fakeClient);
     })
 
     after(async () => {
-        // delete fake user
-        await query("DELETE FROM eduhope_user WHERE name = 'Fake User'");
         sinon.restore();
     })
 
-    it("should not create user due to missing name", async () => {
-        try {
-            await UserService.create({});
-        } catch (err) {
-            const expectedError = new ServiceError("user-invalid-name");
+    describe("Creating user", () => {
+        it("should not create user due to missing name", async () => {
+            try {
+                await UserService.create({});
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-name");
 
-            expect(err.code).to.equal(expectedError.code);
-            expect(err.details).to.equal(expectedError.details);
-            expect(err.message).to.equal(expectedError.message);
-            expect(err.status).to.equal(expectedError.status);
-        }
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to missing email", async () => {
+            try {
+                await UserService.create({
+                    name: fakeUser.name
+                });
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-email");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to missing password", async () => {
+            try {
+                await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email
+                });
+            } catch (err) {
+                const expectedError = new ServiceError("user-weak-password");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to weak password", async () => {
+            try {
+                await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email,
+                    password: "weak password"
+                });
+            } catch (err) {
+                const expectedError = new ServiceError("user-weak-password");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to missing school", async () => {
+            try {
+                await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email,
+                    password: fakeUser.password
+                });
+            } catch (err) {
+                const expectedError = new ServiceError("user-no-school");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to missing education", async () => {
+            try {
+                await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email,
+                    password: fakeUser.password,
+                    school: fakeUser.school
+                });
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-education");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+
+        it("should not create user due to invalid education stream, etc.", async () => {
+            try {
+                await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email,
+                    password: fakeUser.password,
+                    school: fakeUser.school,
+                    level_of_education: "Invalid"
+                });
+            } catch (err) {
+                const expectedError = new ServiceError("user-invalid-education");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should not create user due to missing Telegram handle", async () => {
+            try {
+                await UserService.create({
+                    name: fakeUser.name,
+                    email: fakeUser.email,
+                    password: fakeUser.password,
+                    school: fakeUser.school,
+                    level_of_education: fakeUser.level_of_education
+                });
+            } catch (err) {
+                const expectedError = new ServiceError("user-no-telegram");
+
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
+
+        it("should create user", async () => {
+            try {
+                await UserService.create(fakeUser);
+            } catch (err) {
+                expect(err).to.be.undefined();
+            }
+        })
     })
 
-    it("should not create user due to missing email", async () => {
-        try {
-            await UserService.create({
-                name: fakeUser.name
-            });
-        } catch (err) {
-            const expectedError = new ServiceError("user-invalid-email");
+    describe("User login", () => {
+        it("should not login as missing email parameter", async () => {
+            try {
+                await UserService.login()
+            } catch (err) {
+                const expectedError = new ServiceError("user-login-invalid");
 
-            expect(err.code).to.equal(expectedError.code);
-            expect(err.details).to.equal(expectedError.details);
-            expect(err.message).to.equal(expectedError.message);
-            expect(err.status).to.equal(expectedError.status);
-        }
-    })
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
 
-    it("should not create user due to missing password", async () => {
-        try {
-            await UserService.create({
-                name: fakeUser.name,
-                email: fakeUser.email
-            });
-        } catch (err) {
-            const expectedError = new ServiceError("user-weak-password");
+        it("should not login as missing password parameter", async () => {
+            try {
+                await UserService.login(fakeUser.email);
+            } catch (err) {
+                const expectedError = new ServiceError("user-login-invalid");
 
-            expect(err.code).to.equal(expectedError.code);
-            expect(err.details).to.equal(expectedError.details);
-            expect(err.message).to.equal(expectedError.message);
-            expect(err.status).to.equal(expectedError.status);
-        }
-    })
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
 
-    it("should not create user due to weak password", async () => {
-        try {
-            await UserService.create({
-                name: fakeUser.name,
-                email: fakeUser.email,
-                password: "weak password"
-            });
-        } catch (err) {
-            const expectedError = new ServiceError("user-weak-password");
+        it("should not login as user does not exist", async () => {
+            try {
+                await UserService.login("fake_email@email.com", fakeUser.password);
+            } catch (err) {
+                const expectedError = new ServiceError("user-login-failed");
 
-            expect(err.code).to.equal(expectedError.code);
-            expect(err.details).to.equal(expectedError.details);
-            expect(err.message).to.equal(expectedError.message);
-            expect(err.status).to.equal(expectedError.status);
-        }
-    })
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
 
-    it("should not create user due to missing school", async () => {
-        try {
-            await UserService.create({
-                name: fakeUser.name,
-                email: fakeUser.email,
-                password: fakeUser.password
-            });
-        } catch (err) {
-            const expectedError = new ServiceError("user-no-school");
+        it("should not login due to wrong password", async () => {
+            try {
+                await UserService.login(fakeUser.email, fakeUser.password);
+            } catch (err) {
+                const expectedError = new ServiceError("user-login-failed");
 
-            expect(err.code).to.equal(expectedError.code);
-            expect(err.details).to.equal(expectedError.details);
-            expect(err.message).to.equal(expectedError.message);
-            expect(err.status).to.equal(expectedError.status);
-        }
-    })
+                expect(err.code).to.equal(expectedError.code);
+                expect(err.details).to.equal(expectedError.details);
+                expect(err.message).to.equal(expectedError.message);
+                expect(err.status).to.equal(expectedError.status);
+            }
+        })
 
-    it("should not create user due to missing education", async () => {
-        try {
-            await UserService.create({
-                name: fakeUser.name,
-                email: fakeUser.email,
-                password: fakeUser.password,
-                school: fakeUser.school
-            });
-        } catch (err) {
-            const expectedError = new ServiceError("user-invalid-education");
-
-            expect(err.code).to.equal(expectedError.code);
-            expect(err.message).to.equal(expectedError.message);
-            expect(err.status).to.equal(expectedError.status);
-        }
-    })
-
-
-    it("should not create user due to invalid education stream, etc.", async () => {
-        try {
-            await UserService.create({
-                name: fakeUser.name,
-                email: fakeUser.email,
-                password: fakeUser.password,
-                school: fakeUser.school,
-                level_of_education: "Invalid"
-            });
-        } catch (err) {
-            const expectedError = new ServiceError("user-invalid-education");
-
-            expect(err.code).to.equal(expectedError.code);
-            expect(err.message).to.equal(expectedError.message);
-            expect(err.status).to.equal(expectedError.status);
-        }
-    })
-
-    it("should not create user due to missing Telegram handle", async () => {
-        try {
-            await UserService.create({
-                name: fakeUser.name,
-                email: fakeUser.email,
-                password: fakeUser.password,
-                school: fakeUser.school,
-                level_of_education: fakeUser.level_of_education
-            });
-        } catch (err) {
-            const expectedError = new ServiceError("user-no-telegram");
-
-            expect(err.code).to.equal(expectedError.code);
-            expect(err.details).to.equal(expectedError.details);
-            expect(err.message).to.equal(expectedError.message);
-            expect(err.status).to.equal(expectedError.status);
-        }
-    })
-
-    it("should create user", async () => {
-        try {
-            await UserService.create(fakeUser);
-        } catch (err) {
-            console.log(err);
-            expect(err).to.be.undefined();
-        }
+        it("should login", async () => {
+            try {
+                await UserService.create(fakeUser);
+                const d = await UserService.login(fakeUser.email, fakeUser.password);
+                console.log(d);
+            } catch (err) {
+                console.log(err);
+                expect(err).to.be.undefined();
+            }
+        })
     })
 })

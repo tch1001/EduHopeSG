@@ -68,8 +68,11 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     const formattedSubjects = subjects.map(d => `${d.course} ${d.name}`).join(", ");
 
     const message = "You have a new tuition request";
-    const acceptLink = `${process.env.BASE_WEBSITE_URL}/api/v0.1/tutor/accept/${tutee.id}`;
-    const declineLink = `${process.env.BASE_WEBSITE_URL}/api/v0.1/tutor/reject/${tutee.id}`
+    const acceptLink = `${process.env.WEBSITE_URL}/api/v0.1/tutor/accept/${tutee.id}`;
+    const declineLink = `${process.env.WEBSITE_URL}/api/v0.1/tutor/reject/${tutee.id}`;
+
+    // TODO: User reporting
+    const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
 
     const text = [
         `${message} from ${tutee.name} for ${formattedSubjects}.\n\n`,
@@ -79,16 +82,29 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
 
     // preparing HTML file
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const PATH = resolve(__dirname, "../assets/notification.html");
+    const PATH = resolve(__dirname, "../assets/notification-cta.html");
 
     let hydratedHTML = await fs.readFile(PATH, { encoding: "utf-8" });
 
     hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_BANNER }}/gi, message);
-    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_TEXT }}/gi, text[0]);
+    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_TEXT }}/gi, [
+        `${message} from <strong>${tutee.name}</strong> for <u>${formattedSubjects}</u>.\n\n`,
+        "Please consider the following for the above tuition request:",
+        "<ul><li>You have enough bandwidth to take on another tutee</li>",
+        `<li>Who needs help with <strong>${subjectIDs.length}</strong> subjects</li>`,
+        "<li>You will reply their questions within a reasonable time frame</li>",
+        "<li>Enjoy teaching the subjects and helping out a fellow student :)</li></ul>",
+        `<br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
+        "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
+        "<br/><br/>Thank you for volunteering your time and effort,"
+    ].join(" ").replace(/\\n/gi, "<br/>"));
     hydratedHTML = hydratedHTML.replace(/{{ PRIMARY_CTA }}/gi, "Accept");
     hydratedHTML = hydratedHTML.replace(/{{ SECONDARY_CTA }}/gi, "Decline");
     hydratedHTML = hydratedHTML.replace(/{{ PRIMARY_CTA_HREF }}/gi, acceptLink);
     hydratedHTML = hydratedHTML.replace(/{{ SECONDARY_CTA_HREF }}/gi, declineLink);
+
+    // TODO: make a "manage system notifications" thing, and also email verification
+    hydratedHTML = hydratedHTML.replace(/{{ UNSUB_HREF }}/gi, "");
 
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),

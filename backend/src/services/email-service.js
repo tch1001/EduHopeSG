@@ -67,13 +67,15 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     const subjects = await UserService.getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `${d.course} ${d.name}`).join(", ");
 
-    const text = [
-        `You have a tuition request from ${tutee.name} for ${formattedSubjects}.\n\n`,
-        `To accept, click http://localhost:5000/api/v0.1/tutor/accept/${tutee.id}\n`,
-        `To decline, click http://localhost:5000/api/v0.1/tutor/reject/${tutee.id}`
-    ]
-
     const message = "You have a new tuition request";
+    const acceptLink = `${process.env.BASE_WEBSITE_URL}/api/v0.1/tutor/accept/${tutee.id}`;
+    const declineLink = `${process.env.BASE_WEBSITE_URL}/api/v0.1/tutor/reject/${tutee.id}`
+
+    const text = [
+        `${message} from ${tutee.name} for ${formattedSubjects}.\n\n`,
+        `To accept, click ${acceptLink}\n`,
+        `To decline, click ${declineLink}`
+    ]
 
     // preparing HTML file
     const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -84,9 +86,9 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_BANNER }}/gi, message);
     hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_TEXT }}/gi, text[0]);
     hydratedHTML = hydratedHTML.replace(/{{ PRIMARY_CTA }}/gi, "Accept");
-    hydratedHTML = hydratedHTML.replace(/{{ PRIMARY_CTA_HREF }}/gi, `http://localhost:5000/api/v0.1/tutor/accept/${tutee.id}`);
     hydratedHTML = hydratedHTML.replace(/{{ SECONDARY_CTA }}/gi, "Decline");
-    hydratedHTML = hydratedHTML.replace(/{{ SECONDARY_CTA_HREF }}/gi, `http://localhost:5000/api/v0.1/tutor/reject/${tutee.id}`);
+    hydratedHTML = hydratedHTML.replace(/{{ PRIMARY_CTA_HREF }}/gi, acceptLink);
+    hydratedHTML = hydratedHTML.replace(/{{ SECONDARY_CTA_HREF }}/gi, declineLink);
 
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),

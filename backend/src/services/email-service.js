@@ -1,3 +1,6 @@
+import { promises as fs } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
 import FormData from "form-data";
 import Mailgun from "mailgun.js";
 import validator from "validator";
@@ -67,12 +70,28 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     const text = [
         `You have a tuition request from ${tutee.name} for ${formattedSubjects}.\n\n`,
         `To accept, click http://localhost:5000/api/v0.1/tutor/accept/${tutee.id}\n`,
-        `To reject, click http://localhost:5000/api/v0.1/tutor/reject/${tutee.id}`
+        `To decline, click http://localhost:5000/api/v0.1/tutor/reject/${tutee.id}`
     ]
+
+    const message = "You have a new tuition request";
+
+    // preparing HTML file
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const PATH = resolve(__dirname, "../assets/notification.html");
+
+    let hydratedHTML = await fs.readFile(PATH, { encoding: "utf-8" });
+
+    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_BANNER }}/gi, message);
+    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_TEXT }}/gi, text[0]);
+    hydratedHTML = hydratedHTML.replace(/{{ PRIMARY_CTA }}/gi, "Accept");
+    hydratedHTML = hydratedHTML.replace(/{{ PRIMARY_CTA_HREF }}/gi, `http://localhost:5000/api/v0.1/tutor/accept/${tutee.id}`);
+    hydratedHTML = hydratedHTML.replace(/{{ SECONDARY_CTA }}/gi, "Decline");
+    hydratedHTML = hydratedHTML.replace(/{{ SECONDARY_CTA_HREF }}/gi, `http://localhost:5000/api/v0.1/tutor/reject/${tutee.id}`);
 
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
-        "EduhopeSG: You have a new tuition request!",
-        text.join(" ")
+        `EduhopeSG: ${message}!`,
+        text.join(" "),
+        hydratedHTML
     )
 }

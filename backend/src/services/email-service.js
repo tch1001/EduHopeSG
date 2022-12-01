@@ -63,12 +63,11 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
 
     const subjects = await UserService.getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `${d.course} ${d.name}`).join(", ");
-    const relationshipID = `${tutee.id}:${tutor.id}`;
 
     const text = [
         `You have a tuition request from ${tutee.name} for ${formattedSubjects}.\n\n`,
-        `To accept, click http://localhost:5000/api/v0.1/tutor/accept/${relationshipID}\n`,
-        `To reject, click http://localhost:5000/api/v0.1/tutor/reject/${relationshipID}`
+        `To accept, click http://localhost:5000/api/v0.1/tutor/accept/${tutee.id}\n`,
+        `To reject, click http://localhost:5000/api/v0.1/tutor/reject/${tutee.id}`
     ]
 
     return await sendEmail(

@@ -111,5 +111,47 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
         `EduhopeSG: ${message}!`,
         text.join(" "),
         hydratedHTML
-    )
+    );
+}
+
+export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
+    try {
+        if (!tutee || !tutor) throw new ServiceError("missing-arguments");
+
+        const newSubjects = await UserService.getSubjects(newSubjectIDs);
+        const formattedSubjects = newSubjects.map(d => `${d.course} ${d.name}`).join(", ");
+
+        // NOTE: should we change the status of the relationship back to 0
+        // when the tutee changes subjects
+        const message = `${tutee.name} changed tuition subjects`;
+
+        // TODO: User reporting
+        const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
+
+        // preparing HTML file
+        const __dirname = dirname(fileURLToPath(import.meta.url));
+        const PATH = resolve(__dirname, "../assets/notification.html");
+
+        let hydratedHTML = await fs.readFile(PATH, { encoding: "utf-8" });
+
+        hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_BANNER }}/gi, message);
+        hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `${message}! <strong>${tutee.name}</strong> is now requesting for <u>${formattedSubjects}</u>`,
+            "to be tutored by you. If these changes are not suitable for you, please message your tutee",
+            "such that both of you are agreeable to a tuition plan.",
+            `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
+            "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
+            "<br/><br/>Thank you for volunteering your time and effort,"
+        ].join(" "));
+
+        // TODO: make a "manage system notifications" thing, and also email verification
+        hydratedHTML = hydratedHTML.replace(/{{ UNSUB_HREF }}/gi, "");
+
+        return await sendEmail(
+            UserService.decrypt(tutor.email.trim().toString()),
+            `EduhopeSG: ${message}!`,
+            "",
+            hydratedHTML
+        );
+    } catch (err) { console.error(err) }
 }

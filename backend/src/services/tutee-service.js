@@ -1,6 +1,6 @@
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
-import { sendTuitionRequest } from "./email-service.js";
+import { sendTuitionRequest, notifyTuitionSubjectChange } from "./email-service.js";
 import { getByID } from "./user-service.js";
 
 /**
@@ -55,6 +55,8 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
                 `UPDATE tutee_tutor_relationship SET subjects = $1 WHERE id = $2`,
                 [subjects, relationshipID]
             )
+
+            await notifyTuitionSubjectChange(user, tutor, subjects);
 
             return {
                 success: true,

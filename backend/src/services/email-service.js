@@ -124,12 +124,11 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
 export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
     if (!tutee || !tutor) throw new ServiceError("missing-arguments");
 
-    const newSubjects = await UserService.getSubjects(newSubjectIDs);
-    const formattedSubjects = newSubjects.map(d => `${d.course} ${d.name}`).join(", ");
-
     // NOTE: should we change the status of the relationship back to 0
     // when the tutee changes subjects
     const message = "A tutee changed subjects";
+    const newSubjects = await UserService.getSubjects(newSubjectIDs);
+    const formattedSubjects = newSubjects.map(d => `${d.course} ${d.name}`).join(", ");
 
     // preparing HTML file
     const hydratedHTML = TemplateNotification
@@ -163,11 +162,10 @@ export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
  */
 export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
     if (!tutee || !tutor) throw new ServiceError("missing-arguments");
-
+    
+    const message = "Congratulations, are you enrolled";
     const subjects = await UserService.getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
-
-    const message = "Congratulations, are you enrolled";
 
     // preparing HTML file
     const hydratedHTML = TemplateNotification
@@ -200,10 +198,9 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
 export async function notifyTuteeDeclination(tutee, tutor, subjectIDs) {
     if (!tutee || !tutor) throw new ServiceError("missing-arguments");
 
+    const message = "Sorry, your tuition request has been declined";
     const subjects = await UserService.getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
-
-    const message = "Sorry, your tuition request has been declined";
 
     // preparing HTML file
     const hydratedHTML = TemplateNotification
@@ -214,6 +211,47 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectIDs) {
             `for the following subjects: <ol>${formattedSubjects}</ol>`,
             "<br/><br/>Please keep in mind that our tutors are volunteer tutors.",
             "They may have rejected your request for the following reasons:",
+            "<ul><li>They may not have enough bandwidth to take on another tutee at the moment</li>",
+            `<li>You may have requested too many subjects for the tutor</li>`,
+            "<li>The tutor cannot make it via your preferred communications channel</li><ul/>",
+            "<br/>Wishing you the best in finding your next tutor.",
+            "<br/><br/>Thank you for using our platform,"
+        ].join(" "));
+
+    return await sendEmail(
+        UserService.decrypt(tutor.email.trim().toString()),
+        `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+/**
+ * Sends an email notification to Tutee about being removed by
+ * the request tutor
+ * @param {UserService.BasicUser} tutee Tutee object
+ * @param {UserService.User} tutor Tutor object
+ * @param {number[]} subjectIDs Array of subjects IDss from TickNinja
+ * @param {string} reason Tutor's reason for stopping
+ * @returns {EmailResponse}
+ */
+export async function notifyTuteeRemoval(tutee, tutor, subjectIDs, reason) {
+    if (!tutee || !tutor || !reason) throw new ServiceError("missing-arguments");
+
+    const message = "Sorry, your tutor has decided to stop tutoring you";
+    const subjects = await UserService.getSubjects(subjectIDs);
+    const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
+
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, "")
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `${message}. <strong>${tutor.name}</strong> removed you from their list of tutees.`,
+            `You were being taught: <ol>${formattedSubjects}</ol>`,
+            `<br/>Your tutor's reason: ${reason}`,
+            "<br/><br/>Please keep in mind that our tutors are volunteer tutors.",
+            "They may have stopped tutoring you for the following reasons:",
             "<ul><li>They may not have enough bandwidth to take on another tutee at the moment</li>",
             `<li>You may have requested too many subjects for the tutor</li>`,
             "<li>The tutor cannot make it via your preferred communications channel</li><ul/>",

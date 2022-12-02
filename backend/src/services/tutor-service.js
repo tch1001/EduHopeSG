@@ -8,15 +8,6 @@ import { notifyTuteeAcceptance, notifyTuteeDeclination } from "./email-service.j
  * @returns {{success: true, message: string}} Success message
  */
 export async function acceptTutee(relationshipID) {
-    /**
-     * Creates the relationship in PostgreSQL
-     * Tutor accepts request -> Both parties are agreeable, changes status of relationship
-     * Tutee notified of change
-     * They have each other contacts/telegram handle, and can arrange their questions/Zoom meetings
-     * 
-     * Add them in the Telegram group chat? Unsure how this one works ATM
-     */
-
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
 
     const { rows } =
@@ -37,12 +28,14 @@ export async function acceptTutee(relationshipID) {
     }
 }
 
+// TODO: REASONS FOR REJECTING AND REMOVING A TUTEE
+
 /**
  * Rejects a tutee's request by deleing the request
  * @param {string} relationshipID Tutor-tutee relationship ID
  * @returns {{success: true, message: string}} Success message
  */
-export async function rejectTutee(relationshipID) {
+export async function rejectTutee(relationshipID, reason) {
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
 
     const { rows } =
@@ -61,14 +54,18 @@ export async function rejectTutee(relationshipID) {
     }
 }
 
-export async function removeTutee(tuteeID, tutorID) {
+export async function removeTutee(tuteeID, tutorID, reason) {
     const relationshipID = `${tuteeID}:${tutorID}`;
-    const { rowCount } =
-        await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
 
-    if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
+    const { rows } =
+        await query("SELECT * FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
 
-    // TODO: notify tutee of removal
+    if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
+    const { tutee_id, tutor_id, subjects } = rows[0];
+
+    // notify tutee of removal
+    await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+    await notifyTuteeDeclination(tutee_id, tutor_id, subjects, reason);
 
     return {
         success: true,

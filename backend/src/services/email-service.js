@@ -4,6 +4,7 @@ import { dirname, resolve } from "path";
 import FormData from "form-data";
 import Mailgun from "mailgun.js";
 import validator from "validator";
+import { compile } from "html-to-text";
 import * as UserService from "./user-service.js";
 import ServiceError from "../classes/ServiceError.js";
 import log from "../utils/logging.js";
@@ -15,6 +16,8 @@ const mg = mailgun.client({
     username: process.env.MAILGUN_USERNAME,
     key: process.env.MAILGUN_API_KEY
 })
+
+const htmlToText = compile({ wordwrap: 80 });
 
 /**
  * 1. Tutor receives an email request from the system with the option to decline or accept
@@ -37,7 +40,7 @@ async function sendEmail(email, subject, text, html) {
         const response = await mg.messages.create(process.env.MAILGUN_DOMAIN, {
             to: email,
             from: `EduhopeSG Notifications <notifications@${process.env.MAILGUN_DOMAIN}>`,
-            "o:testmode": process.env.NODE_ENV === "development",
+            // "o:testmode": process.env.NODE_ENV === "development",
             "o:tracking": "yes",
             "o:tracking-clicks": "yes",
             "o:tracking-opens": "yes",
@@ -74,12 +77,6 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     // TODO: User reporting
     const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
 
-    const text = [
-        `${message} from ${tutee.name} for ${formattedSubjects}.\n\n`,
-        `To accept, click ${acceptLink}\n`,
-        `To decline, click ${declineLink}`
-    ]
-
     // preparing HTML file
     const __dirname = dirname(fileURLToPath(import.meta.url));
     const PATH = resolve(__dirname, "../assets/notification-cta.html");
@@ -109,49 +106,48 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
         `EduhopeSG: ${message}!`,
-        text.join(" "),
+        htmlToText(hydratedHTML),
         hydratedHTML
     );
 }
 
 export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
-    try {
-        if (!tutee || !tutor) throw new ServiceError("missing-arguments");
+    if (!tutee || !tutor) throw new ServiceError("missing-arguments");
 
-        const newSubjects = await UserService.getSubjects(newSubjectIDs);
-        const formattedSubjects = newSubjects.map(d => `${d.course} ${d.name}`).join(", ");
+    const newSubjects = await UserService.getSubjects(newSubjectIDs);
+    const formattedSubjects = newSubjects.map(d => `${d.course} ${d.name}`).join(", ");
 
-        // NOTE: should we change the status of the relationship back to 0
-        // when the tutee changes subjects
-        const message = `${tutee.name} changed tuition subjects`;
+    // NOTE: should we change the status of the relationship back to 0
+    // when the tutee changes subjects
+    const message = "A tutee changed subjects";
 
-        // TODO: User reporting
-        const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
+    // TODO: User reporting
+    const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
 
-        // preparing HTML file
-        const __dirname = dirname(fileURLToPath(import.meta.url));
-        const PATH = resolve(__dirname, "../assets/notification.html");
+    // preparing HTML file
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const PATH = resolve(__dirname, "../assets/notification.html");
 
-        let hydratedHTML = await fs.readFile(PATH, { encoding: "utf-8" });
+    let hydratedHTML = await fs.readFile(PATH, { encoding: "utf-8" });
 
-        hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_BANNER }}/gi, message);
-        hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            `${message}! <strong>${tutee.name}</strong> is now requesting for <u>${formattedSubjects}</u>`,
-            "to be tutored by you. If these changes are not suitable for you, please message your tutee",
-            "such that both of you are agreeable to a tuition plan.",
-            `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
-            "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
-            "<br/><br/>Thank you for volunteering your time and effort,"
-        ].join(" "));
+    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_BANNER }}/gi, message);
+    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_TEXT }}/gi, [
+        `${message}! <strong>${tutee.name}</strong> is now requesting for <u>${formattedSubjects}</u>`,
+        "to be tutored by you. If these changes are not suitable for you, please message your tutee",
+        "such that both of you are agreeable to a tuition plan.",
+        `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
+        "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
+        "<br/><br/>Thank you for volunteering your time and effort,"
+    ].join(" "));
 
-        // TODO: make a "manage system notifications" thing, and also email verification
-        hydratedHTML = hydratedHTML.replace(/{{ UNSUB_HREF }}/gi, "");
+    // TODO: make a "manage system notifications" thing, and also email verification
+    hydratedHTML = hydratedHTML.replace(/{{ UNSUB_HREF }}/gi, "");
 
-        return await sendEmail(
-            UserService.decrypt(tutor.email.trim().toString()),
-            `EduhopeSG: ${message}!`,
-            "",
-            hydratedHTML
-        );
-    } catch (err) { console.error(err) }
+    return await sendEmail(
+        UserService.decrypt(tutor.email.trim().toString()),
+        `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
 }

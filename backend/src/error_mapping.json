@@ -220,5 +220,11 @@
         "name": "Invalid Tutor-Tutee relationship",
         "message": "Relationship either not found or was deleted, or not the ID was not provided for query",
         "details": "To terminate the Tutor-Tutee relationship, provide the relationship ID"
+    },
+    "missing-arguments": {
+        "status": 400,
+        "name": "Missing required arguments",
+        "message": "Missing required arguments for a function to perform",
+        "details": "Check the function and its required parameters and the parameters that were passed"
     }
 }

@@ -49,14 +49,13 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 
         if (!requestedSubjects) {
             // update subjects
-            // TODO: email tutor of the change of subjects
 
             await query(
                 `UPDATE tutee_tutor_relationship SET subjects = $1 WHERE id = $2`,
                 [subjects, relationshipID]
             )
 
-            await notifyTuitionSubjectChange(user, tutor, subjects);
+            await notifyTuitionSubjectChange(user, tutor, subjects, tutoredSubjects);
 
             return {
                 success: true,
@@ -85,10 +84,10 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 }
 
 /**
+ * TODO: survey/review/feedback/reason why withdrawing see {@link reviewTutor} func
  * Tutee withdraws a tutor
  * @param {string} relationshipID Tutor's user ID
  * @returns {{success: true, message: string}} Success message
- * TODO: survey/review/feedback/reason why withdrawing see reviewTutor func
  */
 export async function withdrawTutor(relationshipID) {
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");

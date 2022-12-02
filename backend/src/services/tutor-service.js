@@ -71,13 +71,27 @@ export async function removeTutee(tuteeID, tutorID, reason) {
     }
 }
 
-export async function removeAllTutees(tutorID) {
-    const { rowCount } =
-        await query("DELETE FROM tutee_tutor_relationship WHERE tutor_id = $1", [tutorID]);
+/**
+ * Removes ALL tutees from tutor's tutee list
+ * @param {string} tutorID Tutor ID
+ * @param {string} reason Tutor's reason for removing tutee
+ * @returns {{ success: true, message: string}} Success message
+ */
+export async function removeAllTutees(tutorID, reason) {
+    if (!tutorID || !reason) throw new ServiceError("invalid-tutee-tutor-relationship");
 
-    if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
+    const results = [];
+    const queryText = "SELECT * FROM tutee_tutor_relationship WHERE tutor_id = $1";
+    const { rows } = await query(queryText, [tutorID]);
 
-    // TODO: notify tutees of removal
+    if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
+
+    for (let i = 0; i < rows.length; i++) {
+        const { success } = await removeTutee(relationship.tutee_id, tutorID, reason);
+        results.push(success);
+    }
+
+    if (!results.every((result) => result)) throw new ServiceError("tutee-removal-all-tutees");
 
     return {
         success: true,

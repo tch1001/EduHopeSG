@@ -226,5 +226,11 @@
         "name": "Missing required arguments",
         "message": "Missing required arguments for a function to perform",
         "details": "Check the function and its required parameters and the parameters that were passed"
+    },
+    "tutee-removal-all-tutees": {
+        "status": 500,
+        "name": "Error deleting all tutees",
+        "message": "An internal server error occurred while trying to delete all tutees from tutor",
+        "details": "Retry the request and contact the site developers or site admins if the problem persists"
     }
 }

@@ -1,7 +1,6 @@
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
-import { notifyTuteeAcceptance } from "./email-service.js";
-import { getByID } from "./user-service.js";
+import { notifyTuteeAcceptance, notifyTuteeDeclination } from "./email-service.js";
 
 /**
  * Rejects a tutee's request by deleing the request
@@ -46,12 +45,15 @@ export async function acceptTutee(relationshipID) {
 export async function rejectTutee(relationshipID) {
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
 
-    const { rowCount } =
-        await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+    const { rows } =
+        await query("SELECT * FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
 
-    if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
+    if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
+    const { tutee_id, tutor_id, subjects } = rows[0];
 
-    // TODO: notify tutee of rejection
+    // notify tutee of rejection
+    await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+    await notifyTuteeDeclination(tutee_id, tutor_id, subjects);
 
     return {
         success: true,

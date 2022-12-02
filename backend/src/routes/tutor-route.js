@@ -17,7 +17,7 @@ router.get("/reject/:tuteeID", (req, res) => {
 
     const relationshipID = `${req.params.tuteeID}:${user.payload.id}`
 
-    tutorService.rejectTutee(relationshipID)
+    tutorService.rejectTutee(relationshipID, req?.query?.reason || "Reason not provided")
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
@@ -47,7 +47,11 @@ router.delete("/relationship/:tuteeID", (req, res) => {
         );
     }
 
-    tutorService.removeTutee(req.params.tuteeID, user.payload.id)
+    tutorService.removeTutee(
+        req.params.tuteeID,
+        user.payload.id,
+        req.body.reason || "Reason not provided"
+    )
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
@@ -61,7 +65,7 @@ router.delete("/relationships", (req, res) => {
         );
     }
 
-    tutorService.removeAllTutees(user.payload.id)
+    tutorService.removeAllTutees(user.payload.id, req.body.reason || "Reason not provided")
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })

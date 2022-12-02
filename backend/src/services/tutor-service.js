@@ -28,8 +28,6 @@ export async function acceptTutee(relationshipID) {
     }
 }
 
-// TODO: REASONS FOR REJECTING AND REMOVING A TUTEE
-
 /**
  * Rejects a tutee's request by deleing the request
  * @param {string} relationshipID Tutor-tutee relationship ID
@@ -46,7 +44,7 @@ export async function rejectTutee(relationshipID, reason) {
 
     // notify tutee of rejection
     await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
-    await notifyTuteeDeclination(tutee_id, tutor_id, subjects);
+    await notifyTuteeDeclination(tutee_id, tutor_id, subjects, reason);
 
     return {
         success: true,

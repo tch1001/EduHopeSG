@@ -193,10 +193,11 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
  * @param {UserService.BasicUser} tutee Tutee object
  * @param {UserService.User} tutor Tutor object
  * @param {number[]} subjectIDs Array of subjects IDss from TickNinja
+ * @param {string} reason Tutor's reason for rejecting
  * @returns {EmailResponse}
  */
-export async function notifyTuteeDeclination(tutee, tutor, subjectIDs) {
-    if (!tutee || !tutor) throw new ServiceError("missing-arguments");
+export async function notifyTuteeDeclination(tutee, tutor, subjectIDs, reason) {
+    if (!tutee || !tutor || !reason) throw new ServiceError("missing-arguments");
 
     const message = "Sorry, your tuition request has been declined";
     const subjects = await UserService.getSubjects(subjectIDs);
@@ -209,6 +210,7 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectIDs) {
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message}. <strong>${tutor.name}</strong> has rejected your tuition request`,
             `for the following subjects: <ol>${formattedSubjects}</ol>`,
+            `<br/>Your tutor's reason: ${reason}`,
             "<br/><br/>Please keep in mind that our tutors are volunteer tutors.",
             "They may have rejected your request for the following reasons:",
             "<ul><li>They may not have enough bandwidth to take on another tutee at the moment</li>",

@@ -1,4 +1,4 @@
-import { promises as fs } from "fs";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
 import FormData from "form-data";
@@ -18,6 +18,9 @@ const mg = mailgun.client({
 })
 
 const htmlToText = compile({ wordwrap: 80 });
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const TemplateNotificationCTA = fs.readFileSync(resolve(__dirname, "../assets/notification-cta.html"), { encoding: "utf-8" });
+const TemplateNotification = fs.readFileSync(resolve(__dirname, "../assets/notification.html"), { encoding: "utf-8" });
 
 /**
  * 1. Tutor receives an email request from the system with the option to decline or accept
@@ -40,7 +43,7 @@ async function sendEmail(email, subject, text, html) {
         const response = await mg.messages.create(process.env.MAILGUN_DOMAIN, {
             to: email,
             from: `EduhopeSG Notifications <notifications@${process.env.MAILGUN_DOMAIN}>`,
-            // "o:testmode": process.env.NODE_ENV === "development",
+            "o:testmode": process.env.NODE_ENV === "development",
             "o:tracking": "yes",
             "o:tracking-clicks": "yes",
             "o:tracking-opens": "yes",
@@ -78,30 +81,26 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
 
     // preparing HTML file
-    const __dirname = dirname(fileURLToPath(import.meta.url));
-    const PATH = resolve(__dirname, "../assets/notification-cta.html");
-
-    let hydratedHTML = await fs.readFile(PATH, { encoding: "utf-8" });
-
-    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_BANNER }}/gi, message);
-    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_TEXT }}/gi, [
-        `${message} from <strong>${tutee.name}</strong> for <u>${formattedSubjects}</u>.\n\n`,
-        "Please consider the following for the above tuition request:",
-        "<ul><li>You have enough bandwidth to take on another tutee</li>",
-        `<li>Who needs help with <strong>${subjectIDs.length}</strong> subjects</li>`,
-        "<li>You will reply their questions within a reasonable time frame</li>",
-        "<li>Enjoy teaching the subjects and helping out a fellow student :)</li></ul>",
-        `<br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
-        "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
-        "<br/><br/>Thank you for volunteering your time and effort,"
-    ].join(" ").replace(/\\n/gi, "<br/>"));
-    hydratedHTML = hydratedHTML.replace(/{{ PRIMARY_CTA }}/gi, "Accept");
-    hydratedHTML = hydratedHTML.replace(/{{ SECONDARY_CTA }}/gi, "Decline");
-    hydratedHTML = hydratedHTML.replace(/{{ PRIMARY_CTA_HREF }}/gi, acceptLink);
-    hydratedHTML = hydratedHTML.replace(/{{ SECONDARY_CTA_HREF }}/gi, declineLink);
+    const hydratedHTML = TemplateNotificationCTA
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ PRIMARY_CTA }}/gi, "Accept")
+        .replace(/{{ SECONDARY_CTA }}/gi, "Decline")
+        .replace(/{{ PRIMARY_CTA_HREF }}/gi, acceptLink)
+        .replace(/{{ SECONDARY_CTA_HREF }}/gi, declineLink)
+        .replace(/{{ UNSUB_HREF }}/gi, "")
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `${message} from <strong>${tutee.name}</strong> for <u>${formattedSubjects}</u>.<br/><br/>`,
+            "Please consider the following for the above tuition request:",
+            "<ul><li>You have enough bandwidth to take on another tutee</li>",
+            `<li>Who needs help with <strong>${subjectIDs.length}</strong> subjects</li>`,
+            "<li>You will reply their questions within a reasonable time frame</li>",
+            "<li>Enjoy teaching the subjects and helping out a fellow student :)</li></ul>",
+            `<br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
+            "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
+            "<br/><br/>Thank you for volunteering your time and effort,"
+        ].join(" "));
 
     // TODO: make a "manage system notifications" thing, and also email verification
-    hydratedHTML = hydratedHTML.replace(/{{ UNSUB_HREF }}/gi, "");
 
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
@@ -125,23 +124,16 @@ export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
     const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
 
     // preparing HTML file
-    const __dirname = dirname(fileURLToPath(import.meta.url));
-    const PATH = resolve(__dirname, "../assets/notification.html");
-
-    let hydratedHTML = await fs.readFile(PATH, { encoding: "utf-8" });
-
-    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_BANNER }}/gi, message);
-    hydratedHTML = hydratedHTML.replace(/{{ NOTIFICATION_TEXT }}/gi, [
-        `${message}! <strong>${tutee.name}</strong> is now requesting for <u>${formattedSubjects}</u>`,
-        "to be tutored by you. If these changes are not suitable for you, please message your tutee",
-        "such that both of you are agreeable to a tuition plan.",
-        `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
-        "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
-        "<br/><br/>Thank you for volunteering your time and effort,"
-    ].join(" "));
-
-    // TODO: make a "manage system notifications" thing, and also email verification
-    hydratedHTML = hydratedHTML.replace(/{{ UNSUB_HREF }}/gi, "");
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, "")
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `${message}! <strong>${tutee.name}</strong> is now requesting for <u>${formattedSubjects}</u>.`,
+            "to be tutored by you.<br/><br/>",
+            "If these changes are not suitable for you, please message your tutee",
+            "such that both of you are agreeable to a tuition plan/schedule.",
+            `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
+            "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
 
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
@@ -150,4 +142,13 @@ export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
         hydratedHTML
     );
 }
+    if (!tutee || !tutor) throw new ServiceError("missing-arguments");
+
+    const message = "A tutee changed subjects";
+
+
+}
+
+export async function notifyTuteeDeclination(tutee, tutor) {
+    s
 }

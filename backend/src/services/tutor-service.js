@@ -34,16 +34,16 @@ export async function acceptTutee(relationshipID) {
  * @returns {{success: true, message: string}} Success message
  */
 export async function rejectTutee(relationshipID, reason) {
-    if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
+    if (!relationshipID || !reason) throw new ServiceError("invalid-tutee-tutor-relationship");
 
-    const { rows } =
-        await query("SELECT * FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+    const queryText = "FROM tutee_tutor_relationship WHERE id = $1";
+    const { rows } = await query(`SELECT * ${queryText}`, [relationshipID]);
 
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
     const { tutee_id, tutor_id, subjects } = rows[0];
 
     // notify tutee of rejection
-    await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+    await query(`DELETE ${queryText}`, [relationshipID]);
     await notifyTuteeDeclination(tutee_id, tutor_id, subjects, reason);
 
     return {
@@ -52,17 +52,25 @@ export async function rejectTutee(relationshipID, reason) {
     }
 }
 
+/**
+ * Removes tutee from tutor's tutee list
+ * @param {string} tuteeID Tutee ID
+ * @param {string} tutorID Tutor ID
+ * @param {string} reason Tutor's reason for removing tutee
+ * @returns {{ success: true, message: string}} Success message
+ */
 export async function removeTutee(tuteeID, tutorID, reason) {
-    const relationshipID = `${tuteeID}:${tutorID}`;
+    if (!tuteeID || !tutorID || !reason) throw new ServiceError("invalid-tutee-tutor-relationship");
 
-    const { rows } =
-        await query("SELECT * FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+    const relationshipID = `${tuteeID}:${tutorID}`;
+    const queryText = "FROM tutee_tutor_relationship WHERE id = $1";
+    const { rows } = await query(`SELECT * ${queryText}`, [relationshipID]);
 
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
     const { tutee_id, tutor_id, subjects } = rows[0];
 
     // notify tutee of removal
-    await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+    await query(`DELETE ${queryText}`, [relationshipID]);
     await notifyTuteeDeclination(tutee_id, tutor_id, subjects, reason);
 
     return {

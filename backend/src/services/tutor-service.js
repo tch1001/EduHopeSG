@@ -1,5 +1,6 @@
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
+import { notifyTuteeAcceptance } from "./email-service.js";
 import { getByID } from "./user-service.js";
 
 /**
@@ -19,15 +20,17 @@ export async function acceptTutee(relationshipID) {
 
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
 
-    const { rowCount } =
+    const { rows } =
         await query(
             "UPDATE tutee_tutor_relationship SET relationship_status = 1 WHERE id = $1",
             [relationshipID]
         );
 
-    if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
+    if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
+    const { tutee_id, tutor_id, subjects } = rows[0];
 
-    // TODO: notify tutee of acceptance
+    // notify tutee of acceptance
+    await notifyTuteeAcceptance(tutee_id, tutor_id, subjects);
 
     return {
         success: true,

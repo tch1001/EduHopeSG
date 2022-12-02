@@ -17,15 +17,22 @@ const mg = mailgun.client({
     key: process.env.MAILGUN_API_KEY
 })
 
+// HTML templates
 const htmlToText = compile({ wordwrap: 80 });
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TemplateNotificationCTA = fs.readFileSync(resolve(__dirname, "../assets/notification-cta.html"), { encoding: "utf-8" });
 const TemplateNotification = fs.readFileSync(resolve(__dirname, "../assets/notification.html"), { encoding: "utf-8" });
 
+// TODO: User reporting and "Manage notifications" page, and email verification
+const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
+const unsubLink = `${process.env.WEBSITE_URL}/settings/notifications`;
+
 /**
- * 1. Tutor receives an email request from the system with the option to decline or accept
- * 2. Tutors receive an email about this change
- * 3. Email tutee/tutor for testimonial
+ * @typedef {object} EmailResponse
+ * @property {string?} id
+ * @property {string?} message
+ * @property {number} status
+ * @property {string?} details
  */
 
 /**
@@ -34,7 +41,7 @@ const TemplateNotification = fs.readFileSync(resolve(__dirname, "../assets/notif
  * @param {string} subject Email subject
  * @param {string} text Email text fallback when HTML not working/don't have
  * @param {string} html HTML to render in user's browser or email client application
- * @returns {{ id?: string; message?: string; status: number; details?: string; }}
+ * @returns {EmailResponse}
  */
 async function sendEmail(email, subject, text, html) {
     if (!isEmail(email)) throw new ServiceError("user-invalid-email")
@@ -65,7 +72,8 @@ async function sendEmail(email, subject, text, html) {
  * of request
  * @param {UserService.BasicUser} tutee Tutee object
  * @param {UserService.User} tutor Tutor object
- * @param {number[]} subjectIDs Array of subjects IDs
+ * @param {number[]} subjectIDs Array of subjects IDss from TickNinja
+ * @returns {EmailResponse}
  */
 export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     if (!tutee || !tutor) throw new ServiceError("missing-arguments");
@@ -77,9 +85,6 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     const acceptLink = `${process.env.WEBSITE_URL}/api/v0.1/tutor/accept/${tutee.id}`;
     const declineLink = `${process.env.WEBSITE_URL}/api/v0.1/tutor/reject/${tutee.id}`;
 
-    // TODO: User reporting
-    const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
-
     // preparing HTML file
     const hydratedHTML = TemplateNotificationCTA
         .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
@@ -87,7 +92,7 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
         .replace(/{{ SECONDARY_CTA }}/gi, "Decline")
         .replace(/{{ PRIMARY_CTA_HREF }}/gi, acceptLink)
         .replace(/{{ SECONDARY_CTA_HREF }}/gi, declineLink)
-        .replace(/{{ UNSUB_HREF }}/gi, "")
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message} from <strong>${tutee.name}</strong> for <u>${formattedSubjects}</u>.<br/><br/>`,
             "Please consider the following for the above tuition request:",
@@ -99,9 +104,7 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
             "<br/><br/>Thank you for volunteering your time and effort,"
         ].join(" "));
-
-    // TODO: make a "manage system notifications" thing, and also email verification
-
+    
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
         `EduhopeSG: ${message}!`,
@@ -110,6 +113,14 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     );
 }
 
+/**
+ * Sends an email notification to Tutor about subject changes in
+ * a tutee-tutor relationship
+ * @param {UserService.BasicUser} tutee Tutee object
+ * @param {UserService.User} tutor Tutor object
+ * @param {number[]} newSubjectIDs Array of subject IDs from TickNinja
+ * @returns {EmailResponse}
+ */
 export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
     if (!tutee || !tutor) throw new ServiceError("missing-arguments");
 
@@ -120,13 +131,10 @@ export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
     // when the tutee changes subjects
     const message = "A tutee changed subjects";
 
-    // TODO: User reporting
-    const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
-
     // preparing HTML file
     const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
-        .replace(/{{ UNSUB_HREF }}/gi, "")
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message}! <strong>${tutee.name}</strong> is now requesting for <u>${formattedSubjects}</u>.`,
             "to be tutored by you.<br/><br/>",
@@ -134,6 +142,8 @@ export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
             "such that both of you are agreeable to a tuition plan/schedule.",
             `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
+            "<br/><br/>Thank you for volunteering your time and effort,"
+        ].join(" "));
 
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
@@ -142,11 +152,41 @@ export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
         hydratedHTML
     );
 }
+
+/**
+ * Sends an email notification to Tutee about being accepted by
+ * the request tutor and subjects
+ * @param {UserService.BasicUser} tutee Tutee object
+ * @param {UserService.User} tutor Tutor object
+ * @param {number[]} subjectIDs Array of subjects IDss from TickNinja
+ * @returns {EmailResponse}
+ */
+export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
     if (!tutee || !tutor) throw new ServiceError("missing-arguments");
 
-    const message = "A tutee changed subjects";
+    const subjects = await UserService.getSubjects(subjectIDs);
+    const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
 
+    const message = "Congratulations, are you enrolled";
 
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, "")
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `${message}! <strong>${tutor.name}</strong> has accepted your tuition request`,
+            `for the following subjects: <ol>${formattedSubjects}</ol>`
+            `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
+            "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
+            "<br/><br/>Thank you for using our platform,"
+        ].join(" "));
+
+    return await sendEmail(
+        UserService.decrypt(tutor.email.trim().toString()),
+        `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
 }
 
 export async function notifyTuteeDeclination(tutee, tutor) {

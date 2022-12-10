@@ -131,6 +131,12 @@
         "message": "User email required to find user by email",
         "details": "Provide a user email"
     },
+    "user-change-password-missing": {
+        "status": 400,
+        "name": "Unable to proceed: Missing User ID and/or new and old password",
+        "message": "Either the User ID, old password or new password were not provided and thus the request cannot proceed",
+        "details": "Provide valid User ID, the old password and the new password to update"
+    },
     "user-login-invalid": {
         "status": 400,
         "name": "Invalid email or password",

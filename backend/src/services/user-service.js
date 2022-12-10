@@ -527,6 +527,44 @@ export async function update(userID, attributes = {}) {
 }
 
 /**
+ * Changes user password
+ * @param {User.id} userID 
+ * @param {User.password} currentPassword Old password to verify
+ * @param {User.password} newPassword New password
+ * @returns {{success: true, message: string}} Success message
+ */
+export async function updatePassword(userID, currentPassword, newPassword) {
+    if (!userID || !currentPassword || !newPassword)
+        throw new ServiceError("user-change-password-missing");
+    
+    currentPassword = validator.trim(currentPassword);
+    newPassword = validator.trim(newPassword);
+    
+    if (!isStrongPassword(newPassword))
+        throw new ServiceError("user-weak-password");
+    
+    const user = await getByID(userID, "password");
+    if (!user) throw new ServiceError("user-login-failed");
+
+    // verify password
+    const correct = await verifyPassword(currentPassword, user.password);
+    if (!correct) throw new ServiceError("user-login-failed");
+
+    // change password
+    const updatedPassword = await hashPassword(newPassword);
+    await query("UPDATE eduhope_user SET password = $1 WHERE id = $2", [updatedPassword, userID]);
+    await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
+
+    // email notify the user
+    await notifyPasswordChange(user);
+
+    return {
+        success: true,
+        message: "Updated user password"
+    }
+}
+
+/**
  * Converts a normal account to a Tutor status account
  * @param {string} userID User ID
  * @param {Tutor} attributes Tutor attributes

@@ -42,7 +42,7 @@ router.patch("/", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
-router.patch("/:id/password", (req, res) => {
+router.patch("/password", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 
     if (!user) {
@@ -51,13 +51,9 @@ router.patch("/:id/password", (req, res) => {
         );
     }
 
-    if (user.payload.id !== req.params.id) {
-        return standardRouteErrorCallback(
-            res, req, new RouteError("user-unauthorized", req.originalUrl)
-        );
-    }
+    const { password, new_password } = req.body;
 
-    userService.update(user.payload.id, req.body)
+    userService.updatePassword(user.payload.id, password, new_password)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })

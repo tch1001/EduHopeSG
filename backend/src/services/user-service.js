@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
+import { notifyPasswordChange, sendEmailUpdateConfirmation } from "./email-service.js";
 
 const EDUCATION_TYPES = ["Secondary 3", "Secondary 4", "Secondary 5", "JC 1", "JC 2", "O level Private candidate", "A level Private candidate"];
 const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i']; // n', o', a'lvl, pri, BI, IP
@@ -46,12 +47,11 @@ function isStrongPassword(password) {
 /**
  * Convert raw password to hashed key for storing user passwords
  * @param {string} password User password to be hashed
- * @param {string|undefined} salt Salt (Optional)
+ * @param {string=} salt Salt (Optional)
  * @returns {Promise<HashedPass>} Hashed key with salt promise
  */
-export function hashPassword(password, salt) {
+export function hashPassword(password, salt = crypto.randomBytes(512)) {
     if (!password) throw new ServiceError("funcs-hash-password-invalid");
-    if (!salt) salt = crypto.randomBytes(512);
 
     return new Promise((resolve, reject) => {
         /**
@@ -483,16 +483,6 @@ export async function update(userID, attributes = {}) {
     try {
         if (attributes.name) {
             await query("UPDATE eduhope_user SET name = $1 WHERE id = $2", [attributes.name, userID]);
-        }
-
-        if (attributes.password) {
-            // TODO: require password: send verification email
-            return { message: "This service is unavailable" }
-        }
-
-        if (attributes.email) {
-            // TODO: require password: send verification email to old and new email addresses
-            return { message: "This service is unavailable" }
         }
 
         if (attributes.school) {

@@ -50,7 +50,7 @@ async function sendEmail(email, subject, text, html) {
         const response = await mg.messages.create(process.env.MAILGUN_DOMAIN, {
             to: email,
             from: `EduhopeSG Notifications <notifications@${process.env.MAILGUN_DOMAIN}>`,
-            "o:testmode": process.env.NODE_ENV === "development",
+            // "o:testmode": process.env.NODE_ENV === "development",
             "o:tracking": "yes",
             "o:tracking-clicks": "yes",
             "o:tracking-opens": "yes",
@@ -104,7 +104,7 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
             "<br/><br/>Thank you for volunteering your time and effort,"
         ].join(" "));
-    
+
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
         `EduhopeSG: ${message}!`,
@@ -162,7 +162,7 @@ export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
  */
 export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
     if (!tutee || !tutor) throw new ServiceError("missing-arguments");
-    
+
     const message = "Congratulations, are you enrolled";
     const subjects = await UserService.getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
@@ -170,11 +170,11 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
     // preparing HTML file
     const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
-        .replace(/{{ UNSUB_HREF }}/gi, "")
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message}! <strong>${tutor.name}</strong> has accepted your tuition request`,
             `for the following subjects: <ol>${formattedSubjects}</ol>`
-            `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
+                `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
             "<br/><br/>Thank you for using our platform,"
         ].join(" "));
@@ -206,7 +206,7 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectIDs, reason) {
     // preparing HTML file
     const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
-        .replace(/{{ UNSUB_HREF }}/gi, "")
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message}. <strong>${tutor.name}</strong> has rejected your tuition request`,
             `for the following subjects: <ol>${formattedSubjects}</ol>`,
@@ -247,7 +247,7 @@ export async function notifyTuteeRemoval(tutee, tutor, subjectIDs, reason) {
     // preparing HTML file
     const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
-        .replace(/{{ UNSUB_HREF }}/gi, "")
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message}. <strong>${tutor.name}</strong> removed you from their list of tutees.`,
             `You were being taught: <ol>${formattedSubjects}</ol>`,
@@ -264,6 +264,32 @@ export async function notifyTuteeRemoval(tutee, tutor, subjectIDs, reason) {
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
         `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+/**
+ * Email user about account changes
+ * @param {UserService.User} user User object
+ * @returns {EmailResponse}
+ */
+export async function notifyPasswordChange(user) {
+    if (!user) throw new ServiceError("missing-arguments");
+
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, "Account password changed")
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `Dear ${user.name},`,
+            "This email is to notify you that your account credentials have",
+            "been changed. If this is an unauthorised change and you were not",
+            `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`
+        ].join(" "));
+
+    return await sendEmail(
+        UserService.decrypt(user.email.trim().toString()),
+        `EduhopeSG: Account password has been updated`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );

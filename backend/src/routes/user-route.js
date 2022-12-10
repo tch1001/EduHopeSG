@@ -28,7 +28,21 @@ router.post("/login", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
-router.patch("/:id", (req, res) => {
+router.patch("/", (req, res) => {
+    const user = userService.verifyAuthentication(req.cookies.user);
+
+    if (!user) {
+        return standardRouteErrorCallback(
+            res, req, new RouteError("user-unauthenticated", req.originalUrl)
+        );
+    }
+
+    userService.update(user.payload.id, req.body)
+        .then(response => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+})
+
+router.patch("/:id/password", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 
     if (!user) {

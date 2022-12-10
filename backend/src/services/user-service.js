@@ -526,14 +526,16 @@ export async function update(userID, attributes = {}) {
 export async function updatePassword(userID, currentPassword, newPassword) {
     if (!userID || !currentPassword || !newPassword)
         throw new ServiceError("user-change-password-missing");
-    
+
     currentPassword = validator.trim(currentPassword);
     newPassword = validator.trim(newPassword);
-    
+
+    if (currentPassword === newPassword) throw new ServiceError("user-same-password");
+
     if (!isStrongPassword(newPassword))
         throw new ServiceError("user-weak-password");
-    
-    const user = await getByID(userID, "password");
+
+    const user = await getByID(userID, "password email");
     if (!user) throw new ServiceError("user-login-failed");
 
     // verify password

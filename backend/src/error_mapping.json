@@ -137,6 +137,12 @@
         "message": "Either the User ID, old password or new password were not provided and thus the request cannot proceed",
         "details": "Provide valid User ID, the old password and the new password to update"
     },
+    "user-same-password": {
+        "status": 400,
+        "name": "New password is the same as the current password",
+        "message": "Unable to update the value as the current password is the same as the password you are trying to set",
+        "details": "Provide a new password that is not the same as the current one"
+    },
     "user-login-invalid": {
         "status": 400,
         "name": "Invalid email or password",

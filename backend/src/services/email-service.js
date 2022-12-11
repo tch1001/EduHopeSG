@@ -161,7 +161,7 @@ export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
  * @returns {EmailResponse}
  */
 export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
-    if (!tutee || !tutor) throw new ServiceError("missing-arguments");
+    if (!tutee || !tutor || !subjectIDs) throw new ServiceError("missing-arguments");
 
     const message = "Congratulations, are you enrolled";
     const subjects = await UserService.getSubjects(subjectIDs);
@@ -197,7 +197,7 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
  * @returns {EmailResponse}
  */
 export async function notifyTuteeDeclination(tutee, tutor, subjectIDs, reason) {
-    if (!tutee || !tutor || !reason) throw new ServiceError("missing-arguments");
+    if (!tutee || !tutor || !subjectIDs || !reason) throw new ServiceError("missing-arguments");
 
     const message = "Sorry, your tuition request has been declined";
     const subjects = await UserService.getSubjects(subjectIDs);
@@ -238,7 +238,7 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectIDs, reason) {
  * @returns {EmailResponse}
  */
 export async function notifyTuteeRemoval(tutee, tutor, subjectIDs, reason) {
-    if (!tutee || !tutor || !reason) throw new ServiceError("missing-arguments");
+    if (!tutee || !tutor || !subjectIDs || !reason) throw new ServiceError("missing-arguments");
 
     const message = "Sorry, your tutor has decided to stop tutoring you";
     const subjects = await UserService.getSubjects(subjectIDs);
@@ -283,6 +283,37 @@ export async function notifyPasswordChange(user) {
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `Dear ${user.name},`,
             "This email is to notify you that your account credentials have",
+
+/**
+ * Email new email address to confirm transaction, and update user record
+ * @param {string} newEmail To email
+ * @param {string} token Token for new email address
+ * @returns {EmailResponse}
+ */
+export async function sendEmailUpdateConfirmation(newEmail, token) {
+    if (!newEmail || !token) throw new ServiceError("missing-arguments");
+
+    const hydratedHTML = TemplateNotificationCTA
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, "Confirm new email address")
+        .replace(/{{ PRIMARY_CTA }}/gi, "Confirm")
+        .replace(/{{ SECONDARY_CTA }}/gi, "Ignore")
+        .replace(/{{ PRIMARY_CTA_HREF }}/gi, `${process.env.WEBSITE_URL}/user/settings?email_confirmation=${token}`)
+        .replace(/{{ SECONDARY_CTA_HREF }}/gi, '#')
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            "Confirm your new email address by clicking on the 'confirm' button. Another",
+            "email will be sent to you shortly once you have confirmed the changes. Beware of",
+            "phishing and, if this is an unauthorised change and you did not request for this change,",
+            `please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`,
+        ].join(" "));
+    
+    return await sendEmail(
+        UserService.decrypt(user.email.trim().toString()),
+        `EduhopeSG: Account password has been updated`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
             "been changed. If this is an unauthorised change and you were not",
             `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`
         ].join(" "));

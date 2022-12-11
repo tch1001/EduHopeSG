@@ -557,6 +557,56 @@ export async function updatePassword(userID, currentPassword, newPassword) {
 }
 
 /**
+ * Changes user email
+ * @param {User.id} userID 
+ * @param {User.password} password Password to verify
+ * @param {User.email} newEmail New email address to update
+ * @returns {{success: true, message: string}} Success message
+ */
+export async function requestEmailChange(userID, password, newEmail) {
+    if (!userID || !password || newEmail)
+        throw new ServiceError("user-change-password-missing");
+
+    password = validator.trim(password);
+    newEmail = validator.trim(newEmail);
+
+    const user = await getByID(userID, "password email");
+    if (!user) throw new ServiceError("user-login-failed");
+
+    // verify password
+    const correct = await verifyPassword(password, user.password);
+    if (!correct) throw new ServiceError("user-login-failed");
+
+    // check if email is already registered and if its the same email as current
+    const currentEmail = decrypt(user.email);
+    const userExists = await getByEmail(newEmail);
+    
+    if (newEmail === currentEmail) throw new ServiceError("user-same-email");
+    if (userExists) throw new ServiceError("user-create-unique");
+
+    const token = jwt.sign(
+        {
+            userID,
+            email: currentEmail,
+            newEmail
+        },
+        process.env.JWT_KEY,
+        {
+            ...JWT_OPTIONS,
+            subject: "CHANGE_EMAIL"
+        }
+    )
+
+    // email to requesting address to confirm changes
+    await sendEmailUpdateConfirmation(newEmail, token);
+
+    return {
+        success: true,
+        message: "Sent email confirmation"
+    }
+}
+
+/**
  * Converts a normal account to a Tutor status account
  * @param {string} userID User ID
  * @param {Tutor} attributes Tutor attributes

@@ -143,6 +143,12 @@
         "message": "Unable to update the value as the current password is the same as the password you are trying to set",
         "details": "Provide a new password that is not the same as the current one"
     },
+    "user-same-email": {
+        "status": 400,
+        "name": "New email is the same as the current email",
+        "message": "Unable to update the value as the current email is the same as the email you are trying to set",
+        "details": "Provide a new email that is not the same as the current one, and one that is not already registered"
+    },
     "user-login-invalid": {
         "status": 400,
         "name": "Invalid email or password",

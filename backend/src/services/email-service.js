@@ -23,7 +23,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const TemplateNotificationCTA = fs.readFileSync(resolve(__dirname, "../assets/notification-cta.html"), { encoding: "utf-8" });
 const TemplateNotification = fs.readFileSync(resolve(__dirname, "../assets/notification.html"), { encoding: "utf-8" });
 
+/**
+ * TODO: update website URL links accordingly to front end changes. These are just (un)planned URLs
+ * they are unplanned and some may not work before production release. Update before and double
+ * check before pushing to production for a public release.
+ */
+
 // TODO: User reporting and "Manage notifications" page, and email verification
+
 const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
 const unsubLink = `${process.env.WEBSITE_URL}/settings/notifications`;
 
@@ -76,7 +83,7 @@ async function sendEmail(email, subject, text, html) {
  * @returns {EmailResponse}
  */
 export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
-    if (!tutee || !tutor) throw new ServiceError("missing-arguments");
+    if (!tutee || !tutor || !subjectIDs) throw new ServiceError("missing-arguments");
 
     const subjects = await UserService.getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `${d.course} ${d.name}`).join(", ");
@@ -122,7 +129,7 @@ export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
  * @returns {EmailResponse}
  */
 export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
-    if (!tutee || !tutor) throw new ServiceError("missing-arguments");
+    if (!tutee || !tutor || !subjectIDs) throw new ServiceError("missing-arguments");
 
     // NOTE: should we change the status of the relationship back to 0
     // when the tutee changes subjects
@@ -282,7 +289,18 @@ export async function notifyPasswordChange(user) {
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `Dear ${user.name},`,
-            "This email is to notify you that your account credentials have",
+            "This email is to notify you that your account password have",
+            "been changed. If this is an unauthorised change and you were not",
+            `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`
+        ].join(" "));
+
+    return await sendEmail(
+        UserService.decrypt(user.email.trim().toString()),
+        `EduhopeSG: Account password has been updated`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
 
 /**
  * Email new email address to confirm transaction, and update user record
@@ -308,19 +326,34 @@ export async function sendEmailUpdateConfirmation(newEmail, token) {
         ].join(" "));
     
     return await sendEmail(
-        UserService.decrypt(user.email.trim().toString()),
-        `EduhopeSG: Account password has been updated`,
+        newEmail,
+        `EduhopeSG: Verify email update`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
 }
+
+/**
+ * Email user about email address changes
+ * @param {string} newEmail To email
+ * @returns {EmailResponse}
+ */
+export async function sendEmailUpdateNotification(email) {
+    if (!email) throw new ServiceError("missing-arguments");
+
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, "Account email changed")
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            "This email is to notify you that your account email have",
             "been changed. If this is an unauthorised change and you were not",
-            `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`
+            `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`,
+            "and contact our support team"
         ].join(" "));
 
     return await sendEmail(
-        UserService.decrypt(user.email.trim().toString()),
-        `EduhopeSG: Account password has been updated`,
+        email,
+        `EduhopeSG: Account email has been updated`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );

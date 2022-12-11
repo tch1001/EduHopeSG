@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
-import { notifyPasswordChange, sendEmailUpdateConfirmation } from "./email-service.js";
+import { notifyPasswordChange, sendEmailUpdateConfirmation, sendEmailUpdateNotification } from "./email-service.js";
 
 const EDUCATION_TYPES = ["Secondary 3", "Secondary 4", "Secondary 5", "JC 1", "JC 2", "O level Private candidate", "A level Private candidate"];
 const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i']; // n', o', a'lvl, pri, BI, IP
@@ -580,7 +580,7 @@ export async function requestEmailChange(userID, password, newEmail) {
     // check if email is already registered and if its the same email as current
     const currentEmail = decrypt(user.email);
     const userExists = await getByEmail(newEmail);
-    
+
     if (newEmail === currentEmail) throw new ServiceError("user-same-email");
     if (userExists) throw new ServiceError("user-create-unique");
 
@@ -605,6 +605,34 @@ export async function requestEmailChange(userID, password, newEmail) {
         message: "Sent email confirmation"
     }
 }
+
+/**
+ * 
+ * @param {string?} token Token to change user's email
+ */
+export async function functionChangeEmail(code) {
+    if (!code) throw new ServiceError("user-change-email-no-token");
+
+    try {
+        const { userID, email, newEmail } = jwt.verify(code, process.env.JWT_KEY, {
+            ...JWT_OPTIONS,
+            subject: "CHANGE_EMAIL"
+        });
+
+
+        // change email
+        const updatedEmail = encrypt(validator.normalizeEmail(newEmail));
+        await query("UPDATE eduhope_user SET email = $1 WHERE id = $2", [updatedEmail, userID]);
+        await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
+
+        // email to notify
+        await sendEmailUpdateNotification(email);
+        await sendEmailUpdateNotification(newEmail);
+    } catch (err) {
+        throw new ServiceError("user-change-email-no-token")
+    }
+}
+
 
 /**
  * Converts a normal account to a Tutor status account

@@ -1,0 +1,48 @@
+{
+  "name": "eduhope-backend",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "EduHope.SG backend server for APIs, database transactions and business logic",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha -r dotenv/config ./tests/*.spec.js --exit",
+    "watch:test": "mocha --watch -r dotenv/config ./tests/*.spec.js --exit",
+    "coverage": "c8 --reporter=text --reporter=lcov npm test",
+    "start": "node --experimental-json-modules src/index.js",
+    "dev": "node --experimental-json-modules src/index.js",
+    "watch:dev": "nodemon --exec npm run dev"
+  },
+  "author": "EduHope Team",
+  "license": "agpl-3.0",
+  "devDependencies": {
+    "c8": "^7.12.0",
+    "chai": "^4.3.7",
+    "mocha": "^10.1.0",
+    "nodemon": "^2.0.20",
+    "prettier": "2.7.1",
+    "sinon": "^14.0.2",
+    "supertest": "^6.3.1"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.15",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "helmet": "^6.0.0",
+    "html-to-text": "^8.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "mailgun.js": "^8.0.6",
+    "pg": "^8.8.0",
+    "validator": "^13.7.0"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/test/**",
+      "**/docs/**"
+    ],
+    "delay": 11000
+  }
+}

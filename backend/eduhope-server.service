@@ -1,0 +1,33 @@
+# StrongLoop can be used as a PM as an Upstart service
+# instead of using Systemd to restart the backend when server
+# is offline.
+
+# https://www.freedesktop.org/software/systemd/man/systemd.unit.html
+
+[Unit]
+Description=<Awesome Express App>
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/node </projects/EduHopeSG/backend/src/index.js>
+WorkingDirectory=</projects/EduHopeSG/backend/src>
+
+User=nobody
+Group=nogroup
+
+# Environment variables:
+Environment=NODE_ENV=production
+
+# Allow many incoming connections
+LimitNOFILE=infinity
+
+# Allow core dumps for debugging
+LimitCORE=infinity
+
+StandardInput=null
+StandardOutput=syslog
+StandardError=syslog
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

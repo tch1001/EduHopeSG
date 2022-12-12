@@ -1,0 +1,403 @@
+
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color:lightblue;
+  border-radius:30px;
+  height: 400px;
+ color:black
+}
+.borderblue{
+  background-color:white;
+  margin: 5px 5px;
+  border-radius:30px;
+}
+.footer {
+  width: 100%;
+  height: 100px;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer img {
+  margin-left: 0.5rem;
+}
+
+.footer a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.title a:hover,
+.title a:focus,
+.title a:active {
+  text-decoration: underline;
+}
+
+.title {
+  margin: 0;
+  line-height: 1.15;
+  font-size: 4rem;
+}
+
+.title,
+.description {
+  text-align: center;
+}
+
+.description {
+  line-height: 1.5;
+  font-size: 1.5rem;
+}
+
+.code {
+  background: #fafafa;
+  border-radius: 5px;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+    Bitstream Vera Sans Mono, Courier New, monospace;
+}
+
+.grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 800px;
+  margin-top: 3rem;
+}
+
+.card {
+  margin: 1rem;
+  flex-basis: 45%;
+  padding: 1.5rem;
+  text-align: left;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.card:hover,
+.card:focus,
+.card:active {
+  color: #0070f3;
+  border-color: #0070f3;
+}
+
+.card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.card p {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+.logo {
+  height: 1em;
+}
+.btn{
+  height:30vh;
+  width:400px;
+  background-color:lightblue;
+  border-radius:50px;
+  text-align:center;
+  align-self: center;
+}
+.btn:hover{
+  background-color:grey;
+  color:white
+}
+.Profiles{
+  text-align:left;
+  align-self:left;
+  color:white
+}
+.btn2{
+  height:20vh;
+  width:50vw;
+  background-color:lightblue;
+  border-radius:50px;
+  
+}
+.backbtn{
+  height:10%;
+  width:10%;
+  background-color:grey;
+  border-radius:50px;
+  color:white;
+  text-align:center;
+  
+
+}
+.backbtn:hover{
+  color:black;
+  background-color:lightblue;
+}
+.signup{
+  color:lightblue;
+  text-align:center;
+}
+.signup:hover{
+  color:black;
+
+}
+.SUBJECTSpage{
+  text-align:left
+}
+@media (max-width: 600px) {
+  .grid {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+.suggestion{
+  height:200px;
+  width:300px;
+  background-color:grey;
+  border-radius:30px;
+  color:white
+}
+.profilecontainer{
+  display:flex;
+  flex-flow:row wrap;
+  color:white;
+}
+.spacer{
+  width:20px;
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  background-color:black;
+  color:lightblue;
+  display:flex;
+  flex-flow:column wrap;
+  justify-content: center;
+  align-items: center;
+}
+.body2 {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  background-color:black;
+  color:white;
+  display:flex;
+  flex-flow:column wrap;
+  align-items:center;
+}
+
+/*nav bar*/
+.profile{
+  position:fixed;
+  top:0%;
+  left:0%;
+  background-color:lightblue;
+  height:50px;
+  z-index:100;
+  width:100%;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color:black;
+  flex-flow:row wrap;
+  justify-content: space-around;
+}
+@media(max-media:300px){
+  
+}
+.profc{
+  border-radius:100%;
+  height:35px;
+  width:35px;
+  background-color:white;
+}
+.otherprof{
+  height:50px;
+  width:20vw;
+  text-align:center
+}
+.otherprof:hover{
+  background-color:grey
+}
+.iframe{
+  align-self: center;
+  width:1000px;
+}
+@media (max-width:300px) {
+  .iframe{
+width:250px;
+  }
+}
+
+
+/*start of about us */
+
+@import url(https://fonts.googleapis.com/css?family=Oswald:300,400,700);
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic);
+
+.firstau {font-weight:400; float: left; font-size: 84px; line-height: 64px; padding-top: 4px; padding-right: 8px; padding-left: 3px; font-family: 'Source Sans Pro', sans-serif;}
+
+/* Section - Title */
+/**************************/
+.titleau {background: black; padding: 60px; margin:0 auto; text-align:center;font-family:'Oswald', sans-serif; font-size:14px; line-height:0; font-weight:400; letter-spacing:8px; text-transform: uppercase; color:white;}
+
+
+/* Section - Block */
+/**************************/
+.blockau {background: black; padding: 60px; width:820px; margin:0 auto; text-align:justify;}
+
+/* Section - Parallax */
+/**************************/
+.oneau {font-family:'Oswald', sans-serif; font-size:70px; letter-spacing:10px; text-align:center; color:white; font-weight:400; text-transform:uppercase; z-index:10; opacity:.9;padding-top: 200px; padding-bottom: 200px; overflow: hidden; position: relative; width: 100%; background-image: url(https://cdn.discordapp.com/attachments/1014050512347349072/1033327933126885416/Tan_Sven_a_boy_studying_oil_painting_3e3c1f2f-013f-447c-9fea-832876e3c317.png); background-attachment: fixed; background-size: cover; -moz-background-size: cover; -webkit-background-size: cover; background-repeat: no-repeat; background-position: top center;}
+.twoau {font-family:'Oswald', sans-serif; font-size:70px; letter-spacing:10px; text-align:center; color:white; font-weight:400; text-transform:uppercase; z-index:10; opacity:.9;padding-top: 200px; padding-bottom: 200px; overflow: hidden; position: relative; width: 100%; background-image: url(https://cdn.discordapp.com/attachments/1014050512347349072/1033326665213952030/Tan_Sven_a_pencil_drawing_out_a_child_studying_cinematic_realis_4bf6441a-2983-44cb-be0a-22656fc9b144.png); background-attachment: fixed; background-size: cover; -moz-background-size: cover; -webkit-background-size: cover; background-repeat: no-repeat; background-position: center center;}
+.threeau {font-family:'Oswald', sans-serif; font-size:70px; letter-spacing:10px; text-align:center; color:white; font-weight:400; text-transform:uppercase; z-index:10; opacity:.9;padding-top: 200px; padding-bottom: 200px; overflow: hidden; position: relative; width: 100%; background-image: url(https://cdn.discordapp.com/attachments/1014050512347349072/1033320883269406730/Tan_Sven_a_silhouette_of_a_child_studying_in_the_cloud_reflecti_aaf9c5b0-09da-469d-a11f-c84052d5f8c0.png); background-attachment: fixed; background-size: cover; -moz-background-size: cover; -webkit-background-size: cover; background-repeat: no-repeat; background-position: center center;}
+
+/* Extras */
+/**************************/
+.linebreakau {border-bottom:1px solid white; width: 150px; margin:0 auto;padding-top:10px;}
+
+/* Media Queries */
+/**************************/
+@media screen and (max-width: 959px) and (min-width: 768px) {
+.blockau {padding: 40px; width:620px;}
+}
+@media screen and (max-width: 767px) {
+.blockau {padding: 30px; width:420px;}
+.hau{font-size:30px;}
+.blockau {padding: 30px;}
+.oneau, .twoau, .threeau {padding-top:100px; padding-bottom:100px;}
+}
+@media screen and (max-width: 479px) {
+.blockau {padding: 30px 15px; width:290px;}
+}
+
+/*fAQ*/
+
+.tabs {
+	display: flex;
+	flex-wrap: wrap;
+  color:black
+  }
+  
+  .label {
+	order: 1;
+	display: block;
+	padding: 1rem 2rem;
+	margin-right: 0.2rem;
+	cursor: pointer;
+	background: #90CAF9;
+	font-weight: bold;
+	transition: background ease 0.2s;
+  }
+
+  
+  .tab {
+	order: 99;
+	flex-grow: 1;
+	width: 100%;
+	display: none;
+	padding: 1rem;
+	background: #fff;
+  }
+  
+  .input[type=radio] {
+	display: none;
+  }
+  
+  .input[type=radio]:checked + .label {
+	background: #fff;
+  }
+  
+  .input[type=radio]:checked + .label + .tab {
+	display: block;
+  }
+  
+  @media (max-width: 45em) {
+	.tab, .label {
+	  order: initial;
+	}
+  
+	.label {
+	  width: 100%;
+	  margin-right: 0;
+	  margin-top: 0.2rem;
+	}
+  }
+  .spacetab{
+    height:200px;
+    width:100vw;
+  }
+
+  /*contact button*/
+	.sectionbtn {
+		display: flex;
+		justify-content: center;
+		align-items: center; 
+		font-size: 30px;
+    flex-flow: row wrap;
+	  }
+	  .abtn {
+		  text-decoration: none;
+		  position: relative;
+		  color: #337ab7;
+      background-color:white;
+      height: 160px;
+      border-radius:5px;
+	  }
+	  
+	  .abtn:after {
+		  right: 0;
+		  width: 100%;
+		  transition: .2s;
+		  background: #337ab7;
+		  content: '';
+		  position: absolute;
+		  height: 1px; 
+		  bottom: 0;  
+	  }
+	  .abtn:before {
+		  left: 0;
+		  width: 0;
+		  transition: .7s;
+		  background: #23527c;
+		  content: '';
+		  position: absolute;
+		  height: 1px; 
+		  bottom: 0;  
+	  }
+	  .abtn:hover {
+		  color: #23527c;
+	  }
+	  .abtn:hover:after {
+		  width: 0%;
+	  }
+	  .abtn:hover:before {
+		  width: 100%;
+	  }
+.logos{
+  color:white
+}

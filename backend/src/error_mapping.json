@@ -1,0 +1,260 @@
+{
+    "page-500": {
+        "status": 500,
+        "name": "Internal server error: 500 page status",
+        "message": "An unexpected error occurred which the internal server did not handle properly",
+        "details": "Retry the request and contact the site developers or site admins if the problem persists"
+    },
+    "page-404": {
+        "status": 404,
+        "name": "Not found",
+        "message": "Page or API route not found",
+        "details": "Ensure that you have the correct path"
+    },
+    "funcs-hash-password-invalid": {
+        "status": 400,
+        "name": "Password not provided to hash function",
+        "message": "Password not provided or not found, cannot continue hashing operation",
+        "details": "Provide a password of valid length and retry the request"
+    },
+    "funcs-hash-password-error": {
+        "status": 400,
+        "name": "Error hashing provided password",
+        "message": null,
+        "details": "Retry the request with a different password and contact the site developers or site admins if the problem persists"
+    },
+    "funcs-verify-password-invalid": {
+        "status": 400,
+        "name":  "Password or key not provided to password verification function",
+        "message": "Password or key not provided or found, cannot continue to verify the validity of password",
+        "details": "Provide a password and the key and retry the request"
+    },
+    "user-invalid": {
+        "status": 400,
+        "name": "Invalid user",
+        "message": "Invalid user",
+        "details": "Provide a valid user with proper keys and values"
+    },
+    "user-invalid-name": {
+        "status": 400,
+        "name": "Invalid name",
+        "message": "Name cannot be less than 3 or more than 32 in length",
+        "details": "Provide a name ranging from 3 to 32 characters in length"
+    },
+    "user-invalid-email": {
+        "status": 400,
+        "name": "Invalid email",
+        "message": "Invalid email address format provided",
+        "details": "Provide a valid email address: name@example.com"
+    },
+    "user-weak-password": {
+        "status": 400,
+        "name": "Weak password",
+        "message": "Password does not meet the requirements of a strong password",
+        "details": "Provide a strong password of at least 12 characters in length with a minimum of 2 lowercase, uppercase, numbers and symbols each"
+    },
+    "user-no-school": {
+        "status": 400,
+        "name": "No school provided",
+        "message": "No school or institution is provided",
+        "details": "Provide your current institution in full (e.g. Anglo-Chinese IB Junior College)"
+    },
+    "user-invalid-education": {
+        "status": 400,
+        "name": "Invalid education",
+        "message": "No education provided or is invalid",
+        "details": "Provide a valid education type with correct capitals/letter casing: "
+    },
+    "user-no-telegram": {
+        "status": 400,
+        "name": "Invalid Telegram handle",
+        "message": "No Telegram handle provided or invalid Telegram handle (a-z, 0-9 and underscores)",
+        "details": "Provide a valid Telegram handle without the '@' at the start"
+    },
+    "user-invalid-bio": {
+        "status": 400,
+        "name": "Invalid bio length",
+        "message": "Profile bio cannot exceed 500 characters in length",
+        "details": "Provide a bio with a length of at most 500 characters"
+    },
+    "user-invalid-referral": {
+        "status": 400,
+        "name": "Invalid referral",
+        "message": "No referral provided or is invalid",
+        "details": "Provide a valid referral: "
+    },
+    "user-invalid-tutoring": {
+        "status": 400,
+        "name": "Invalid streams",
+        "message": "No stream(s) provided or they are invalid",
+        "details": "Provide valid streams to tutor: "
+    },
+    "user-invalid-tutee-limit": {
+        "status": 400,
+        "name": "invalid tutee limit",
+        "message": "Tutee limit too high or low",
+        "details": "Tutee limit should be between 1 and 5"
+    },
+    "user-invalid-commitment": {
+        "status": 400,
+        "name": "Invalid commitment time",
+        "message": "Commitment time not provided, invalid or too short",
+        "details": "We require a minimum of 1 month commitment for our tutors"
+    },
+    "user-invalid-communications": {
+        "status": 400,
+        "name": "Invalid communication(s)",
+        "message": "Invalid communication(s) provided",
+        "details": "We only accept the following modes of communication: "
+    },
+    "user-create-unique": {
+        "status": 409,
+        "name": "Error creating user",
+        "message": "User with the same email address or Telegram username has already been registered",
+        "details": "Create a new account with a different email address or Telegram username"
+    },
+    "user-create": {
+        "status": 400,
+        "name": "Error creating user",
+        "message": "Error occurred while trying to create user",
+        "details": "Retry the request with values following the rules and contact the site developers or site admins if the problem persist"
+    },
+    "user-by-id": {
+        "status": 400,
+        "name": "User ID not provided",
+        "message": "User ID required to find user by ID",
+        "details": "Provide a user ID"
+    },
+    "user-by-email": {
+        "status": 400,
+        "name": "User email not provided",
+        "message": "User email required to find user by email",
+        "details": "Provide a user email"
+    },
+    "user-change-password-missing": {
+        "status": 400,
+        "name": "Unable to proceed: Missing User ID and/or new and old password",
+        "message": "Either the User ID, old password or new password were not provided and thus the request cannot proceed",
+        "details": "Provide valid User ID, the old password and the new password to update"
+    },
+    "user-same-password": {
+        "status": 400,
+        "name": "New password is the same as the current password",
+        "message": "Unable to change password as the current password is the same as the password you are trying to set",
+        "details": "Provide a new password that is not the same as the current one"
+    },
+    "user-same-email": {
+        "status": 400,
+        "name": "New email is the same as the current email",
+        "message": "Unable to change email current email is the same as the email you are trying to set",
+        "details": "Provide a new email that is not the same as the current one, and one that is not already registered"
+    },
+    "user-change-email-no-token": {
+        "status": 400,
+        "name": "No token provided or token invalid",
+        "message": "Unable to change email as the token is not provided or is invalid",
+        "details": "Provide a valid token for email change confirmation"
+    },
+    "user-login-invalid": {
+        "status": 400,
+        "name": "Invalid email or password",
+        "message": "Either email or password are not provided or they are invalid",
+        "details": "Provide valid emails or password"
+    },
+    "user-login-failed": {
+        "status": 401,
+        "name": "Incorrect email or password",
+        "message": "Incorrect email or password",
+        "details": "Provide the correct email and password combination"
+    },
+    "user-unauthenticated": {
+        "status": 401,
+        "name": "Not unauthenticated: cannot proceed",
+        "message": "Missing 'Authorization' header or 'user' cookie",
+        "details": "Try logging in again at POST /login"
+    },
+    "user-unauthorized": {
+        "status": 403,
+        "name": "Unauthorized: not allowed",
+        "message": "Either this resource is forbidden for this user or the action is not permitted for this user",
+        "details": "Login with the account that has access to this action or resource"
+    },
+    "user-update": {
+        "status": 400,
+        "name": "Error modifying user",
+        "message": "Error occurred while trying to update or modify user attributes",
+        "details": "Retry the request with values following the rules and contact the site developers or site admins if the problem persist"
+    },
+    "user-tutor-register": {
+        "status": 400,
+        "name": "Error registering tutor",
+        "message": "Error occurred while trying to register a tutor",
+        "details": "Provide the necessary Tutor attributes and retry the request"
+    },
+    "user-request-tutor-missing": {
+        "status": 400,
+        "name": "Missing User ID, Tutor ID or needed subjects",
+        "message": "User ID or Tutor ID is not provided in the parameters",
+        "details": "Provide the necessary User and Tutor ID and retry your request"
+    },
+    "tutee-tutor-not-found": {
+        "status": 404,
+        "name": "Tutee or Tutor not found",
+        "message": "Provided Tutee ID or Tutor ID yielded no valid records of such users in the database",
+        "details": "Provide valid User and Tutor IDs that are existing inside the database"
+    },
+    "user-not-tutor": {
+        "status": 400,
+        "name": "User is not a tutor",
+        "message": "The requested user is not a Tutor account or has no Tutor status",
+        "details": "Provided User/Tutor ID is not a tutor. Request a valid Tutor account"
+    },
+    "tutee-tutor-same": {
+        "status": 400,
+        "name": "Tutee and tutor cannot be the same",
+        "message": "The provided user and tutor are of the same account",
+        "details": "Provide a different account"
+    },
+    "tutee-tutor-subject-unoffered": {
+        "status": 400,
+        "name": "Requested subject not offered",
+        "message": "The requested subject is not offered by the tutor",
+        "details": "Please try another tutor which offers a subject you need"
+    },
+    "json-malformed": {
+        "status": 400,
+        "name": "JSON is malformed",
+        "message": "JSON in request body is malformed and thus, cannot be parsed properly",
+        "details": "Provide a valid JSON object in the request body"
+    },
+    "user-invalid-subjects": {
+        "status": 400,
+        "name": "Invalid subjects",
+        "message": "Subjects provided are not in the database",
+        "details": "If you believe this is a mistake, please contact the site developers or admins"
+    },
+    "tutee-request-tutor-unique": {
+        "status": 409,
+        "name": "Error modifying Tutor-Tutee agreement",
+        "message": "The current agreeable subjects and requested subjects are the same (no changes)",
+        "details": "To update the agreement, please choose a different subject combination"
+    },
+    "invalid-tutee-tutor-relationship": {
+        "status": 400,
+        "name": "Invalid Tutor-Tutee relationship",
+        "message": "Relationship either not found or was deleted, or not the ID was not provided for query",
+        "details": "To terminate the Tutor-Tutee relationship, provide the relationship ID"
+    },
+    "missing-arguments": {
+        "status": 400,
+        "name": "Missing required arguments",
+        "message": "Missing required arguments for a function to perform",
+        "details": "Check the function and its required parameters and the parameters that were passed"
+    },
+    "tutee-removal-all-tutees": {
+        "status": 500,
+        "name": "Error deleting all tutees",
+        "message": "An internal server error occurred while trying to delete all tutees from tutor",
+        "details": "Retry the request and contact the site developers or site admins if the problem persists"
+    }
+}

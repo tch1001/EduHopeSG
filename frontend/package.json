@@ -6,12 +6,19 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "postbuild": "npm run gulpfile.js",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "tailwindcss": "^3.2.4"
   },
   "dependencies": {
-    "next": "^12.3.1",
-    "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "eslint-config-next": "^13.1.6",
+    "next": "^13.1.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "author": "EduHope Team",
   "license": "agpl-3.0"

@@ -1,12 +1,12 @@
-import Head from "../src/components/head.jsx"
+import Head from "../src/head.jsx"
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <body>
+    <>
       <Head />
       <Component {...pageProps} />
-    </body>
+    </>
   )
 }
 

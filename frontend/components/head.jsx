@@ -5,11 +5,11 @@ export default function HeadProperties({
     title = "EduHope",
     description = "Empowering students through free and flexible tutoring. — Find your volunteer tutor today!",
 }) {
-    const compoundedTitle = pageTitle ? title : `${pageTitle} - ${title}`;
+    const compoundedTitle = pageTitle ? `${pageTitle} - ${title}` : title;
 
     return (
         <Head>
-            <link rel="icon" href="/Eduhope.ico" />
+            <link rel="icon" href="/favicon.ico" />
             <meta charset="UTF-8" />
             <meta name="language" content="en-SG" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />

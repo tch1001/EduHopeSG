@@ -63,8 +63,12 @@ export const Header = () => {
                         Login
                     </Button>
                 </nav>
-                <Button className="sm:hidden" onClick={handleNavbar}>
-                    <Icon icon="hamburger-3" />
+                <Button
+                    className="sm:hidden"
+                    onClick={handleNavbar}
+                    aria-label="Dropdown menu for navigation links"
+                >
+                    <Icon icon="hamburger-3" alt="Hamburger icon for navigation links"/>
                 </Button>
             </div>
             <nav className={`flex flex-col items-center justify-center space-y-2 py-2 text-base ${navbar ? "block" : "hidden"}`}>

@@ -45,9 +45,16 @@ export const Header = () => {
     }
 
     return (
-        <header className="px-12 py-2 bg-blue rounded-b-md text-sm font-medium">
+        <header className={`px-12 py-2 bg-blue text-sm font-medium ${navbar ? "rounded-b-md" : ""}`}>
             <div className="flex flex-row w-full justify-between">
-                <Image className="rounded-full md:w-11 md:h-11" alt="Eduhope logo" src="/logo.png" width={55} height={55} />
+                <Image
+                    className="rounded-full md:w-11 h-auto"
+                    alt="Eduhope logo"
+                    src="/logo.png"
+                    width={55}
+                    height={55}
+                    onClick={() => router.push("/")}
+                />
                 <nav className="hidden sm:flex flex-row gap-x-5 my-auto">
                     <div className="flex flex-row gap-x-5 my-auto">
                         <Links />
@@ -62,7 +69,7 @@ export const Header = () => {
             </div>
             <nav className={`flex flex-col items-center justify-center space-y-2 py-2 text-base ${navbar ? "block" : "hidden"}`}>
                 <Links />
-                <Button onClick={handleLoginRoute}>
+                <Button onClick={(handleLoginRoute)}>
                     Login
                 </Button>
             </nav>

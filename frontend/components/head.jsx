@@ -1,10 +1,10 @@
 import Head from 'next/head'
 
-export default function HeadProperties({
+export const HeadProperties = ({
     pageTitle,
     title = "EduHope",
     description = "Empowering students through free and flexible tutoring. — Find your volunteer tutor today!",
-}) {
+}) => {
     const compoundedTitle = pageTitle ? `${pageTitle} - ${title}` : title;
 
     return (

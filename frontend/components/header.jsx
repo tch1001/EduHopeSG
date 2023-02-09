@@ -53,6 +53,7 @@ export const Header = () => {
                     className="rounded-full md:w-11 h-auto"
                     alt="Eduhope logo"
                     src="/logo.png"
+                    quality={1}
                     width={55}
                     height={55}
                     onClick={() => router.push("/")}
@@ -68,7 +69,7 @@ export const Header = () => {
                     onClick={handleNavbar}
                     aria-label="Dropdown menu for navigation links"
                 >
-                    <Icon icon="hamburger-3" alt="Hamburger icon for navigation links" />
+                    <Icon icon="hamburger-3" alt="" />
                 </Button>
             </div>
             <nav className={`flex flex-col items-center justify-center gap-y-3 py-2 text-base ${navbar ? "block" : "hidden"}`}>

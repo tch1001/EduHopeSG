@@ -12,7 +12,7 @@ const FooterSectionHeader = ({ children }) => (
 export const Footer = () => {
     return (
         <footer className="bg-blue text-md md:text-sm px-12 p-5">
-            <div className="grid gap-5 grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+            <div className="grid gap-8 xs:gap-5 grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
                 <Image src="/logo.png" alt="EduHope logo" className="w-32 h-auto" width={93} height={126} quality={50} />
                 <div>
                     <FooterSectionHeader>Subjects</FooterSectionHeader>

@@ -4,7 +4,7 @@ export const Card = ({ image, title, subtitle, body }) => {
     return (
         <div className="border boarder-grey-600 bg-white rounded-lg max-w-sm overflow-hidden object-contain">
             {
-                image && <Image src={image} width={382} height={200} />
+                image && <Image src={image} width={382} height={200} alt="" />
             }
             <div className="pt-2 pb-4 px-6">
                 {

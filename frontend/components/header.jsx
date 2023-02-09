@@ -59,7 +59,7 @@ export const Header = () => {
                     <div className="flex flex-row gap-x-5 my-auto">
                         <Links />
                     </div>
-                    <Button onClick={handleLoginRoute}>
+                    <Button secondary onClick={handleLoginRoute}>
                         Login
                     </Button>
                 </nav>

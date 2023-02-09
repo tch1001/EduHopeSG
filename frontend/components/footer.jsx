@@ -1,15 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Button } from './button';
-
-const FooterLinkSection = () => {
-
-}
 
 export const Footer = () => {
     return (
         <footer className="bg-blue text-sm px-12 p-5">
-            <div className="flex flex-wrap flex-row gap-y-5 lg:gap-y-0 gap-x-12 justify-evenly">
+            <div className="grid gap-5 grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
                 <Image src="/logo.png" className="w-32 h-auto" width={93} height={126} />
                 <div className="flex flex-col gap-y-0.5">
                     <p className="text-xs uppercase font-semibold text-gray-800">Subjects</p>

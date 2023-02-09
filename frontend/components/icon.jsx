@@ -1,7 +1,15 @@
 import dynamic from "next/dynamic"
 // icons are sourced from https://heroicons.com/
 
-export const Icon = ({ icon, className = "w-6 h-6 stroke-1", ...props }) => {
-    const SVG = dynamic(() => import(`../icons/${icon}.jsx`).then((mod) => mod.default));
-    return <SVG className={className} {...props} />;
-}
+import Image from 'next/image';
+
+export const Icon = ({ icon, height = 32, width = 32, className = "w-6 h-6 stroke-1", ...props }) => (
+    <Image
+        priority
+        src={`/icons/${icon}.svg`}
+        height={height}
+        width={width}
+        className={className}
+        {...props}
+    />
+)

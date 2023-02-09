@@ -24,6 +24,7 @@ const Links = () => {
     )
 }
 
+
 export const Header = () => {
     const router = useRouter();
     const [navbar, setNavbar] = useState(false);
@@ -34,15 +35,16 @@ export const Header = () => {
         })
     }, [])
 
-    const handleLoginRoute = (e) => {
-        e.preventDefault();
-        router.push("/login")
-    }
-
     const handleNavbar = (e) => {
         e.preventDefault();
         setNavbar(!navbar);
     }
+
+    const LoginButton = () => (
+        <Button secondary onClick={() => router.push("/login")}>
+            Login
+        </Button>
+    )
 
     return (
         <header className={`px-12 py-2 bg-blue text-sm font-medium ${navbar ? "rounded-b-md" : ""}`}>
@@ -59,23 +61,19 @@ export const Header = () => {
                     <div className="flex flex-row gap-x-5 my-auto">
                         <Links />
                     </div>
-                    <Button secondary onClick={handleLoginRoute}>
-                        Login
-                    </Button>
+                    <LoginButton />
                 </nav>
                 <Button
                     className="sm:hidden"
                     onClick={handleNavbar}
                     aria-label="Dropdown menu for navigation links"
                 >
-                    <Icon icon="hamburger-3" alt="Hamburger icon for navigation links"/>
+                    <Icon icon="hamburger-3" alt="Hamburger icon for navigation links" />
                 </Button>
             </div>
-            <nav className={`flex flex-col items-center justify-center space-y-2 py-2 text-base ${navbar ? "block" : "hidden"}`}>
+            <nav className={`flex flex-col items-center justify-center gap-y-3 py-2 text-base ${navbar ? "block" : "hidden"}`}>
                 <Links />
-                <Button onClick={(handleLoginRoute)}>
-                    Login
-                </Button>
+                <LoginButton />
             </nav>
         </header>
     );

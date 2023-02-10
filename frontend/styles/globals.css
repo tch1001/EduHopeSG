@@ -8,11 +8,11 @@ body {
 }
 
 div.cover {
-    @apply absolute top-1/2 left-1/4 xs:left-1/2;
+    @apply absolute top-1/2 left-1/4 sm:left-1/2;
     transform: translate(-18%, -45%);
 }
 
-@media (min-width: 425px) {
+@media (min-width: 640px) {
     div.cover {
         transform: translate(-50%, -50%);
     }

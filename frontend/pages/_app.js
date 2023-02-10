@@ -8,9 +8,7 @@ function MyApp({ Component: Body, pageProps }) {
         <>
             <Head />
             <Header />
-            <div className="container mx-auto px-4">
-                <Body {...pageProps} />
-            </div>
+            <Body {...pageProps} />
             <Footer />
         </>
     )

@@ -2,22 +2,37 @@ import Image from "next/image";
 import { Container } from "../components/container";
 import { useEffect, useState } from "react";
 
-const BenefitCard = ({ illustration, tagline, description, reversed = false, secondary = false }) => {
-    const reversedClass = reversed ? "-reverse" : "";
-    const flexDirection = `flex-col${reversedClass} md:flex-row${reversedClass}`;
+const BenefitCard = ({ illustration, tagline, description, alternate = false }) => {
+    const flexDirection = "flex-col md:flex-row";
+    const padding = "sm:w-9/12 p-8 sm:px-16 sm:py-12";
+    const colorStyling = `border border-${alternate ? "dark-aqua" : "gray-200"} bg-${alternate ? "aqua" : "gray-50"}`;
 
-    const boarderStyle = "border border-gray-200";
-    
-    let compoundedClassName = `flex ${flexDirection} gap-12 ${boarderStyle} bg-gray-50 rounded-xl sm:w-9/12 px-4 sm:px-16 py-12 items-center`;
+    let compoundedClassName = `flex gap-12 ${flexDirection} ${padding} ${colorStyling} rounded-xl items-center`;
 
-    
+
     return (
         <div className={compoundedClassName}>
-            <Image className="w-fit md:w-1/2"  src={illustration} width={300} height={300} />
-            <div className="text-black">
-                <p className="uppercase text-2xl font-medium">{tagline}</p>
-                <p className="text-base">{description}</p>
-            </div>
+            {
+                alternate ?
+                    (
+                        <>
+                            <Image className="w-fit md:w-1/2" src={illustration} alt="" width={300} height={300} />
+                            <div className="text-black">
+                                <p className="uppercase text-2xl font-medium">{tagline}</p>
+                                <p className="text-base">{description}</p>
+                            </div>
+                        </>
+                    ) :
+                    (
+                        <>
+                            <div className="text-black">
+                                <p className="uppercase text-2xl font-medium">{tagline}</p>
+                                <p className="text-base">{description}</p>
+                            </div>
+                            <Image className="w-fit md:w-1/2" src={illustration} alt="" width={300} height={300} />
+                        </>
+                    )
+            }
         </div>
     )
 }
@@ -56,12 +71,22 @@ export default function Home() {
                     description="Our volunteer tutors are passionate graduates who want you to succeed in your student life!"
                 />
                 <BenefitCard
-                    reversed
+                    alternate
                     illustration="/images/landing_page/5_stars.png"
                     tagline="Quality Control"
                     description="Every tutor is reviewed and vetted by our team to ensure you get the very best."
                 />
-
+                <BenefitCard
+                    illustration="/images/landing_page/study_anywhere.png"
+                    tagline="Build Connections, Enhance Your Learning."
+                    description="Find your perfect study partner and form meaningful relationships with experienced tutors."
+                />
+                <BenefitCard
+                    alternate
+                    illustration="/images/landing_page/5_stars.png"
+                    tagline="Expand Your Horizons"
+                    description="Get advice and guidance beyond academics and enhance your overall learning experience."
+                />
             </Container>
         </div>
     )

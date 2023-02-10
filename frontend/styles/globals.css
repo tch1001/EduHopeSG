@@ -3,6 +3,17 @@
 @tailwind utilities;
 
 body {
-  background-color: #fffdfa;
-  color: #2c2c2c;
+    background-color: #fffdfa;
+    color: #2c2c2c;
+}
+
+div.cover {
+    @apply absolute top-1/2 left-1/4 xs:left-1/2;
+    transform: translate(-18%, -45%);
+}
+
+@media (min-width: 425px) {
+    div.cover {
+        transform: translate(-50%, -50%);
+    }
 }

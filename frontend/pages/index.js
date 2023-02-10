@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 const BenefitCard = ({ illustration, tagline, description, alternate = false }) => {
     const flexDirection = "flex-col md:flex-row";
     const padding = "sm:w-9/12 p-8 sm:px-16 sm:py-12";
-    const colorStyling = `border border-${alternate ? "dark-aqua" : "gray-200"} bg-${alternate ? "aqua" : "gray-50"}`;
+    const colorStyling =  alternate ? "border-dark-aqua bg-aqua" : "border-gray-200 bg-gray-50";
 
-    let compoundedClassName = `flex gap-12 ${flexDirection} ${padding} ${colorStyling} rounded-xl items-center`;
+    let compoundedClassName = `flex gap-12 ${flexDirection} ${padding} border ${colorStyling} rounded-xl items-center`;
 
 
     return (

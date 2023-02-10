@@ -10,7 +10,7 @@ export const HeadProperties = ({
     return (
         <Head>
             <link rel="icon" href="/favicon.ico" />
-            <meta charset="UTF-8" />
+            <meta charSet="UTF-8" />
             <meta name="language" content="en-SG" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 

@@ -9,7 +9,7 @@ export const SubjectCard = ({ image, name, stream, tutors }) => {
             }
             <div className="pt-2 pb-4 px-6">
                 {
-                    name && <p className="font-medium text-lg text-aqua">{name}</p>
+                    name && <p className="font-medium text-lg text-dark-aqua">{name}</p>
                 }
                 {
                     stream && <p className="font-medium text-sm text-dark-blue">{stream}</p>

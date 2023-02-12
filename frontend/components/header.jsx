@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { Button } from './button';
-import { Icon } from "./icon";
+import { Button } from './Button';
+import { Icon } from "./Icon";
 
 const Links = () => {
     return (

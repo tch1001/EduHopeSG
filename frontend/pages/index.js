@@ -48,7 +48,7 @@ export default function Home({ subjects, testimonials }) {
                     <p>Empowering students through free and flexible tutoring.</p>
                 </div>
             </div>
-            <Container className="flex flex-col gap-20 mt-9">
+            <Container className="flex flex-col gap-20 my-16">
                 <div className="flex flex-col items-center gap-9">
                     <BenefitCard
                         illustration="/images/landing_page/study_anywhere.png"
@@ -98,47 +98,49 @@ export default function Home({ subjects, testimonials }) {
                         Explore more subjects
                     </Button>
                 </div>
-                <div className="flex flex-col items-center my-12 gap-9">
-                    <p className="text-2xl font-semibold">
-                        Testimonials from {" "}
-                        <span className="text-dark-aqua underline">tutors</span>
-                    </p>
-                    <div className="horizontal-scroll">
-                        
-                        {
-                            testimonials.tutors.map((testimonial, key) => (
-                                <TestimonialCard
-                                    key={key}
-                                    testimonial={testimonial.testimonial}
-                                    name={testimonial.name}
-                                    member_since={testimonial.joined}
-                                    stream={testimonial.stream_taught}
-                                    institution={testimonial.current_institution}
-                                />
-                            ))
-                        }
+                <div className="flex flex-col gap-16 my-20">
+                    <div className="flex flex-col items-center gap-9">
+                        <p className="text-2xl font-semibold">
+                            Testimonials from {" "}
+                            <span className="text-dark-aqua underline">tutors</span>
+                        </p>
+                        <div className="horizontal-scroll pb-4">
+                            
+                            {
+                                testimonials.tutors.map((testimonial, key) => (
+                                    <TestimonialCard
+                                        key={key}
+                                        testimonial={testimonial.testimonial}
+                                        name={testimonial.name}
+                                        member_since={testimonial.joined}
+                                        stream={testimonial.stream_taught}
+                                        institution={testimonial.current_institution}
+                                    />
+                                ))
+                            }
+                        </div>
                     </div>
-                </div>
-                <div className="flex flex-col items-center my-12 gap-9">
-                    <p className="text-2xl font-semibold">
-                        Testimonials from {" "}
-                        <span className="text-dark-aqua underline">tutees</span>
-                    </p>
-                    <div className="horizontal-scroll">
+                    <div className="flex flex-col items-center gap-9">
+                        <p className="text-2xl font-semibold">
+                            Testimonials from {" "}
+                            <span className="text-dark-aqua underline">tutees</span>
+                        </p>
+                        <div className="horizontal-scroll pb-4">
 
-                        {
-                            testimonials.tutees.map((testimonial, key) => (
-                                <TestimonialCard
-                                    key={key}
-                                    testimonial={testimonial.testimonial}
-                                    name={testimonial.name}
-                                    member_since={testimonial.joined}
-                                    stream={testimonial.stream}
-                                    institution={testimonial.current_institution}
-                                    tutor={false}
-                                />
-                            ))
-                        }
+                            {
+                                testimonials.tutees.map((testimonial, key) => (
+                                    <TestimonialCard
+                                        key={key}
+                                        testimonial={testimonial.testimonial}
+                                        name={testimonial.name}
+                                        member_since={testimonial.joined}
+                                        stream={testimonial.stream}
+                                        institution={testimonial.current_institution}
+                                        tutor={false}
+                                    />
+                                ))
+                            }
+                        </div>
                     </div>
                 </div>
             </Container>

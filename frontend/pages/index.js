@@ -11,10 +11,24 @@ export default function Home({ subjects, testimonials }) {
 
     useEffect(() => {
         // update cover image width
-        const updateWidth = () => setWidth(window.innerWidth)
+        const updateWidth = () => setWidth(window.innerWidth);
 
         updateWidth();
         window.addEventListener("resize", updateWidth);
+
+        // horizontal scrolling
+        const horizontals = document.querySelectorAll(".horizontal-scroll");
+
+        horizontals.forEach((horizontal) => {
+            horizontal.addEventListener("wheel", (e) => {
+                e.preventDefault();
+                horizontal.scrollLeft += convertRemToPixels(28) * Math.sign(e.deltaY);
+            });
+        });
+
+        function convertRemToPixels(rem) {
+            return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        }
     });
 
     return (

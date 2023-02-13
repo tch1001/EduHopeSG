@@ -13,9 +13,9 @@ div.cover {
 }
 
 div.horizontal-scroll {
-    @apply flex flex-row overflow-x-auto gap-6;
+    @apply flex flex-row gap-6;
+    @apply overflow-x-auto sm:overflow-x-hidden scroll-smooth snap-x;
     @apply max-w-screen-xs sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg 2xl:max-w-screen-2xl;
-    @apply scroll-smooth snap-x;
 }
 
 @media (min-width: 640px) {

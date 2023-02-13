@@ -6,53 +6,68 @@ import { BenefitCard } from "../components/home/BenefitCard";
 import { TestimonialCard } from "../components/home/TestimonialCard";
 import { useEffect, useState } from "react";
 
+const SCROLL_MULTIPLIER = 1.5;
+const LISTENER_OPTIONS = {
+    capture: true,
+    passive: true
+}
+
 export default function Home({ subjects, testimonials }) {
     const [width, setWidth] = useState(0);
 
     useEffect(() => {
         // update cover image width
-        const updateWidth = () => setWidth(window.innerWidth);
-
         updateWidth();
-        window.addEventListener("resize", updateWidth);
+        window.addEventListener("resize", updateWidth, LISTENER_OPTIONS);
 
         // horizontal scrolling
         const horizontals = document.querySelectorAll(".horizontal-scroll");
 
         horizontals.forEach((horizontal) => {
-            horizontal.addEventListener("wheel", (e) => {
-                e.preventDefault();
-                horizontal.scrollLeft += convertRemToPixels(28) * Math.sign(e.deltaY);
-            });
+            horizontal.addEventListener("wheel", invertScroll, LISTENER_OPTIONS);
 
             // side scrolling
-            const scrollMultiplier = 1;
 
             let isDown = false;
             let startX;
             let scrollLeft;
-            
-            horizontal.addEventListener("mousedown", (e) => {
+
+            horizontal.addEventListener("mousedown", start, LISTENER_OPTIONS);
+            horizontal.addEventListener("mousemove", scroll, LISTENER_OPTIONS);
+            horizontal.addEventListener("mouseleave", down, LISTENER_OPTIONS);
+            horizontal.addEventListener("mouseup", down, LISTENER_OPTIONS);
+
+            function start(e) {
                 isDown = true
                 startX = e.pageX - horizontal.offsetLeft;
                 scrollLeft = horizontal.scrollLeft;
-            });
-            
-            horizontal.addEventListener("mouseleave", () => isDown = false);
-            horizontal.addEventListener("mouseup", () => isDown = false);
-            
-            horizontal.addEventListener("mousemove", (e) => {
+            }
+
+            function scroll(e) {
                 if (!isDown) return;
                 e.preventDefault();
 
                 const x = e.pageX - horizontal.offsetLeft;
-                const walk = (x - startX) * scrollMultiplier;
+                const walk = (x - startX) * SCROLL_MULTIPLIER;
                 horizontal.scrollLeft = scrollLeft - walk;
-            })
+            }
+
+            function down() {
+                isDown = false;
+            }
+
+            function invertScroll(e) {
+                e.preventDefault();
+                horizontal.scrollLeft += convertRemToPixels(28) * Math.sign(e.deltaY);
+            }
         });
 
         function convertRemToPixels(rem) {
             return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        }
+
+        function updateWidth() {
+            setWidth(window.innerWidth);
         }
     });
 
@@ -129,8 +144,8 @@ export default function Home({ subjects, testimonials }) {
                             Testimonials from {" "}
                             <span className="text-dark-aqua underline">tutors</span>
                         </p>
-                        <div className="horizontal-scroll pb-4">
-                            
+                        <div className="horizontal-scroll pb-4 cursor-move">
+
                             {
                                 testimonials.tutors.map((testimonial, key) => (
                                     <TestimonialCard
@@ -150,7 +165,7 @@ export default function Home({ subjects, testimonials }) {
                             Testimonials from {" "}
                             <span className="text-dark-aqua underline">tutees</span>
                         </p>
-                        <div className="horizontal-scroll pb-4">
+                        <div className="horizontal-scroll pb-4 cursor-move">
 
                             {
                                 testimonials.tutees.map((testimonial, key) => (

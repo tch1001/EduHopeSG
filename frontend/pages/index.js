@@ -41,6 +41,9 @@ export default function Home({ subjects, testimonials }) {
                 isDown = true
                 startX = e.pageX - horizontal.offsetLeft;
                 scrollLeft = horizontal.scrollLeft;
+
+                horizontal.classList.remove("cursor-grab");
+                horizontal.classList.add("cursor-grabbing");
             }
 
             function scroll(e) {
@@ -50,10 +53,16 @@ export default function Home({ subjects, testimonials }) {
                 const x = e.pageX - horizontal.offsetLeft;
                 const walk = (x - startX) * SCROLL_MULTIPLIER;
                 horizontal.scrollLeft = scrollLeft - walk;
+
+                horizontal.classList.remove("cursor-grabbing");
+                horizontal.classList.add("cursor-grab");
             }
 
             function down() {
                 isDown = false;
+
+                horizontal.classList.remove("cursor-grabbing");
+                horizontal.classList.add("cursor-grab");
             }
 
             function invertScroll(e) {
@@ -80,7 +89,9 @@ export default function Home({ subjects, testimonials }) {
                     style={{ height: "calc(100vh - 61px)" }}
                     width={width}
                     height={width}
-                    quality={100}
+                    quality={80}
+                    priority
+                    layout
                     alt=""
                 />
                 <div className="cover flex flex-col gap-1 m-auto text-white text-center text-3xl">
@@ -144,7 +155,7 @@ export default function Home({ subjects, testimonials }) {
                             Testimonials from {" "}
                             <span className="text-dark-aqua underline">tutors</span>
                         </p>
-                        <div className="horizontal-scroll pb-4 cursor-move">
+                        <div className="horizontal-scroll pb-4 cursor-grab">
 
                             {
                                 testimonials.tutors.map((testimonial, key) => (
@@ -165,7 +176,7 @@ export default function Home({ subjects, testimonials }) {
                             Testimonials from {" "}
                             <span className="text-dark-aqua underline">tutees</span>
                         </p>
-                        <div className="horizontal-scroll pb-4 cursor-move">
+                        <div className="horizontal-scroll pb-4 cursor-grab">
 
                             {
                                 testimonials.tutees.map((testimonial, key) => (

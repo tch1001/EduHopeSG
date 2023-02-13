@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Button } from './Button';
 import { Icon } from "./Icon";
@@ -26,7 +25,6 @@ const Links = () => {
 
 
 export const Header = () => {
-    const router = useRouter();
     const [navbar, setNavbar] = useState(false);
 
     useEffect(() => {
@@ -49,15 +47,16 @@ export const Header = () => {
     return (
         <header className={`px-12 py-2 bg-blue text-sm font-medium ${navbar ? "rounded-b-md" : ""}`}>
             <div className="flex flex-row w-full justify-between">
-                <Image
-                    className="rounded-full md:w-11 h-auto"
-                    alt="Eduhope logo"
-                    src="/logo.png"
-                    quality={1}
-                    width={55}
-                    height={55}
-                    onClick={() => router.push("/")}
-                />
+                <Link href="/" passHref>
+                    <Image
+                        className="rounded-full md:w-11 h-auto"
+                        alt="Eduhope logo"
+                        src="/logo.png"
+                        quality={1}
+                        width={55}
+                        height={55}
+                    />
+                </Link>
                 <nav className="hidden sm:flex flex-row gap-x-5 my-auto">
                     <div className="flex flex-row gap-x-5 my-auto">
                         <Links />

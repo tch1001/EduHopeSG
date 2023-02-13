@@ -3,12 +3,14 @@ import { Button } from "../components/Button";
 import { Container } from "../components/Container";
 import { SubjectCard } from "../components/SubjectCard";
 import { BenefitCard } from "../components/home/BenefitCard";
+import { TestimonialCard } from "../components/home/TestimonialCard";
 import { useEffect, useState } from "react";
 
-export default function Home({ subjects }) {
+export default function Home({ subjects, testimonials }) {
     const [width, setWidth] = useState(0);
 
     useEffect(() => {
+        // update cover image width
         const updateWidth = () => setWidth(window.innerWidth)
 
         updateWidth();
@@ -32,8 +34,8 @@ export default function Home({ subjects }) {
                     <p>Empowering students through free and flexible tutoring.</p>
                 </div>
             </div>
-            <Container>
-                <div className="flex flex-col items-center my-12 gap-9">
+            <Container className="flex flex-col gap-20 mt-9">
+                <div className="flex flex-col items-center gap-9">
                     <BenefitCard
                         illustration="/images/landing_page/study_anywhere.png"
                         tagline="Free and flexible consultations"
@@ -62,7 +64,7 @@ export default function Home({ subjects }) {
                         description="Get personalized attention from young veterans who have excelled in their studies and reach your full potential."
                     />
                 </div>
-                <div className="flex flex-col items-center my-12 gap-9">
+                <div className="flex flex-col items-center gap-9">
                     <p className="text-2xl font-semibold">Subjects available</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
                         {
@@ -73,7 +75,6 @@ export default function Home({ subjects }) {
                                     name={subject.name}
                                     stream={subject.course}
                                     tutors={subject.tutor_count}
-                                    className="cursor-pointer"
                                     href={`/subjects/${key}`}
                                 />
                             ))
@@ -83,24 +84,45 @@ export default function Home({ subjects }) {
                         Explore more subjects
                     </Button>
                 </div>
+                <div className="flex flex-col items-center my-12 gap-9">
+                    <p className="text-2xl font-semibold">
+                        Testimonials from {" "}
+                        <span className="text-dark-aqua underline">tutors</span>
+                    </p>
+                    <div className="horizontal-scroll">
+                        
+                        {
+                            testimonials.tutors.map((testimonial, key) => (
+                                <TestimonialCard
+                                    key={key}
+                                    testimonial={testimonial.testimonial}
+                                    name={testimonial.name}
+                                    member_since={testimonial.joined}
+                                    stream={testimonial.stream_taught}
+                                    institution={testimonial.current_institution}
+                                />
+                            ))
+                        }
+                    </div>
+                </div>
             </Container>
         </div>
     )
 }
 
 export const getServerSideProps = async () => {
-    // TODO: Request from back end server using fetch()
+    // NOTE: Request from back end server using fetch()
     // JSON file is used as a placeholder for development
     // purposes and will not be used in production!
-    const file = await import("../data/subjects.json");
-    const subjects = Object.values(JSON.parse(JSON.stringify(file)));
+    const transform = (object) => JSON.parse(JSON.stringify(object));
 
-    // only need 9 for landing
-    subjects.splice(9);
+    const subjects = transform(await import("../data/subjects.json"));
+    const testimonials = transform(await import("../data/testimonials.json"));
 
     return {
         props: {
-            subjects
+            subjects: Object.values(subjects).slice(0, 9),
+            testimonials
         }
     }
 } 

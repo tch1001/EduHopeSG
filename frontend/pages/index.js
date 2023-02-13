@@ -93,7 +93,6 @@ export default function Home({ subjects, testimonials }) {
                     height={width}
                     quality={80}
                     priority
-                    layout
                     alt=""
                 />
                 <div className={`${styles.cover} flex flex-col gap-1 m-auto text-white text-center text-3xl`}>

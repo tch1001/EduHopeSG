@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const ICON_SIZE = 48;
+const ICON_QUALITY = 60;
 
 const FooterSectionHeader = ({ children }) => (
     <p className="mb-1.5 text-xs uppercase font-semibold text-gray-800">
@@ -74,15 +75,15 @@ export const Footer = () => {
                 <div className="flex flex-col gap-1.5">
                     <div>
                         <FooterSectionHeader>Connect with us</FooterSectionHeader>
-                        <div className="grid grid-cols-3 gap-x-2 my-1">
-                            <Link href="https://www.facebook.com/eduhopesg/" target="_blank" passHref>
+                        <div className="grid grid-cols-3 gap-2 my-1">
+                            <Link href="https://t.me/eduhopesg/" target="_blank" passHref>
                                 <Image
                                     className="rounded-full md:w-11 h-auto"
-                                    src="/images/facebook.png"
+                                    src="/images/telegram.png"
                                     width={ICON_SIZE}
                                     height={ICON_SIZE}
-                                    quality={1}
-                                    alt="Our Facebook account"
+                                    quality={ICON_QUALITY}
+                                    alt="Our Telegram channel"
                                 />
                             </Link>
                             <Link href="https://www.instagram.com/eduhopesg/" target="_blank" passHref>
@@ -91,9 +92,19 @@ export const Footer = () => {
                                     src="/images/instagram.png"
                                     width={ICON_SIZE}
                                     height={ICON_SIZE}
-                                    quality={1}
+                                    quality={ICON_QUALITY}
                                     alt="Our Instagram account"
 
+                                />
+                            </Link>
+                            <Link href="https://www.tiktok.com/@eduhopesg" target="_blank" passHref>
+                                <Image
+                                    className="rounded-full md:w-11 h-auto"
+                                    src="/images/tiktok.png"
+                                    width={ICON_SIZE}
+                                    height={ICON_SIZE}
+                                    quality={ICON_QUALITY}
+                                    alt="Our TikTok account"
                                 />
                             </Link>
                             <Link href="mailto:contact@eduhopesg.com" passHref>
@@ -102,7 +113,7 @@ export const Footer = () => {
                                     src="/images/email.png"
                                     width={ICON_SIZE}
                                     height={ICON_SIZE}
-                                    quality={1}
+                                    quality={ICON_QUALITY}
                                     alt="Our email address"
                                 />
                             </Link>

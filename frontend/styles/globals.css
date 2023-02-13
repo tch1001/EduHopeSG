@@ -2,10 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Body and scrollbar styling */
+
 body {
     background-color: #fffdfa;
     color: #2c2c2c;
 }
+
+::-webkit-scrollbar {
+  @apply w-1.5;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 rounded-md hover:bg-gray-500;
+}
+
+
+/* Landing page styles, todo: put in module.css*/
 
 div.cover {
     @apply absolute top-1/2 left-1/4 sm:left-1/2;

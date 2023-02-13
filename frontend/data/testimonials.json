@@ -64,6 +64,27 @@
             "stream": "IP",
             "joined": "2023-01-23",
             "current_institution": "Dunman High School"
+        },
+        {
+            "testimonial": "I never thought I would find such great help with my studies, but this platform has exceeded all of my expectations. The free and flexible virtual tutoring has allowed me to get the personalized attention I need to succeed, and I couldn't be happier with my experience.",
+            "name": "Emily",
+            "stream": "A-Level",
+            "joined": "2022-08-09",
+            "current_institution": "JPJC"
+        },
+        {
+            "testimonial": "The ability to form meaningful relationships with experienced tutors has been a game-changer for me. I feel like I have a new support system in my studies, and I am so grateful for the opportunity to learn and grow with the help of this platform",
+            "name": "Alex",
+            "stream": "O-Level",
+            "joined": "2022-03-20",
+            "current_institution": "Greendale Secondary School"
+        },
+        {
+            "testimonial": "This platform has truly empowered my education. The virtual format makes it so easy to get the help I need, and the free and flexible consultations have been a lifesaver. I would highly recommend this platform to anyone who wants to take their studies to the next level.",
+            "name": "Jessica",
+            "stream": "IP",
+            "joined": "2023-01-23",
+            "current_institution": "Dunman High School"
         }
     ]
 }

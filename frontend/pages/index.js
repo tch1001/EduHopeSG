@@ -119,6 +119,28 @@ export default function Home({ subjects, testimonials }) {
                         }
                     </div>
                 </div>
+                <div className="flex flex-col items-center my-12 gap-9">
+                    <p className="text-2xl font-semibold">
+                        Testimonials from {" "}
+                        <span className="text-dark-aqua underline">tutees</span>
+                    </p>
+                    <div className="horizontal-scroll">
+
+                        {
+                            testimonials.tutees.map((testimonial, key) => (
+                                <TestimonialCard
+                                    key={key}
+                                    testimonial={testimonial.testimonial}
+                                    name={testimonial.name}
+                                    member_since={testimonial.joined}
+                                    stream={testimonial.stream}
+                                    institution={testimonial.current_institution}
+                                    tutor={false}
+                                />
+                            ))
+                        }
+                    </div>
+                </div>
             </Container>
         </div>
     )

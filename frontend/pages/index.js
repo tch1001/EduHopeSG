@@ -6,6 +6,8 @@ import { BenefitCard } from "../components/home/BenefitCard";
 import { TestimonialCard } from "../components/home/TestimonialCard";
 import { useEffect, useState } from "react";
 
+import styles from "../styles/Home.module.css";
+
 const SCROLL_MULTIPLIER = 1.5;
 const LISTENER_OPTIONS = {
     capture: true,
@@ -21,10 +23,10 @@ export default function Home({ subjects, testimonials }) {
         window.addEventListener("resize", updateWidth, LISTENER_OPTIONS);
 
         // horizontal scrolling
-        const horizontals = document.querySelectorAll(".horizontal-scroll");
+        const horizontals = [...document.getElementsByClassName(styles["horizontal-scroll"])]
 
         horizontals.forEach((horizontal) => {
-            horizontal.addEventListener("wheel", invertScroll, LISTENER_OPTIONS);
+            horizontal.addEventListener("wheel", invertScroll, { ...LISTENER_OPTIONS, passive: false });
 
             // side scrolling
 
@@ -33,7 +35,7 @@ export default function Home({ subjects, testimonials }) {
             let scrollLeft;
 
             horizontal.addEventListener("mousedown", start, LISTENER_OPTIONS);
-            horizontal.addEventListener("mousemove", scroll, LISTENER_OPTIONS);
+            horizontal.addEventListener("mousemove", scroll, { ...LISTENER_OPTIONS, passive: false });
             horizontal.addEventListener("mouseleave", down, LISTENER_OPTIONS);
             horizontal.addEventListener("mouseup", down, LISTENER_OPTIONS);
 
@@ -94,7 +96,7 @@ export default function Home({ subjects, testimonials }) {
                     layout
                     alt=""
                 />
-                <div className="cover flex flex-col gap-1 m-auto text-white text-center text-3xl">
+                <div className={`${styles.cover} flex flex-col gap-1 m-auto text-white text-center text-3xl`}>
                     <p className="uppercase font-bold">Connect, Learn and Grow</p>
                     <p>Empowering students through free and flexible tutoring.</p>
                 </div>
@@ -155,7 +157,7 @@ export default function Home({ subjects, testimonials }) {
                             Testimonials from {" "}
                             <span className="text-dark-aqua underline">tutors</span>
                         </p>
-                        <div className="horizontal-scroll pb-4 cursor-grab">
+                        <div className={`${styles["horizontal-scroll"]} pb-4 cursor-grab`}>
 
                             {
                                 testimonials.tutors.map((testimonial, key) => (
@@ -176,7 +178,7 @@ export default function Home({ subjects, testimonials }) {
                             Testimonials from {" "}
                             <span className="text-dark-aqua underline">tutees</span>
                         </p>
-                        <div className="horizontal-scroll pb-4 cursor-grab">
+                        <div className={`${styles["horizontal-scroll"]} pb-4 cursor-grab`}>
 
                             {
                                 testimonials.tutees.map((testimonial, key) => (

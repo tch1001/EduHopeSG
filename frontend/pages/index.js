@@ -24,6 +24,31 @@ export default function Home({ subjects, testimonials }) {
                 e.preventDefault();
                 horizontal.scrollLeft += convertRemToPixels(28) * Math.sign(e.deltaY);
             });
+
+            // side scrolling
+            const scrollMultiplier = 1;
+
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            
+            horizontal.addEventListener("mousedown", (e) => {
+                isDown = true
+                startX = e.pageX - horizontal.offsetLeft;
+                scrollLeft = horizontal.scrollLeft;
+            });
+            
+            horizontal.addEventListener("mouseleave", () => isDown = false);
+            horizontal.addEventListener("mouseup", () => isDown = false);
+            
+            horizontal.addEventListener("mousemove", (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+
+                const x = e.pageX - horizontal.offsetLeft;
+                const walk = (x - startX) * scrollMultiplier;
+                horizontal.scrollLeft = scrollLeft - walk;
+            })
         });
 
         function convertRemToPixels(rem) {

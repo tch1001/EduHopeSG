@@ -11,13 +11,14 @@ const AccordionItem = ({ header, body }) => {
     return (
         <div className="p-3">
             <button
-                className={`flex flex-row justify-between w-full font-semibold ${toggle ? "text-dark-blue" : ""}`}
+                className={`flex flex-row justify-between text-left w-full font-semibold ${toggle ? "text-dark-blue" : ""}`}
                 onClick={handleToggle}
             >
                 <span>{header}</span>
                 <Icon
                     className={toggle ? "rotate-180" : ""}
                     icon="chevron-down"
+                    alt=""
                     width={3}
                     height={3}
                 />

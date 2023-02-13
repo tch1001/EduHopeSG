@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Button } from './Button';
 import { Icon } from "./Icon";
@@ -41,7 +41,7 @@ export const Header = () => {
     }
 
     const LoginButton = () => (
-        <Button secondary onClick={() => router.push("/login")}>
+        <Button secondary href="/login">
             Login
         </Button>
     )

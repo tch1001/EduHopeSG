@@ -73,18 +73,22 @@ export default function Home({ subjects }) {
                                     name={subject.name}
                                     stream={subject.course}
                                     tutors={subject.tutor_count}
+                                    className="cursor-pointer"
+                                    href={`/subjects/${key}`}
                                 />
                             ))
                         }
                     </div>
-                    <Button>Explore more subjects</Button>
+                    <Button href="/subjects">
+                        Explore more subjects
+                    </Button>
                 </div>
             </Container>
         </div>
     )
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
     // TODO: Request from back end server using fetch()
     // JSON file is used as a placeholder for development
     // purposes and will not be used in production!

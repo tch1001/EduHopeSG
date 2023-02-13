@@ -1,9 +1,9 @@
 import Image from "next/image"
 import { Card } from "./card"
 
-export const SubjectCard = ({ image, name, stream, tutors }) => {
+export const SubjectCard = ({ image, name, stream, tutors, ...props }) => {
     return (
-        <Card>
+        <Card {...props}>
             {
                 image && <Image src={image} width={382} height={200} alt="" />
             }

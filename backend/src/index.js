@@ -16,6 +16,9 @@ import log from "./utils/logging.js";
  * to using Redis or a Memory Store. For a package that uses a memory store,
  * use https://www.npmjs.com/package/express-limiter or
  * https://www.npmjs.com/package/bottleneck
+ * 
+ * See https://github.com/express-rate-limit/express-rate-limit#store
+ * if want to use current package in the future
  */
 import rateLimit from "express-rate-limit";
 

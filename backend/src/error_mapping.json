@@ -256,5 +256,11 @@
         "name": "Error deleting all tutees",
         "message": "An internal server error occurred while trying to delete all tutees from tutor",
         "details": "Retry the request and contact the site developers or site admins if the problem persists"
+    },
+    "rate-limited": {
+        "status": 429,
+        "name": "Too many requests, please try again later.",
+        "message": "Your connection is being rate limited due to too many requests being sent by your connection",
+        "details": "Please try again later, and contact the site developers or site admins if the problem persists"
     }
 }

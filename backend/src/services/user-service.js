@@ -63,7 +63,6 @@ export function hashPassword(password, salt = crypto.randomBytes(512)) {
          * 
          * Every hashing password, user login would require 2.09 MB from system.
          * Should be able to handle 1,800 user login requests/second under 4 GB memory constraint
-         * TODO: Rate limit requests
          */
 
         crypto.scrypt(password, salt, 128, { N: 2048, r: 8, p: 1 }, (err, result) => {

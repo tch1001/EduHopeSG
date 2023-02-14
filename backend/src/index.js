@@ -22,14 +22,26 @@ import log from "./utils/logging.js";
  */
 import rateLimit from "express-rate-limit";
 
-// Standard rate limiter for all endpoints (3 requests/second)
-const limiter = rateLimit({
-    windowMs: 1000, // 1 second
-    max: 3, // Limit each IP to 3 requests 1 second
+const limiterOptions = {
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     message: new ServiceError("rate-limited")
+}
+
+// Standard rate limiter for all endpoints (3 requests/second)
+const globalLimiter = rateLimit({
+    windowMs: 1000, // 1 second
+    max: 3, // Limit each IP to 3 requests 1 second
+    ...limiterOptions
 });
+
+// Rate limiter for user endpoints (1 request/second)
+// as there are expensive operations involved
+const userLimiter = rateLimit({
+    windowMs: 1000, // 1 second
+    max: 1, // Limit each IP to 3 requests 1 second
+    ...limiterOptions
+})
 
 // Import routes
 const apiV1Router = Router()
@@ -39,7 +51,7 @@ import tutorRoutes from "./routes/tutor-route.js";
 import pool from "./utils/database.js";
 
 const app = express();
-app.use(limiter);
+app.use(globalLimiter);
 app.use(express.json());
 app.use(cookieParser());
 
@@ -67,7 +79,9 @@ app.disable("x-powered-by");
 app.set("trust proxy", 1);
 
 // Routers
+apiV1Router.use("/user", userLimiter);
 apiV1Router.use("/user", userRoutes);
+
 apiV1Router.use("/tutee", tuteeRoutes);
 apiV1Router.use("/tutor", tutorRoutes);
 app.use("/api/v0.1", apiV1Router);

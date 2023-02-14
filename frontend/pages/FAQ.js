@@ -1,7 +1,7 @@
 import { Container } from "../components/Container"
 import { Accordion } from "../components/Accordion";
 
-export default function FAQ({ tuteeFAQ, tutorFAQ }) {
+const FAQ = ({ tuteeFAQ, tutorFAQ }) => {
     return (
         <Container className="p-6 max-w-5xl">
             <div>
@@ -32,4 +32,6 @@ export const getStaticProps = async () => {
             tutorFAQ: faq.tutor
         }
     }
-} 
+}
+
+export default FAQ;

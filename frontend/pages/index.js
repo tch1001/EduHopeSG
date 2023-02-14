@@ -14,7 +14,7 @@ const LISTENER_OPTIONS = {
     passive: true
 }
 
-export default function Home({ subjects, testimonials }) {
+const Home = ({ subjects, testimonials }) => {
     const [width, setWidth] = useState(0);
 
     useEffect(() => {
@@ -215,4 +215,6 @@ export const getServerSideProps = async () => {
             testimonials
         }
     }
-} 
+}
+
+export default Home;

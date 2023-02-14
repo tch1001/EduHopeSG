@@ -3,13 +3,13 @@ import dynamic from "next/dynamic"
 
 import Image from 'next/image';
 
-export const Icon = ({ icon, height = 32, width = 32, className = "w-6 h-6 stroke-1", ...props }) => (
+export const Icon = ({ icon, height = 32, width = 32, className, ...props }) => (
     <Image
         priority
         src={`/icons/${icon}.svg`}
         height={height}
         width={width}
-        className={className}
+        className={`w-6 h-6 stroke-1 ${className}`}
         {...props}
     />
 )

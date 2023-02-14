@@ -26,3 +26,5 @@ export const TestimonialCard = ({
         </Card>
     )
 }
+
+export default TestimonialCard

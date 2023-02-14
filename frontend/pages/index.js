@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { Button } from "../components/Button";
-import { Container } from "../components/Container";
-import { SubjectCard } from "../components/SubjectCard";
-import { BenefitCard } from "../components/home/BenefitCard";
-import { TestimonialCard } from "../components/home/TestimonialCard";
+import Button from "../components/Button";
+import Container from "../components/Container";
+import SubjectCard from "../components/SubjectCard";
+import BenefitCard from "../components/home/BenefitCard";
+import TestimonialCard from "../components/home/TestimonialCard";
 import { useEffect, useState } from "react";
 
 import styles from "../styles/Home.module.css";

@@ -6,3 +6,5 @@ export const Container = ({ children, className, center, ...props }) => (
         {children}
     </div>
 )
+
+export default Container;

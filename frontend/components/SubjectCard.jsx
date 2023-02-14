@@ -1,5 +1,5 @@
-import Image from "next/image"
-import { Card } from "./Card"
+import Image from "next/image";
+import { Card } from "./Card";
 
 export const SubjectCard = ({ image, name, stream, tutors, ...props }) => {
     return (
@@ -15,3 +15,5 @@ export const SubjectCard = ({ image, name, stream, tutors, ...props }) => {
         </Card>
     )
 }
+
+export default SubjectCard;

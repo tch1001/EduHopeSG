@@ -34,3 +34,5 @@ export const BenefitCard = ({ illustration, tagline, description, alternate = fa
         </div>
     )
 }
+
+export default BenefitCard;

@@ -1,5 +1,5 @@
-import { Container } from "../components/Container"
-import { Accordion } from "../components/Accordion";
+import Container from "../components/Container";
+import Accordion from "../components/Accordion";
 
 const FAQ = ({ tuteeFAQ, tutorFAQ }) => {
     return (

@@ -17,3 +17,5 @@ export const Card = ({ children, className, href, ...props }) => {
 
     return CardComponent;
 }
+
+export default Card;

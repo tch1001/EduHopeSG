@@ -5,7 +5,7 @@ import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
 import ServiceError from "../classes/ServiceError.js";
 import { notifyPasswordChange, sendEmailUpdateConfirmation, sendEmailUpdateNotification } from "./email-service.js";
-import { getSubjectsByID } from "./subject-service.js";
+import { getSubjects } from "./subject-service.js";
 
 const EDUCATION_TYPES = ["Secondary 3", "Secondary 4", "Secondary 5", "JC 1", "JC 2", "O level Private candidate", "A level Private candidate"];
 const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i']; // n', o', a'lvl, pri, BI, IP
@@ -637,7 +637,7 @@ export async function registerTutor(userID, attributes) {
     if (!valid) throw new ServiceError("user-invalid");
 
     // filter out valid subjects
-    const subjects = await getSubjectsByID(attributes.subjects);
+    const subjects = await getSubjects(attributes.subjects);
     attributes.subjects = subjects.map(({ id }) => id);
 
     try {

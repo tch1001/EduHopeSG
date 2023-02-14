@@ -5,8 +5,8 @@ import { query } from "../utils/database.js";
  * @param {number[]} subjects List of subject IDs
  * @returns {Promise<Subject[]>} Array of subject(s) information
  */
-export async function getSubjectsByID(subjects) {
-    const queryText = 
+export async function getSubjects(subjects) {
+    const queryText =
         (`\
         SELECT S.id, S.name, C.name AS course
             FROM subjects as S
@@ -21,12 +21,32 @@ export async function getSubjectsByID(subjects) {
     return data.filter((d) => d);
 }
 
+export async function getSubjectsByID(subjects) {
+    const queryText =
+        (`\
+        SELECT S.id, S.name, C.name AS course
+            FROM subjects as S
+            INNER JOIN courses C ON S.course = C.id
+            WHERE S.id = $1;\
+        `);
+
+    const queries = subjects.map(subjectsID => query(queryText, [subjectsID]));
+    const results = await Promise.all(queries);
+    const data = results.map(({ rows }) => rows[0]);
+
+    return {
+        success: true,
+        message: `${subjects.length} rows returned from database`,
+        subjects: data.filter((d) => d)
+    };
+}
+
 /**
  * Get subjects by stream
  * @param {["A Levels", "O Levels", "International Baccalaureate"]} stream Subject stream
  * @returns {Promise<Subject[]>}
  */
-export async function getSubjectsByStream(stream) {
+export async function getSubjectsByCourse(stream) {
     const queryText =
         (`\
         SELECT C.id AS course_id, C.name AS course, S.id AS subject_id, S.name AS subject
@@ -34,7 +54,12 @@ export async function getSubjectsByStream(stream) {
             INNER JOIN subjects S ON S.course = C.id
             WHERE C.name = '%$1'; 
         `);
+
+    const { rows: subjects } = await query(queryText, [stream]);
     
-    const { rows } = await query(queryText, [stream]);
-    return rows;
+    return {
+        success: true,
+        message: `${subjects.length} rows returned from database`,
+        subjects
+    }
 }

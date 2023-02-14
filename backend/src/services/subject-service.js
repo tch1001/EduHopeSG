@@ -1,19 +1,40 @@
+import { query } from "../utils/database.js";
+
 /**
  * Convert an array of subjects to names
  * @param {number[]} subjects List of subject IDs
  * @returns {Promise<Subject[]>} Array of subject(s) information
  */
-export async function getSubjects(subjects) {
-    const queryText = `
-    SELECT subjects.id, subjects.name, courses.name AS course
-    FROM subjects
-    INNER JOIN courses ON courses.id = subjects.course
-    WHERE subjects.id = $1;
-    `;
+export async function getSubjectsByID(subjects) {
+    const queryText = 
+        (`\
+        SELECT S.id, S.name, C.name AS course
+            FROM subjects as S
+            INNER JOIN courses C ON S.course = C.id
+            WHERE S.id = $1;\
+        `);
 
     const queries = subjects.map(subjectsID => query(queryText, [subjectsID]));
     const results = await Promise.all(queries);
     const data = results.map(({ rows }) => rows[0]);
 
     return data.filter((d) => d);
+}
+
+/**
+ * Get subjects by stream
+ * @param {["A Levels", "O Levels", "International Baccalaureate"]} stream Subject stream
+ * @returns {Promise<Subject[]>}
+ */
+export async function getSubjectsByStream(stream) {
+    const queryText =
+        (`\
+        SELECT C.id AS course_id, C.name AS course, S.id AS subject_id, S.name AS subject
+            FROM courses C
+            INNER JOIN subjects S ON S.course = C.id
+            WHERE C.name = '%$1'; 
+        `);
+    
+    const { rows } = await query(queryText, [stream]);
+    return rows;
 }

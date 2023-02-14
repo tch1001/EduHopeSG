@@ -1,30 +1,46 @@
-# First-time setups
+# EduhopeSG - A non-profit peer-to-peer consult project
 
-## Setting up the development environment
+[EduhopeSG's website](https://eduhopesg.com) frontend and backend code.
 
-1. **Recommend** that node.js version is the current LTS version [v18.12.1](<https://nodejs.org/en/>)
-for best compatibility and the least amount of bugs as it is written and tested in this version
+This is project EduHope - which was started by a group of four A-level graduates 
+from RI and HCI. This project hopes to leverage peer-to-peer consults to provide a
+more affordable option for students.
+It first started when we saw how the cheapest tuition rates go for tens of dollars
+per hour, which means that many of us that are left out by the virtue of our inability to pay.
 
-2. Download and install code and dependencies (including development ones).
-    ```
-    git clone <this-repo>
-    npm install
-    npm audit fix --force
-    ```
+## Our belief
 
-3. Refer to `.env.example` and create a `.env` file **with the same format** at the same directory level
-as `.env.example`
+We believe in the power of free **peer-to-peer consultations** in creating a more affordable option for students.
 
-4. Then `npm run` to run
+We believe that the high cost of good-quality tuition puts many groups in society from getting
+the support that they need in their studies - from students from underprivileged backgrounds
+to others who may have been affected by the pandemic. Is that fair? Is that how it should be?
 
-## Setting up for production environment
+Additionally, we realised that many students do not require full-blown academic tuition,
+such as high quality notes and prepared lessons. Sometimes, what we need is just a
+friendly person to answer our occasional queries.
 
-1. Ensure that the `.env` file is correctly configured
+At the same time, we hope to create a way for those who want to give back but don’t have the time
+to create detailed lesson plans and materials.
 
-2. Build the Next.js application
-    ```
-    npm test
-    npm run build
-    ```
+## Why should you volunteer?
 
-3. `npm run start` to start serving the application
+Do you believe in our vision? Do you want to help people without spending so much time preparing materials? 
+Then this is just the thing for you!
+
+### Tutee benefits - free and flexible consultations!
+
+* form meaningful relationships!
+* seek advice outside of academics!
+* learn from the young veterans (they have A for A levels and A1 for O level subjects)!
+
+### Tutor benefits - joy from helping and giving back!
+
+* Open to all secondary school (taking O Lvls) and JC students (taking A Lvls)
+* Will last for one month (around 4 sessions). Volunteers can sign up for a longer
+  duration, but tutees will have to “renew” their subscription
+* 1-1 sessions
+* Virtual consultations & Face-to-face
+
+***“The most selfish thing you can do in this world is help someone else, because the gratification, the goodness that comes to you, the good feeling, the good feeling from helping others—nothing is better than that.”***
+*-Denzel Washington, Academy Award Actor*

@@ -1,0 +1,90 @@
+{
+    "tutors": [
+        {
+            "testimonial": "I have been thoroughly impressed with the level of support and resources provided by this platform. As a tutor, I have the opportunity to make a real impact in students' lives, and I couldn't be happier to be a part of this community.",
+            "name": "David",
+            "stream_taught": "A-Level",
+            "joined": "2022-11-08",
+            "current_institution": "ACJC"
+        },
+        {
+            "testimonial": "Volunteering as a tutor on this platform has been a truly rewarding experience. The ability to help students and give back to the community is a joy that cannot be beat. Plus, the virtual format makes it easy to fit tutoring into my busy schedule.",
+            "name": "Sarah",
+            "stream_taught": "O-Level and A-Level",
+            "joined": "2022-09-25",
+            "current_institution": "NUS Computer Science"
+        },
+        {
+            "testimonial": "Volunteering as a tutor on this platform has been a truly rewarding experience. The ability to help students and give back to the community is a joy that cannot be beat. Plus, the virtual format makes it easy to fit tutoring into my busy schedule.",
+            "name": "Micheal",
+            "stream_taught": "O-Level",
+            "joined": "2023-01-03",
+            "current_institution": "NP Data Science"
+        },
+        {
+            "testimonial": "I have been thoroughly impressed with the level of support and resources provided by this platform. As a tutor, I have the opportunity to make a real impact in students' lives, and I couldn't be happier to be a part of this community.",
+            "name": "David",
+            "stream_taught": "A-Level",
+            "joined": "2022-11-08",
+            "current_institution": "ACJC"
+        },
+        {
+            "testimonial": "Volunteering as a tutor on this platform has been a truly rewarding experience. The ability to help students and give back to the community is a joy that cannot be beat. Plus, the virtual format makes it easy to fit tutoring into my busy schedule.",
+            "name": "Sarah",
+            "stream_taught": "O-Level and A-Level",
+            "joined": "2022-09-25",
+            "current_institution": "NUS Computer Science"
+        },
+        {
+            "testimonial": "Volunteering as a tutor on this platform has been a truly rewarding experience. The ability to help students and give back to the community is a joy that cannot be beat. Plus, the virtual format makes it easy to fit tutoring into my busy schedule.",
+            "name": "Micheal",
+            "stream_taught": "O-Level",
+            "joined": "2023-01-03",
+            "current_institution": "NP Data Science"
+        }
+    ],
+    "tutees": [
+        {
+            "testimonial": "I never thought I would find such great help with my studies, but this platform has exceeded all of my expectations. The free and flexible virtual tutoring has allowed me to get the personalized attention I need to succeed, and I couldn't be happier with my experience.",
+            "name": "Emily",
+            "stream": "A-Level",
+            "joined": "2022-08-09",
+            "current_institution": "JPJC"
+        },
+        {
+            "testimonial": "The ability to form meaningful relationships with experienced tutors has been a game-changer for me. I feel like I have a new support system in my studies, and I am so grateful for the opportunity to learn and grow with the help of this platform",
+            "name": "Alex",
+            "stream": "O-Level",
+            "joined": "2022-03-20",
+            "current_institution": "Greendale Secondary School"
+        },
+        {
+            "testimonial": "This platform has truly empowered my education. The virtual format makes it so easy to get the help I need, and the free and flexible consultations have been a lifesaver. I would highly recommend this platform to anyone who wants to take their studies to the next level.",
+            "name": "Jessica",
+            "stream": "IP",
+            "joined": "2023-01-23",
+            "current_institution": "Dunman High School"
+        },
+        {
+            "testimonial": "I never thought I would find such great help with my studies, but this platform has exceeded all of my expectations. The free and flexible virtual tutoring has allowed me to get the personalized attention I need to succeed, and I couldn't be happier with my experience.",
+            "name": "Emily",
+            "stream": "A-Level",
+            "joined": "2022-08-09",
+            "current_institution": "JPJC"
+        },
+        {
+            "testimonial": "The ability to form meaningful relationships with experienced tutors has been a game-changer for me. I feel like I have a new support system in my studies, and I am so grateful for the opportunity to learn and grow with the help of this platform",
+            "name": "Alex",
+            "stream": "O-Level",
+            "joined": "2022-03-20",
+            "current_institution": "Greendale Secondary School"
+        },
+        {
+            "testimonial": "This platform has truly empowered my education. The virtual format makes it so easy to get the help I need, and the free and flexible consultations have been a lifesaver. I would highly recommend this platform to anyone who wants to take their studies to the next level.",
+            "name": "Jessica",
+            "stream": "IP",
+            "joined": "2023-01-23",
+            "current_institution": "Dunman High School"
+        }
+    ]
+}

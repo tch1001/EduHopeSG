@@ -1,10 +1,11 @@
 import crypto from "crypto";
 import validator from "validator";
 import jwt from "jsonwebtoken";
-import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
+import ServiceError from "../classes/ServiceError.js";
 import { notifyPasswordChange, sendEmailUpdateConfirmation, sendEmailUpdateNotification } from "./email-service.js";
+import { getSubjects } from "./subject-service.js";
 
 const EDUCATION_TYPES = ["Secondary 3", "Secondary 4", "Secondary 5", "JC 1", "JC 2", "O level Private candidate", "A level Private candidate"];
 const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i']; // n', o', a'lvl, pri, BI, IP
@@ -129,13 +130,6 @@ export function decrypt(text) {
 }
 
 /**
- * @typedef {Object} Subject
- * @property {string} id Subject's ID in the database
- * @property {string} name Subject name
- * @property {string} course Subject's course ID
- */
-
-/**
  * @typedef {Object} BasicUser
  * @property {string} id User's ID
  * @property {string} name User's name
@@ -225,26 +219,6 @@ export function verifyAuthentication(cookie) {
     } catch (err) {
         return null;
     }
-}
-
-/**
- * Convert an array of subjects to names
- * @param {number[]} subjects List of subject IDs
- * @returns {Promise<Subject[]>} Array of subject(s) information
- */
-export async function getSubjects(subjects) {
-    const queryText = `
-    SELECT subjects.id, subjects.name, courses.name AS course
-    FROM subjects
-    INNER JOIN courses ON courses.id = subjects.course
-    WHERE subjects.id = $1;
-    `;
-
-    const queries = subjects.map(subjectsID => query(queryText, [subjectsID]));
-    const results = await Promise.all(queries);
-    const data = results.map(({ rows }) => rows[0]);
-
-    return data.filter((d) => d);
 }
 
 /**

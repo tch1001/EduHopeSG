@@ -131,13 +131,6 @@ export function decrypt(text) {
 }
 
 /**
- * @typedef {Object} Subject
- * @property {string} id Subject's ID in the database
- * @property {string} name Subject name
- * @property {string} course Subject's course ID
- */
-
-/**
  * @typedef {Object} BasicUser
  * @property {string} id User's ID
  * @property {string} name User's name

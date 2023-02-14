@@ -29,9 +29,19 @@ router.get("/course/:course", (req, res) => {
     subjectService.getSubjectsByCourse(course)
         .then((response) => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
-})
+});
 
-// more detailed
-// router.get("/:id");
+router.get("/tutors/:subject", (req, res) => {
+    const { subject } = req.params;
+
+    if (!subject) {
+        const error = new RouteError("missing-arguments", req.originalUrl);
+        return standardRouteErrorCallback(res, req, error);
+    }
+
+    subjectService.getTutorsBySubject(subject)
+        .then((response) => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+});
 
 export default router;

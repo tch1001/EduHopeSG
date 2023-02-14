@@ -43,19 +43,19 @@ export async function getSubjectsByID(subjects) {
 
 /**
  * Get subjects by stream
- * @param {["A Levels", "O Levels", "International Baccalaureate"]} stream Subject stream
+ * @param {number} course Course ID
  * @returns {Promise<Subject[]>}
  */
-export async function getSubjectsByCourse(stream) {
+export async function getSubjectsByCourse(course) {
     const queryText =
         (`\
         SELECT C.id AS course_id, C.name AS course, S.id AS subject_id, S.name AS subject
             FROM courses C
             INNER JOIN subjects S ON S.course = C.id
-            WHERE C.name = '%$1'; 
+            WHERE C.id = $1
         `);
 
-    const { rows: subjects } = await query(queryText, [stream]);
+    const { rows: subjects } = await query(queryText, [course]);
     
     return {
         success: true,

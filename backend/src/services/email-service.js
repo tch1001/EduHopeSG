@@ -5,9 +5,12 @@ import FormData from "form-data";
 import Mailgun from "mailgun.js";
 import validator from "validator";
 import { compile } from "html-to-text";
-import * as UserService from "./user-service.js";
+
 import ServiceError from "../classes/ServiceError.js";
 import log from "../utils/logging.js";
+
+import * as UserService from "./user-service.js";
+import { getSubjects } from "./subject-service.js";
 
 const { isEmail } = validator;
 
@@ -85,7 +88,7 @@ async function sendEmail(email, subject, text, html) {
 export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
     if (!tutee || !tutor || !subjectIDs) throw new ServiceError("missing-arguments");
 
-    const subjects = await UserService.getSubjects(subjectIDs);
+    const subjects = await getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `${d.course} ${d.name}`).join(", ");
 
     const message = "You have a new tuition request";
@@ -134,7 +137,7 @@ export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
     // NOTE: should we change the status of the relationship back to 0
     // when the tutee changes subjects
     const message = "A tutee changed subjects";
-    const newSubjects = await UserService.getSubjects(newSubjectIDs);
+    const newSubjects = await getSubjects(newSubjectIDs);
     const formattedSubjects = newSubjects.map(d => `${d.course} ${d.name}`).join(", ");
 
     // preparing HTML file
@@ -171,7 +174,7 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
     if (!tutee || !tutor || !subjectIDs) throw new ServiceError("missing-arguments");
 
     const message = "Congratulations, are you enrolled";
-    const subjects = await UserService.getSubjects(subjectIDs);
+    const subjects = await getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
 
     // preparing HTML file
@@ -207,7 +210,7 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectIDs, reason) {
     if (!tutee || !tutor || !subjectIDs || !reason) throw new ServiceError("missing-arguments");
 
     const message = "Sorry, your tuition request has been declined";
-    const subjects = await UserService.getSubjects(subjectIDs);
+    const subjects = await getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
 
     // preparing HTML file
@@ -248,7 +251,7 @@ export async function notifyTuteeRemoval(tutee, tutor, subjectIDs, reason) {
     if (!tutee || !tutor || !subjectIDs || !reason) throw new ServiceError("missing-arguments");
 
     const message = "Sorry, your tutor has decided to stop tutoring you";
-    const subjects = await UserService.getSubjects(subjectIDs);
+    const subjects = await getSubjects(subjectIDs);
     const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
 
     // preparing HTML file
@@ -324,7 +327,7 @@ export async function sendEmailUpdateConfirmation(newEmail, token) {
             "phishing and, if this is an unauthorised change and you did not request for this change,",
             `please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`,
         ].join(" "));
-    
+
     return await sendEmail(
         newEmail,
         `EduhopeSG: Verify email update`,

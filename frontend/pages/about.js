@@ -67,13 +67,13 @@ const About = () => {
                     <h2 className="text-2xl ">Partnerships</h2>
                     <p>
                         This project is in partnership with the{" "}
-                        <Link href="https://www.msf.gov.sg" target="_blank" passHref>
+                        <Link className="link" href="https://www.msf.gov.sg" target="_blank" passHref>
                             Ministry of Social and Family Development
                         </Link>.
                         They help us in referring students in need and also give us advice on how
                         we should collaborate with other government bodies.
                         We are also looking at working with the{" "}
-                        <Link href="https://www.moe.gov.sg" target="_blank" passHref>
+                        <Link className="link" href="https://www.moe.gov.sg" target="_blank" passHref>
                             Ministry of Education
                         </Link>
                         {" "}in the future to help us spread the word around to Secondary and JC students

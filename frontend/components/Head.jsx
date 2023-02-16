@@ -44,4 +44,4 @@ export const HeadProperties = ({
     )
 }
 
-export default Head;
+export default HeadProperties;

@@ -3,41 +3,7 @@ import Image from "next/image";
 import Container from '../../components/Container';
 import Card from '../../components/Card';
 
-export const Courses = (props) => {
-    const courses = [
-        {
-            "name": "GCE A-Level",
-            "link": "/subjects/a-level",
-            "image": "/images/landing_page/subject.jpg",
-            "available_tutors": 10
-        },
-        {
-            "name": "GCE O-Level",
-            "link": "/subjects/o-level",
-            "image": "/images/landing_page/subject.jpg",
-            "available_tutors": 16
-        },
-        {
-            "name": "GCE N-Level",
-            "link": "/subjects/n-level",
-            "image": "/images/landing_page/subject.jpg",
-            "available_tutors": 13
-        },
-        {
-            "name": "Integrated Programme",
-            "link": "/subjects/ip",
-            "image": "/images/landing_page/subject.jpg",
-            "available_tutors": 6
-        },
-        {
-            "name": "International Baccalaureate",
-            "link": "/subjects/ib",
-            "image": "/images/landing_page/subject.jpg",
-            "available_tutors": 4
-        },
-
-    ]
-
+export const Courses = ({ courses }) => {
     return (
         <Container className="p-6 max-w-5xl">
             <div>
@@ -61,6 +27,17 @@ export const Courses = (props) => {
             </main>
         </Container>
     )
+}
+
+export const getStaticProps = async () => {
+    const transform = (object) => JSON.parse(JSON.stringify(object));
+    const courses = transform((await import("../../data/courses.json")).default);
+
+    return {
+        props: {
+            courses
+        }
+    }
 }
 
 export default Courses;

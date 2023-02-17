@@ -93,13 +93,6 @@ const About = ({ teamMembers }) => {
                         who may be interested in joining as a volunteer tutor for VIA hours.
                     </p>
                 </div>
-                {/* <div>
-                    <h2 className="text-2xl ">Join us</h2>
-                    <p>
-                        
-                    </p>
-                </div>
-                Thank you for your support -- EduHope Team */}
             </main>
         </Container>
     )

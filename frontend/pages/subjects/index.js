@@ -18,7 +18,7 @@ export const Courses = ({ courses }) => {
                                 <Image className="min-w-full" src={course.image} width={322} height={200} alt="" />
                                 <div className="pt-2 pb-4 px-6">
                                     <p className="font-medium text-lg text-dark-aqua">{course.name}</p>
-                                    <p className="font-medium text-sm text-dark-blue">{course.available_tutors} tutors available</p>
+                                    <p className="font-medium text-sm text-dark-blue">{course.tutor_count} tutors available</p>
                                 </div>
                             </Card>
                         </Link>

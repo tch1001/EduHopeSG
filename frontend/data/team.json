@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Chien Hao Tan",
+        "role": "Project Head",
+        "image": "/images/team/chien_hao_tan.jpg",
+        "bio": ""
+    },
+    {
+        "name": "Nathaniel Siew",
+        "role": "Project Head",
+        "image": "",
+        "bio": ""
+    },
+    {
+        "name": "Felix Isaac Lim",
+        "role": "Technical Lead",
+        "image": "/images/team/felix_isaac_lim.jpg",
+        "bio": "I'm a full-stack engineer who believes in tech for public good"
+    }
+]

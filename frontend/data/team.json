@@ -16,5 +16,17 @@
         "role": "Technical Lead",
         "image": "/images/team/felix_isaac_lim.jpg",
         "bio": "I'm a full-stack engineer who believes in tech for public good"
+    },
+    {
+        "name": "Sven Tan",
+        "role": "Frontend Developer",
+        "image": "",
+        "bio": ""
+    },
+    {
+        "name": "Glayds Lim",
+        "role": "Frontend Developer",
+        "image": "",
+        "bio": ""
     }
 ]

@@ -18,19 +18,19 @@ export const Footer = () => {
                 <div>
                     <FooterSectionHeader>Subjects</FooterSectionHeader>
                     <div className="flex flex-col gap-y-2 md:gap-y-0.5">
-                        <Link href="/subjects?stream=n_level" passHref>
+                        <Link href="/subjects/n-level" passHref>
                             GCE N-Level tutors
                         </Link>
-                        <Link href="/subjects?stream=o_level" passHref>
+                        <Link href="/subjects/o-level" passHref>
                             GCE O-Level tutors
                         </Link>
-                        <Link href="/subjects?stream=a_level" passHref>
+                        <Link href="/subjects/a-level" passHref>
                             GCE A-Level tutors
                         </Link>
-                        <Link href="/subjects?stream=ip" passHref>
+                        <Link href="/subjects/ip" passHref>
                             IP tutors
                         </Link>
-                        <Link href="/subjects?stream=ib" passHref>
+                        <Link href="/subjects/ib" passHref>
                             IB tutors
                         </Link>
                     </div>
@@ -41,11 +41,11 @@ export const Footer = () => {
                         <Link href="/about" passHref>
                             About us
                         </Link>
-                        <Link href="/tutor-registration" passHref>
-                            Become a tutor
-                        </Link>
                         <Link href="/contact" passHref>
                             Contact us
+                        </Link>
+                        <Link href="/tutor-registration" passHref>
+                            Become a tutor
                         </Link>
                         <Link href="/faq" passHref>
                             FAQ

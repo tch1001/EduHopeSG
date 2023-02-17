@@ -41,9 +41,6 @@ export const Footer = () => {
                         <Link href="/about" passHref>
                             About us
                         </Link>
-                        <Link href="/team" passHref>
-                            Our team
-                        </Link>
                         <Link href="/tutor-registration" passHref>
                             Become a tutor
                         </Link>

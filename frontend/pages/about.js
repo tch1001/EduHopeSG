@@ -1,7 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import Container from "../components/Container";
+import Card from "../components/Card";
 
-const About = () => {
+const About = ({ teamMembers }) => {
     return (
         <Container className="p-6 max-w-5xl">
             <div>
@@ -12,16 +14,16 @@ const About = () => {
                 </p>
             </div>
             <main className="flex flex-col gap-12 py-8">
-                <div>
-                    <h2 className="text-2xl ">Our Mission</h2>
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-2xl">Our Mission</h2>
                     <p>
                         To leverage peer-to-peer consultations to provide a more affordable option for
                         students who may not have access to traditional tutoring services due to financial
                         or other limitations.
                     </p>
                 </div>
-                <div>
-                    <h2 className="text-2xl ">Our Story</h2>
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-2xl">Our Story</h2>
                     <p>
                         EduHope was started by a group of four A-level graduates from RI and HCI.
                         We noticed how the high cost of good-quality tuition puts many groups in society at
@@ -31,16 +33,16 @@ const About = () => {
                         occasional queries.
                     </p>
                 </div>
-                <div>
-                    <h2 className="text-2xl ">Our Philosophy</h2>
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-2xl">Our Philosophy</h2>
                     <p>
                         We aim to provide a solution to this problem by connecting students in need
                         with their students to volunteer tutors who are passionate about giving back
                         to their fellow students, communities and society.
                     </p>
                 </div>
-                <div>
-                    <h2 className="text-2xl ">A win-win</h2>
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-2xl">A win-win</h2>
                     <p>
                         Our project provides a way for those who want to give back to the community
                         but may not have the time to create detailed lesson plans and materials,
@@ -48,8 +50,8 @@ const About = () => {
                         advice outside of their schools.
                     </p>
                 </div>
-                <div>
-                    <h2 className="text-2xl ">Who can benefit?</h2>
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-2xl">Who can benefit?</h2>
                     <p>
                         Our services are open to all secondary school students and JC students
                         and can be conducted both virtually and face-to-face.
@@ -57,14 +59,25 @@ const About = () => {
                         for longer periods.
                     </p>
                 </div>
-                <div>
-                    <h2 className="text-2xl ">Our Team</h2>
-                    <p>
-                        
-                    </p>
+                <div className="flex flex-col gap-6">
+                    <h2 className="text-2xl">Our Team</h2>
+                    <div className="grid gap-6 xs:gap-4 xs:grid-cols-2 sm:grid-cols-3 justify-items-center">
+                        {
+                            teamMembers.map((member, key) => (
+                                <Card className="w-2/3 xs:w-full" key={key}>
+                                    <Image className="min-w-full" src={member.image} width={322} height={200} alt="" />
+                                    <div className="pt-2 pb-4 px-6">
+                                        <p className="font-medium text-lg text-dark-aqua">{member.name}</p>
+                                        <p className="font-medium text-sm text-dark-blue">{member.role}</p>
+                                        <p>{member.bio}</p>
+                                    </div>
+                                </Card>
+                            ))
+                        }
+                    </div>
                 </div>
-                <div>
-                    <h2 className="text-2xl ">Partnerships</h2>
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-2xl">Partnerships</h2>
                     <p>
                         This project is in partnership with the{" "}
                         <Link className="link" href="https://www.msf.gov.sg" target="_blank" passHref>
@@ -80,16 +93,27 @@ const About = () => {
                         who may be interested in joining as a volunteer tutor for VIA hours.
                     </p>
                 </div>
-                <div>
+                {/* <div>
                     <h2 className="text-2xl ">Join us</h2>
                     <p>
                         
                     </p>
                 </div>
-                Thank you for your support -- EduHope Team
+                Thank you for your support -- EduHope Team */}
             </main>
         </Container>
     )
+}
+
+export const getStaticProps = async () => {
+    const transform = (object) => JSON.parse(JSON.stringify(object));
+    const teamMembers = transform((await import("../data/team.json")).default);
+
+    return {
+        props: {
+            teamMembers
+        }
+    }
 }
 
 export default About;

@@ -35,7 +35,7 @@ export const CourseSubjects = ({ course, subjects }) => {
     )
 }
 
-export const getServerSideProps = async ({ query, resolvedUrl }) => {
+export const getServerSideProps = async ({ resolvedUrl }) => {
     const transform = (object) => JSON.parse(JSON.stringify(object));
     const courses = transform((await import("../../../data/courses.json")).default);
     const subjects = transform((await import("../../../data/subjects.json")).default);

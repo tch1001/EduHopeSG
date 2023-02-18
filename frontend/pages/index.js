@@ -141,7 +141,7 @@ const Home = ({ subjects, testimonials }) => {
                                     name={subject.name}
                                     stream={subject.course}
                                     tutors={subject.tutor_count}
-                                    href={`/subjects/${key}`}
+                                    href={subject.link}
                                 />
                             ))
                         }

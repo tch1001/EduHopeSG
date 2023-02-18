@@ -2,6 +2,10 @@ import Button from '../../../../components/Button';
 import Container from '../../../../components/Container';
 
 export const Subject = ({ subject, tutors }) => {
+    const handleRequest = (tutorID) => {
+        // request to tutor
+    }
+    
     return (
         <Container className="flex flex-col gap-3 p-6 max-w-7xl">
             <div>
@@ -36,7 +40,7 @@ export const Subject = ({ subject, tutors }) => {
                                         <td className="px-2">{tutor.given_name}</td>
                                         <td className="px-2">{tutor.current_institution}</td>
                                         <td className="px-2 py-6">{tutor.description}</td>
-                                        <td><Button>Request</Button></td>
+                                        <td><Button onClick={() => handleRequest(tutor.id)}>Request</Button></td>
                                     </tr>
                                 ))
                             }

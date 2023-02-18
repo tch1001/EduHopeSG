@@ -3,7 +3,7 @@ import Container from '../../../../components/Container';
 
 export const Subject = ({ subject, tutors }) => {
     return (
-        <Container className="flex flex-col gap-3 p-6">
+        <Container className="flex flex-col gap-3 p-6 max-w-7xl">
             <div>
                 <h1 className="text-3xl font-bold">
                     <span className="text-dark-aqua">{subject.course}</span>{" "}
@@ -19,28 +19,30 @@ export const Subject = ({ subject, tutors }) => {
                 </p>
             </div>
             <main>
-                <table className="table-auto mt-5">
-                    <thead>
-                        <tr>
-                            <th className="w-1/12 border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Name</th>
-                            <th className="w-1/6 border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left hidden sm:visible">Current education</th>
-                            <th className="w-full border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Description</th>
-                            <th className="w-12 border-b-2 border-slate-600"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            tutors.map((tutor, key) => (
-                                <tr className="" key={key}>
-                                    <td className="px-2">{tutor.given_name}</td>
-                                    <td className="px-2 hidden sm:visible">{tutor.current_institution}</td>
-                                    <td className="px-2 py-6">{tutor.description}</td>
-                                    <td><Button>Request</Button></td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
+                <div className="overflow-auto">
+                    <table className="table-fixed">
+                        <thead>
+                            <tr>
+                                <th className="min-w-[92px] w-1/12 border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Name</th>
+                                <th className="min-w-[118px] w-1/6 border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Current education</th>
+                                <th className="min-w-[323px] w-full border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Description</th>
+                                <th className="w-12 border-b-2 border-slate-600"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                tutors.map((tutor, key) => (
+                                    <tr className="" key={key}>
+                                        <td className="px-2">{tutor.given_name}</td>
+                                        <td className="px-2">{tutor.current_institution}</td>
+                                        <td className="px-2 py-6">{tutor.description}</td>
+                                        <td><Button>Request</Button></td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </main>
         </Container>
     )

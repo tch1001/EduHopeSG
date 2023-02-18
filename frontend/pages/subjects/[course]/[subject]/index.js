@@ -20,6 +20,7 @@ export const Subject = ({ subject }) => {
 
 export const getServerSideProps = async ({ query }) => {
     // get tutor info
+    return {}
 }
 
 export default Subject;

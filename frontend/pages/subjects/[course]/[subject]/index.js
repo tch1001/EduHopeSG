@@ -1,26 +1,65 @@
-import Link from "next/link";
-import Image from "next/image";
+import Button from '../../../../components/Button';
 import Container from '../../../../components/Container';
-import Card from '../../../../components/Card';
 
-export const Subject = ({ subject }) => {
+export const Subject = ({ subject, tutors }) => {
     return (
-        <Container className="p-6 max-w-5xl">
+        <Container className="flex flex-col gap-3 p-6">
             <div>
                 <h1 className="text-3xl font-bold">
-                    Showing available{" "}
-                    <span className="underline text-dark-blue">{subject}</span>
-                    {" "}subjects
+                    <span className="text-dark-aqua">{subject.course}</span>{" "}
+                    <span className="underline text-dark-blue">{subject.name}</span>
+                    {" "}tutors
                 </h1>
-                <p className="text-xl">Select the subject that you require help with</p>
+                <p className="text-xl">
+                    Request help from{" "}
+                    <span className="font-semibold">
+                        {tutors.length} tutor{tutors.length !== 1 ? "s" : ""}
+                    </span>{" "}
+                    that would best suit you
+                </p>
             </div>
+            <main>
+                <table className="table-auto mt-5">
+                    <thead>
+                        <tr>
+                            <th className="w-1/12 border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Name</th>
+                            <th className="w-1/6 border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left hidden sm:visible">Current education</th>
+                            <th className="w-full border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Description</th>
+                            <th className="w-12 border-b-2 border-slate-600"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            tutors.map((tutor, key) => (
+                                <tr className="" key={key}>
+                                    <td className="px-2">{tutor.given_name}</td>
+                                    <td className="px-2 hidden sm:visible">{tutor.current_institution}</td>
+                                    <td className="px-2 py-6">{tutor.description}</td>
+                                    <td><Button>Request</Button></td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </main>
         </Container>
     )
 }
 
 export const getServerSideProps = async ({ query }) => {
     // get tutor info
-    return {}
+    const transform = (object) => JSON.parse(JSON.stringify(object));
+    const tutors = transform((await import("../../../../data/tutors.json")).default);
+    const subjects = transform((await import("../../../../data/subjects.json")).default);
+
+    const subject = subjects.filter(({ name }) => name.toLowerCase() === query.subject.toLowerCase())[0];
+
+    return {
+        props: {
+            subject,
+            tutors
+        }
+    }
 }
 
 export default Subject;

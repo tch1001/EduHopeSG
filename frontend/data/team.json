@@ -1,19 +1,19 @@
 [
     {
+        "name": "Nathaniel Siew",
+        "role": "Co-Founder, President of EduhopeSG",
+        "image": "/images/team/nathaniel_siew.jpg",
+        "bio": "I set EduHopeSG’s overall direction, strategy and operations, while actively partnering with organisations to reach more students."
+    },
+    {
         "name": "Chien Hao Tan",
-        "role": "Project Head",
+        "role": "Technical Lead of TickNinja",
         "image": "/images/team/chien_hao_tan.jpg",
         "bio": ""
     },
     {
-        "name": "Nathaniel Siew",
-        "role": "Project Head",
-        "image": "",
-        "bio": ""
-    },
-    {
         "name": "Felix Isaac Lim",
-        "role": "Technical Lead",
+        "role": "Technical Lead of EduhopeSG",
         "image": "/images/team/felix_isaac_lim.jpg",
         "bio": "I'm a full-stack engineer who believes in tech for public good"
     },

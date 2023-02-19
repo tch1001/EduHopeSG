@@ -65,7 +65,7 @@ as `.env.example`
 
    ```
 
-5. Run `init_database.sql` to set up and create necessary tables and relations for PostgreSQL
+5. Run `database_initalise.sql` to set up and create necessary tables and relations for PostgreSQL
 with the necessary permissions and privileges to create tables.
 You can also use `utils/database.js` and call the `setup()` function to initalise the database.
 

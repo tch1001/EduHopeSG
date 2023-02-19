@@ -67,7 +67,7 @@ export async function query(...args) {
     }
 }
 
-export function setup(FILE = "../../init_database.sql", callback) {
+export function setup(FILE = "../../database_initalise.sql", callback) {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
     readFile(path.resolve(__dirname, FILE), "utf-8", (err, setupSQL) => {

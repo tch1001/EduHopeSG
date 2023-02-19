@@ -167,24 +167,3 @@ CREATE TABLE IF NOT EXISTS permission (
                 ON UPDATE CASCADE
                 ON DELETE CASCADE
 );
-
--- CREATE TABLE "eduhope_user_tutee_tutor_relationship" (
---   "eduhope_user_id" uuid,
---   "tutee_tutor_relationship_tutee" uuid,
---   PRIMARY KEY ("eduhope_user_id", "tutee_tutor_relationship_tutee")
--- );
-
--- ALTER TABLE "eduhope_user_tutee_tutor_relationship" ADD FOREIGN KEY ("eduhope_user_id") REFERENCES "eduhope_user" ("id");
-
--- ALTER TABLE "eduhope_user_tutee_tutor_relationship" ADD FOREIGN KEY ("tutee_tutor_relationship_tutee") REFERENCES "tutee_tutor_relationship" ("tutee");
-
-
--- CREATE TABLE "eduhope_user_tutee_tutor_relationship(1)" (
---   "eduhope_user_id" uuid,
---   "tutee_tutor_relationship_tutor" uuid,
---   PRIMARY KEY ("eduhope_user_id", "tutee_tutor_relationship_tutor")
--- );
-
--- ALTER TABLE "eduhope_user_tutee_tutor_relationship(1)" ADD FOREIGN KEY ("eduhope_user_id") REFERENCES "eduhope_user" ("id");
-
--- ALTER TABLE "eduhope_user_tutee_tutor_relationship(1)" ADD FOREIGN KEY ("tutee_tutor_relationship_tutor") REFERENCES "tutee_tutor_relationship" ("tutor");

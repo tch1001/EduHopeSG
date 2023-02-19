@@ -13,3 +13,5 @@ export const Icon = ({ icon, height = 32, width = 32, className, ...props }) => 
         {...props}
     />
 )
+
+export default Icon;

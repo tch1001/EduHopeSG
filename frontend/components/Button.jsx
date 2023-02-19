@@ -19,3 +19,5 @@ export const Button = ({ secondary = false, href, children, ...props }) => {
 
     return ButtonComponent;
 }
+
+export default Button;

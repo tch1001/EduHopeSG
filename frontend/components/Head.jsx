@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Head from 'next/head';
 
 export const HeadProperties = ({
     pageTitle,
@@ -43,3 +43,5 @@ export const HeadProperties = ({
         </Head>
     )
 }
+
+export default HeadProperties;

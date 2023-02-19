@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { Button } from "../components/Button";
-import { Container } from "../components/Container";
-import { SubjectCard } from "../components/SubjectCard";
-import { BenefitCard } from "../components/home/BenefitCard";
-import { TestimonialCard } from "../components/home/TestimonialCard";
+import Button from "../components/Button";
+import Container from "../components/Container";
+import SubjectCard from "../components/SubjectCard";
+import BenefitCard from "../components/home/BenefitCard";
+import TestimonialCard from "../components/home/TestimonialCard";
 import { useEffect, useState } from "react";
 
 import styles from "../styles/Home.module.css";
@@ -141,7 +141,7 @@ const Home = ({ subjects, testimonials }) => {
                                     name={subject.name}
                                     stream={subject.course}
                                     tutors={subject.tutor_count}
-                                    href={`/subjects/${key}`}
+                                    href={subject.link}
                                 />
                             ))
                         }
@@ -154,7 +154,7 @@ const Home = ({ subjects, testimonials }) => {
                     <div className="flex flex-col items-center gap-9">
                         <p className="text-2xl font-semibold">
                             Testimonials from {" "}
-                            <span className="text-dark-aqua underline">tutors</span>
+                            <span className="text-dark-blue underline">tutors</span>
                         </p>
                         <div className={`${styles["horizontal-scroll"]} pb-4 cursor-grab`}>
 
@@ -175,7 +175,7 @@ const Home = ({ subjects, testimonials }) => {
                     <div className="flex flex-col items-center gap-9">
                         <p className="text-2xl font-semibold">
                             Testimonials from {" "}
-                            <span className="text-dark-aqua underline">tutees</span>
+                            <span className="text-dark-blue underline">tutees</span>
                         </p>
                         <div className={`${styles["horizontal-scroll"]} pb-4 cursor-grab`}>
 

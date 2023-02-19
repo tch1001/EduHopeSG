@@ -64,6 +64,7 @@ CREATE TYPE RELATIONSHIP_STATUS AS ENUM (
 );
 
 -- TickNinja Tables
+DROP TABLE IF EXISTS courses;
 CREATE TABLE IF NOT EXISTS course (
     id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     name VARCHAR(32) UNIQUE NOT NULL,
@@ -73,6 +74,13 @@ CREATE TABLE IF NOT EXISTS course (
     image VARCHAR NOT NULL
 );
 
+INSERT INTO course (name, long_name, short_form, image)
+    VALUES ('GCE N-Level', 'General Certificate of Education Normal Level', 'N-Level', 'https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2022/12/12/yaohui-wknlevel17-5030_4.jpg')
+    VALUES ('GCE O-Level', 'General Certificate of Education Ordinary Level', 'O-Level', 'https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2023/01/05/IMG5629_5.JPG')
+    VALUES ('GCE A-Level', 'General Certificate of Education Advanced Level', 'A-Level', 'https://www.asiaone.com/sites/default/files/styles/article_main_image/public/original_images/Mar2014/20140303_alevel.jpg')
+    
+
+DROP TABLE IF EXISTS subjects;
 CREATE TABLE IF NOT EXISTS subject (
     id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     course UUID,
@@ -88,6 +96,7 @@ CREATE TABLE IF NOT EXISTS subject (
 );
 
 -- EduHopeSG Tables
+DROP TABLE IF EXISTS eduhope_user;
 CREATE TABLE IF NOT EXISTS eduhope_user (
     id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     given_name VARCHAR(32) NOT NULL CHECK (length(name) BETWEEN 3 AND 32),
@@ -97,7 +106,6 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
 
     school VARCHAR(128) NOT NULL,
     level_of_education EDUCATION NOT NULL, -- highest/current level of edu.
-    course COURSE_ENUM,
     telegram VARCHAR(32) NOT NULL UNIQUE CHECK (length(name) BETWEEN 5 AND 32),
     bio VARCHAR(200) DEFAULT '',
     profile_image TEXT UNIQUE NOT NULL,
@@ -109,12 +117,12 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
     last_login TIMESTAMPTZ DEFAULT now()
 );
 
+DROP TABLE IF EXISTS tutor;
 CREATE TABLE IF NOT EXISTS tutor (
     id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     user_id UUID UNIQUE NOT NULL,
 
     subjects UUID[] NOT NULL, -- subject ids from TickNinja
-    course COURSE_ENUM,
     tutee_limit INT DEFAULT 3 CHECK (tutee_limit BETWEEN 1 AND 5),
     preferred_communications COMMUNICATION[] NOT NULL,
 
@@ -131,6 +139,7 @@ CREATE TABLE IF NOT EXISTS tutor (
             ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS tutee_tutor_relationship;
 CREATE TABLE IF NOT EXISTS tutee_tutor_relationship (
     id VARCHAR(73) UNIQUE PRIMARY KEY,
     tutee UUID,

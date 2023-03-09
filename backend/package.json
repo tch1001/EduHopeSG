@@ -9,19 +9,20 @@
     "test": "mocha -r dotenv/config ./tests/*.spec.js --exit",
     "watch:test": "mocha --watch -r dotenv/config ./tests/*.spec.js --exit",
     "coverage": "c8 --reporter=text --reporter=lcov npm test",
-    "start": "node --experimental-json-modules src/index.js",
+    "start": "node --experimental-json-modules --trace-warnings src/index.js",
     "dev": "nodemon --exec npm run start"
   },
   "author": "EduHope Team",
   "license": "agpl-3.0",
   "devDependencies": {
-    "c8": "^7.12.0",
+    "c8": "^7.13.0",
     "chai": "^4.3.7",
-    "mocha": "^10.1.0",
-    "nodemon": "^2.0.20",
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.21",
     "prettier": "2.7.1",
     "sinon": "^14.0.2",
-    "supertest": "^6.3.1"
+    "supertest": "^6.3.3",
+    "taze": "^0.9.0"
   },
   "dependencies": {
     "bunyan": "^1.8.15",
@@ -31,12 +32,12 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
-    "helmet": "^6.0.0",
+    "helmet": "^6.0.1",
     "html-to-text": "^8.2.1",
     "jsonwebtoken": "^9.0.0",
-    "mailgun.js": "^8.0.6",
-    "pg": "^8.8.0",
-    "validator": "^13.7.0"
+    "mailgun.js": "^8.2.1",
+    "pg": "^8.10.0",
+    "validator": "^13.9.0"
   },
   "nodemonConfig": {
     "ignore": [

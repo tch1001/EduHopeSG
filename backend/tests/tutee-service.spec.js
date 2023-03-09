@@ -5,12 +5,13 @@ import pool from "../src/utils/database.js";
 import parseSQL from "../src/utils/sql-parser.js"
 import ServiceError from "../src/classes/ServiceError.js";
 import * as TuteeService from "../src/services/tutee-service.js";
+import { encrypt } from "../src/services/user-service.js";
 
 describe("Testing tutee service", () => {
     const fakeTutee = {
         id: "e99bf9b122caaac6eb9b7ef4b438bf5e83eb2e1d3e",
         name: "Fake Tutee",
-        email: "tutee@encrypted.com",
+        email: encrypt("tutee@encrypted.com"),
         password: "H@SH3D_p@ssw0rd as tutee",
         school: "Fake Secondary School",
         level_of_education: "Secondary 3",
@@ -22,7 +23,7 @@ describe("Testing tutee service", () => {
     const fakeTutor = {
         id: "e99bf9b122caaac6eb9b7ef4b438bf5e83eb2e1d4e",
         name: "Fake Tutor",
-        email: "tutor@encrypted.com",
+        email: encrypt("tutor@encrypted.com"),
         password: "H@SH3D_p@ssw0rd as tutor",
         school: "Fake Collage",
         level_of_education: "JC 2",
@@ -187,6 +188,7 @@ describe("Testing tutee service", () => {
                 expect(res.success).to.be.true;
                 expect(res.message).to.be.equal("Request for tuition sent to tutor");
             } catch (err) {
+                console.error(err);
                 expect(err).to.be.undefined();
             }
         })

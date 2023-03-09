@@ -1,5 +1,3 @@
-"use strict";
-
 import { query } from "../utils/database.js";
 
 export default class Queries {

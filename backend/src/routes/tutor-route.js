@@ -1,5 +1,3 @@
-"use strict";
-
 import { Router } from "express";
 import RouteError from "../classes/RouteError.js";
 import { standardRouteErrorCallback } from "../index.js";

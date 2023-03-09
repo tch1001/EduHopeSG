@@ -1,5 +1,3 @@
-"use strict";
-
 export default function parseSQL(query, values) {
     if (!query) return;
 

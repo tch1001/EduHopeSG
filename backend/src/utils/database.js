@@ -1,5 +1,3 @@
-"use strict";
-
 import { fileURLToPath } from "url";
 import { readFile } from "fs";
 import path from "path";

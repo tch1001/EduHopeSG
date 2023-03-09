@@ -1,3 +1,5 @@
+"use strict";
+
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import { sendTuitionRequest, notifyTuitionSubjectChange } from "./email-service.js";

@@ -1,3 +1,5 @@
+"use strict";
+
 import nodePackage from "../../package.json" assert { type: "json" };
 import ServiceError from "./ServiceError.js";
 

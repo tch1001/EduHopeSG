@@ -1,3 +1,5 @@
+"use strict";
+
 import crypto from "crypto";
 import validator from "validator";
 import jwt from "jsonwebtoken";

@@ -1,3 +1,5 @@
+"use strict";
+
 import { query } from "../utils/database.js";
 
 /**

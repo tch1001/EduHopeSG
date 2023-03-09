@@ -1,3 +1,5 @@
+"use strict";
+
 import "./config.js";
 import express, { Router } from "express";
 import cors from "cors";

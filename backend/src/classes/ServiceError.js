@@ -1,3 +1,4 @@
+"use strict";
 
 import errorMappings from "../error_mapping.json" assert { type: "json" };
 import log from "../utils/logging.js";
@@ -34,7 +35,7 @@ export default class ServiceError extends Error {
             this.name = this.name;
             this.message = errorCode;
 
-            log.warn({ error: JSON.stringify(this), message: "Encountered error without its mapping"  });
+            log.warn({ error: JSON.stringify(this), message: "Encountered error without its mapping" });
             return this;
         }
 

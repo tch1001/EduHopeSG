@@ -28,6 +28,13 @@ router.post("/login", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
+router.post("/signup", (req, res) => {
+    userService.signup(req.body)
+        .then(() => res.status(201).send({}))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+})
+
+
 router.patch("/", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 

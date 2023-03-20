@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function useAxios({ baseURL = process.env.API_URL, timeout = 5000, maxRetries = 3, ...config}) {
+function useAxios({ baseURL = process.env.API_URL, timeout = 5000, maxRetries = 3, ...config }) {
     const baseAxios = axios.create({
         ...config,
+        headers: {
+            "Content-Type": "application/json"
+        },
         baseURL,
         timeout
     });
@@ -12,7 +15,7 @@ function useAxios({ baseURL = process.env.API_URL, timeout = 5000, maxRetries = 
 }
 
 
-function AxiosHook ({ path, method = "get", data = null }) {
+function AxiosHook({ path, method = "get", data = null }) {
     const [isLoading, setIsLoading] = useState(true);
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
@@ -41,7 +44,7 @@ function AxiosHook ({ path, method = "get", data = null }) {
             } else {
                 setError({ message: "An unexpected error occurred" });
             }
-            
+
             setIsLoading(false);
         }
     };

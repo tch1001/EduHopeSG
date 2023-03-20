@@ -1,6 +1,7 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Link from "next/link";
+import useAxios from "../helpers/useAxios";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Card from "../components/Card";
@@ -21,7 +22,17 @@ function Login() {
         },
         validationSchema: LoginSchema,
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
+            const request = useAxios();
+            
+            const { response, error, isLoading } = request({
+                path: "/user/login",
+                method: "post",
+                data: values
+            });
+            
+            console.log(response);
+            console.log(error);
+            console.log(isLoading);
         }
     });
 

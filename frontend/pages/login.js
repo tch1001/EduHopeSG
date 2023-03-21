@@ -1,5 +1,6 @@
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import Link from "next/link";
 import useAxios from "../helpers/useAxios";
 import Button from "../components/Button";
@@ -15,26 +16,36 @@ function Login() {
         password: Yup.string().required("Required")
     });
 
+    const [loading, setLoading] = useState(false);
+    const request = useAxios();
+
     const formik = useFormik({
         initialValues: {
             email: "",
             password: ""
         },
         validationSchema: LoginSchema,
-        onSubmit: values => {
-            const request = useAxios();
-            
-            const { response, error, isLoading } = request({
+        onSubmit: handleLogin
+    });
+
+    async function handleLogin(values) {
+        if (loading) return;
+        setLoading(true);
+
+        try {
+            const response = await request({
                 path: "/user/login",
                 method: "post",
                 data: values
             });
-            
+
             console.log(response);
-            console.log(error);
-            console.log(isLoading);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
         }
-    });
+    }
 
     function FormErrorDisplay({ field }) {
         if (!formik.touched[field] || !formik.errors[field]) return;
@@ -54,14 +65,14 @@ function Login() {
                     className="flex flex-col items-center gap-2"
                     onSubmit={formik.handleSubmit}
                     noValidate
-                    autoComplete="off"
                 >
                     <div className="w-full max-w-sm px-4 py-2">
-                        <FormErrorDisplay field="email"/>
+                        <FormErrorDisplay field="email" />
                         <label htmlFor="email">Email address</label>
                         <input
                             type="email"
                             id="email"
+                            autoComplete="username"
                             className={styles.input}
                             {...formik.getFieldProps("email")}
                         />
@@ -72,11 +83,12 @@ function Login() {
                         <input
                             type="password"
                             id="password"
+                            autoComplete="current-password"
                             className={styles.input}
                             {...formik.getFieldProps("password")}
                         />
                     </div>
-                    <Button type="submit">Login</Button>
+                    <Button type="submit" loading={loading}>Login</Button>
                 </form>
             </Card>
             <p>

@@ -1,0 +1,12 @@
+button.button {
+    @apply cursor-pointer disabled:cursor-not-allowed;
+    @apply border px-6 py-2 rounded-md;
+    @apply flex flex-row gap-2 items-center;
+    @apply border-sky-blue bg-[#bfe7ff];
+    @apply hover:bg-sky-300;
+}
+
+button.secondary {
+    @apply border-gray-600 bg-white;
+    @apply hover:bg-gray-200;
+}

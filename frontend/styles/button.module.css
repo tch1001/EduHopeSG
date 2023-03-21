@@ -3,10 +3,11 @@ button.button {
     @apply border px-6 py-2 rounded-md;
     @apply flex flex-row gap-2 items-center;
     @apply border-sky-blue bg-[#bfe7ff];
-    @apply hover:bg-sky-300 disabled:bg-[#bfe7ff];
+    @apply hover:bg-sky-300;
+    @apply disabled:bg-gray-400 disabled:border-gray-500 disabled:text-white;
 }
 
 button.secondary {
     @apply border-gray-600 bg-white;
-    @apply hover:bg-gray-200 disabled:bg-white;
+    @apply hover:bg-gray-200
 }

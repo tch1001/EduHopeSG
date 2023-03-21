@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Link from "next/link";
-import useAxios from "../helpers/useAxios";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Card from "../components/Card";
+import FormErrorDisplay from "../components/FormErrorDisplay";
+import useAxios from "../helpers/useAxios";
 import styles from "../styles/login.module.css";
 
 function Login() {
@@ -47,16 +48,6 @@ function Login() {
         }
     }
 
-    function FormErrorDisplay({ field }) {
-        if (!formik.touched[field] || !formik.errors[field]) return;
-
-        return (
-            <div className=" text-red-500 font-extralight text-xs">
-                {formik.errors[field]}
-            </div>
-        )
-    }
-
     return (
         <Container center className="p-6 max-w-5xl">
             <Card className="p-4 m-2">
@@ -67,7 +58,7 @@ function Login() {
                     noValidate
                 >
                     <div className="w-full max-w-sm px-4 py-2">
-                        <FormErrorDisplay field="email" />
+                        <FormErrorDisplay field="email" formik={formik} />
                         <label htmlFor="email">Email address</label>
                         <input
                             type="email"
@@ -78,7 +69,7 @@ function Login() {
                         />
                     </div>
                     <div className="w-full max-w-sm px-4 py-2">
-                        <FormErrorDisplay field="password" />
+                        <FormErrorDisplay field="password" formik={formik} />
                         <label htmlFor="password">Password</label>
                         <input
                             type="password"

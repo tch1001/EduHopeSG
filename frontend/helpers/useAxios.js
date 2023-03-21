@@ -1,57 +1,62 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 
-function useAxios({ baseURL = process.env.API_URL, timeout = 5000, maxRetries = 3, ...config }) {
-    const baseAxios = axios.create({
+function useAxios({
+    baseURL = process.env.NEXT_PUBLIC_API_URL,
+    timeout = 5000,
+    maxRetries = 3,
+    ...config
+} = {}) {
+    const [error, setError] = useState(null);
+    const [response, setResponse] = useState(null);
+
+    const instance = axios.create({
         ...config,
+        baseURL,
+        timeout,
         headers: {
             "Content-Type": "application/json"
-        },
-        baseURL,
-        timeout
-    });
+        }
+    })
 
-    return AxiosHook
+    return async (request) => {
+        try {
+            const payload = { url: request.path, ...request, };
+            const result = await requester(payload, instance);
+
+            setResponse(result);
+        } catch (err) {
+            setError(err);
+        } finally {
+            return {
+                response,
+                error
+            }
+        }
+    }
 }
 
+function requester(request, axios) {
+    let retryCount = 0;
 
-function AxiosHook({ path, method = "get", data = null }) {
-    const [isLoading, setIsLoading] = useState(true);
-    const [response, setResponse] = useState(null);
-    const [error, setError] = useState(null);
-    const [retryCount, setRetryCount] = useState(0);
+    return send();
 
-    const fetchData = async () => {
-        setIsLoading(true);
-
+    function send() {
         try {
-            const result = await baseAxios({
-                method,
-                url: path,
-                data,
-                timeout,
-            });
-
-            setResponse(result.data);
-            setIsLoading(false);
+            return axios(request)
         } catch (error) {
             if (error.response) {
-                setError(error.response.data);
+                throw error.response.data;
             } else if (error.request) {
-                setError({ message: "Unable to connect to the server" });
+                throw "Unable to connect to the server";
             } else if (error.code === "ECONNABORTED" && retryCount < maxRetries) {
-                setRetryCount(retryCount + 1);
+                retryCount++;
+                send();
             } else {
-                setError({ message: "An unexpected error occurred" });
+                throw "An unexpected error occurred";
             }
-
-            setIsLoading(false);
         }
-    };
+    }
+}
 
-    useEffect(fetchData, [path, method, data, retryCount]);
-
-    return { response, error, isLoading };
-};
-
-export default useAxios;
+export default useAxios

@@ -2158,5 +2158,53 @@
         "type": "post_sec_poly_ite",
         "address": "21 Tampines Ave 1",
         "postal": 529757
+    },
+    {
+        "name": "National University of Singapore",
+        "type": "university",
+        "address": "21 Lower Kent Ridge Rd",
+        "postal": 119077
+    },
+    {
+        "name": "Nanyang Technological University",
+        "type": "university",
+        "address": "50 Nanyang Avenue",
+        "postal": 639798
+    },
+    {
+        "name": "Singapore Management University",
+        "type": "university",
+        "address": "81 Victoria St",
+        "postal": 188065
+    },
+    {
+        "name": "Singapore University of Technology and Design",
+        "type": "university",
+        "address": "8 Somapah Rd",
+        "postal": 487372
+    },
+    {
+        "name": "Singapore Institute of Technology",
+        "type": "university",
+        "address": "10 Dover Dr",
+        "postal": 138683
+    },
+    {
+        "name": "Singapore University of Social Sciences",
+        "type": "university",
+        "address": "463 Clementi Rd",
+        "postal": 599494
+    },
+    {
+        "name": "Nanyang Academy of Fine Arts",
+        "type": "university",
+        "address": "38 Bencoolen St",
+        "postal": 189654
+    },
+    {
+        "name": "LASALLE College of the Arts",
+        "type": "university",
+        "address": "1 McNally St",
+        "postal": 187940
     }
 ]

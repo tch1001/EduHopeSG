@@ -1,26 +1,33 @@
-.input {
-    width: 100%;
-    height: 2rem;
-    padding: 0.5rem;
+.form {
+    @apply flex flex-col items-center gap-2;
+}
 
+.form input, .form select, .form textarea {
+    @apply w-full h-8 p-2;
     @apply border border-solid border-black rounded;
 }
 
-.input.slot {
+.form input.slot {
     width: calc(100% - 33px);
     @apply rounded-l-none;
 }
 
-.slotItem {
+.form input[type=checkbox] {
+    @apply h-4 inline
+}
+
+.form select {
+    @apply w-full p-1;
+    @apply border border-solid border-black rounded;
+}
+
+.form textarea {
+    @apply h-24;
+}
+
+.form .slotItem {
     @apply w-8 h-8 px-2 pb-[5px] pt-[4px];
     @apply bg-slate-300 rounded rounded-r-none;
     @apply border border-solid border-black border-r-0;
 }
 
-.select {
-    width: 100%;
-    height: 2rem;
-    padding: 0.25rem;
-
-    @apply border border-solid border-black rounded;
-}

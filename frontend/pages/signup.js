@@ -45,11 +45,15 @@ const SignUp = () => {
       .min(5, "Telegram handles must have at least 5 characters")
       .max(32, "Telegram handles can have at most 32 characters")
       .matches(/^[a-zA-Z0-9_]*$/, "Can only contain alphanumeric characters and underscores (_)"),
-    levelOfEducation: Yup.string().required("Required")
+    levelOfEducation: Yup.string().required("Required"),
+    bio: Yup.string().max(500, "Maximum of 500 characters"),
+    referral: Yup.string()
   });
 
 
   const formik = useFormik({
+    validationSchema: SignupSchema,
+    onSubmit: () => { },
     initialValues: {
       firstName: "",
       lastName: "",
@@ -59,10 +63,9 @@ const SignUp = () => {
       confirmPassword: "",
       telegramHandle: "",
       levelOfEducation: "",
-
+      bio: "",
+      referral: ""
     },
-    validationSchema: SignupSchema,
-    onSubmit: () => { }
   });
 
   useEffect(() => {
@@ -79,29 +82,17 @@ const SignUp = () => {
       <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="firstName" formik={formik} />
         <label htmlFor="firstName">Given name</label>
-        <input
-          id="firstName"
-          className={styles.input}
-          {...formik.getFieldProps("firstName")}
-        />
+        <input id="firstName" {...formik.getFieldProps("firstName")} />
       </div>
       <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="lastName" formik={formik} />
         <label htmlFor="lastName">Last name</label>
-        <input
-          id="lastName"
-          className={styles.input}
-          {...formik.getFieldProps("lastName")}
-        />
+        <input id="lastName" {...formik.getFieldProps("lastName")} />
       </div>
       <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="school" formik={formik} />
         <label htmlFor="school">School</label>
-        <select
-          id="school"
-          className={styles.select}
-          {...formik.getFieldProps("school")}
-        >
+        <select id="school" {...formik.getFieldProps("school")}>
           <option>--Select--</option>
           <option>Graduated</option>
           <option>In National Service</option>
@@ -110,8 +101,29 @@ const SignUp = () => {
           ))}
         </select>
       </div>
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="levelOfEducation" formik={formik} />
+        <label htmlFor="levelOfEducation">Current level of education</label>
+        <select id="levelOfEducation" {...formik.getFieldProps("levelOfEducation")}>
+          {[].map((level) => (
+            <option>{level}</option>
+          ))}
+        </select>
+      </div>
     </>,
     <>
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="telegramHandle" formik={formik} />
+        <label htmlFor="telegramHandle">Telegram Handle</label>
+        <div>
+          <span className={styles.slotItem}>@</span>
+          <input
+            id="telegramHandle"
+            className={styles.slot}
+            {...formik.getFieldProps("telegramHandle")}
+          />
+        </div>
+      </div>
       <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="email" formik={formik} />
         <label htmlFor="email">Email address</label>
@@ -147,30 +159,25 @@ const SignUp = () => {
     </>,
     <>
       <div className="w-full max-w-sm px-4 py-2">
-        <FormErrorDisplay field="telegramHandle" formik={formik} />
-        <label htmlFor="telegramHandle">Telegram Handle</label>
-        <div>
-          <span className={styles.slotItem}>@</span>
-          <input
-            id="telegramHandle"
-            className={`${styles.input} ${styles.slot} inline`}
-            {...formik.getFieldProps("telegramHandle")}
-          />
-        </div>
+        <FormErrorDisplay field="bio" formik={formik} />
+        <label htmlFor="bio">Biography</label>
+        <textarea placeholder="Give a short biography of yourself (max 500 characters)" />
       </div>
       <div className="w-full max-w-sm px-4 py-2">
-        <FormErrorDisplay field="levelOfEducation" formik={formik} />
-        <label htmlFor="levelOfEducation">Current level of education</label>
-        <select
-          id="levelOfEducation"
-          className={styles.select}
-          {...formik.getFieldProps("levelOfEducation")}
-        >
-          {[].map((level) => (
-            <option>{level}</option>
+        <FormErrorDisplay field="referral" formik={formik} />
+        <label htmlFor="referral">Referral</label>
+        <select id="referral" {...formik.getFieldProps("referral")}>
+          {[].map((referral) => (
+            <option>{referral}</option>
           ))}
         </select>
       </div>
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="referral" formik={formik} />
+        <label htmlFor="guidelines">Tutee guidelines</label>
+        <input id="guidelines" type="checkbox" />
+      </div>
+
     </>
   ];
 
@@ -198,7 +205,7 @@ const SignUp = () => {
           <span className="text-base block text-center">Step {step + 1} of {steps.length}</span>
         </div>
         <form
-          className="flex flex-col items-center gap-2"
+          className={styles.form}
           onSubmit={e => e.preventDefault()}
           noValidate
         >

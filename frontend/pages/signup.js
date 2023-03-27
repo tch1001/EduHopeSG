@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import Link from "next/link";
 import Button from "../components/Button";
@@ -10,6 +10,10 @@ import Yup from "../helpers/Yup";
 import styles from "../styles/forms.module.css";
 
 const SignUp = () => {
+  const [loading, setLoading] = useState(false);
+  const [schools, setSchools] = useState([]);
+  const request = useAxios();
+
   const SignupSchema = Yup.object({
     firstName: Yup.string()
       .min(3, "Given name has to be at least 3 characters")
@@ -19,6 +23,7 @@ const SignUp = () => {
       .min(2, "Family name has to be at least 2 characters")
       .max(35, "Family name too long")
       .required("Required"),
+    school: Yup.string().required("Required"),
     email: Yup.string()
       .email("Invalid email address")
       .required("Required")
@@ -35,26 +40,39 @@ const SignUp = () => {
         const { password } = context.parent;
         return password === value;
       }),
-    school: Yup.string().required("Required"),
-    // education_level: Yup.
+    telegramHandle: Yup.string()
+      .required("Required")
+      .min(5, "Telegram handles must have at least 5 characters")
+      .max(32, "Telegram handles can have at most 32 characters")
+      .matches(/^[a-zA-Z0-9_]*$/, "Can only contain alphanumeric characters and underscores (_)"),
+    levelOfEducation: Yup.string().required("Required")
   });
 
-  const [loading, setLoading] = useState(false);
-  const request = useAxios();
 
   const formik = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
+      school: "",
       email: "",
       password: "",
       confirmPassword: "",
-      school: "",
+      telegramHandle: "",
+      levelOfEducation: "",
 
     },
     validationSchema: SignupSchema,
     onSubmit: () => { }
   });
+
+  useEffect(() => {
+    request({
+      method: "get",
+      path: "/school"
+    })
+      .then(({ result }) => setSchools(result.map(({ name }) => name)))
+      .catch(err => console.error(err));
+  }, [])
 
   const steps = [
     <>
@@ -77,6 +95,24 @@ const SignUp = () => {
         />
       </div>
       <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="school" formik={formik} />
+        <label htmlFor="school">School</label>
+        <select
+          id="school"
+          className={styles.select}
+          {...formik.getFieldProps("school")}
+        >
+          <option>--Select--</option>
+          <option>Graduated</option>
+          <option>In National Service</option>
+          {schools.map((school) => (
+            <option>{school}</option>
+          ))}
+        </select>
+      </div>
+    </>,
+    <>
+      <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="email" formik={formik} />
         <label htmlFor="email">Email address</label>
         <input
@@ -86,8 +122,6 @@ const SignUp = () => {
           {...formik.getFieldProps("email")}
         />
       </div>
-    </>,
-    <>
       <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="password" formik={formik} />
         <label htmlFor="password">Password</label>
@@ -112,30 +146,34 @@ const SignUp = () => {
       </div>
     </>,
     <>
-      {/* <div className={styles.innerContainer}>
-        <label className={styles.label}>Highest Education Level Obtained:</label>
-        <select className={styles.input} value={highestEducation} onChange={(e) => setHighestEducation(e.target.value)}>
-          <option value="">--Select--</option>
-          <option value="highSchool">High School</option>
-          <option value="college">College</option>
-          <option value="graduateSchool">Graduate School</option>
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="telegramHandle" formik={formik} />
+        <label htmlFor="telegramHandle">Telegram Handle</label>
+        <div>
+          <span className={styles.slotItem}>@</span>
+          <input
+            id="telegramHandle"
+            className={`${styles.input} ${styles.slot} inline`}
+            {...formik.getFieldProps("telegramHandle")}
+          />
+        </div>
+      </div>
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="levelOfEducation" formik={formik} />
+        <label htmlFor="levelOfEducation">Current level of education</label>
+        <select
+          id="levelOfEducation"
+          className={styles.select}
+          {...formik.getFieldProps("levelOfEducation")}
+        >
+          {[].map((level) => (
+            <option>{level}</option>
+          ))}
         </select>
       </div>
-      <div className={styles.innerContainer}>
-        <label className={styles.label}>Current Education:</label>
-        <select className={styles.input} value={currentEducation} onChange={(e) => setCurrentEducation(e.target.value)}>
-          <option value="">--Select--</option>
-          <option value="highSchool">High School</option>
-          <option value="college">College</option>
-          <option value="graduateSchool">Graduate School</option>
-        </select>
-      </div>
-      <div className={styles.innerContainer}>
-        <label className={styles.label}>Current School's Name:</label>
-        <input className={styles.input} value={schoolName} onChange={(e) => setSchoolName(e.target.value)} />
-      </div> */}
     </>
   ];
+
 
   const [step, setStep] = useState(0);
 

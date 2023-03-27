@@ -50,7 +50,7 @@ function Login() {
 
     return (
         <Container center className="p-6 max-w-5xl">
-            <Card className="p-4 m-2">
+            <Card className="p-4 m-2 shadow-md shadow-slate-300">
                 <span className="text-2xl font-bold block text-center my-2">Login</span>
                 <form
                     className="flex flex-col items-center gap-2"

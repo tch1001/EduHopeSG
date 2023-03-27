@@ -1,51 +1,21 @@
 import { useState } from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import Link from "next/link";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
 import useAxios from "../helpers/useAxios";
-import styles from "../styles/signup.module.css";
-
-/**
- * Issues
- * 1. No validation for difference of "password" and "confirmPassword"
- * 2. 
- */
+import Yup from "../helpers/Yup";
+import styles from "../styles/forms.module.css";
 
 const SignUp = () => {
-  // const []
-  // const [firstName, setFirstName] = useState('');
-  // const [lastName, setLastName] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-  // const [confirmPassword, setConfirmPassword] = useState('');
-  // const [highestEducation, setHighestEducation] = useState('');
-  // const [currentEducation, setCurrentEducation] = useState('');
-  // const [schoolName, setSchoolName] = useState('');
-
-  // const onSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log({
-  //     firstName,
-  //     lastName,
-  //     email,
-  //     password,
-  //     confirmPassword,
-  //     highestEducation,
-  //     currentEducation,
-  //     schoolName
-  //   });
-  // };
-
   const SignupSchema = Yup.object({
-    given_name: Yup.string()
+    firstName: Yup.string()
       .min(3, "Given name has to be at least 3 characters")
       .max(35, "Given name is too long")
       .required("Required"),
-    family_name: Yup.string()
+    lastName: Yup.string()
       .min(2, "Family name has to be at least 2 characters")
       .max(35, "Family name too long")
       .required("Required"),
@@ -54,9 +24,17 @@ const SignUp = () => {
       .required("Required")
       .max(320, "Email address too long"),
     password: Yup.string()
+      .required("Required")
+      .password()
+      .min(12, "Password has to be at least 12 characters"),
+    confirmPassword: Yup.string()
+      .required("Required")
+      .password()
       .min(12, "Password has to be at least 12 characters")
-      .required("Required"),
-    confirmPassword: Yup.string(), // todo: test if they match
+      .test("test-match", "Passwords should match", (value, context) => {
+        const { password } = context.parent;
+        return password === value;
+      }),
     school: Yup.string().required("Required"),
     // education_level: Yup.
   });
@@ -66,46 +44,75 @@ const SignUp = () => {
 
   const formik = useFormik({
     initialValues: {
+      firstName: "",
+      lastName: "",
       email: "",
-      password: ""
+      password: "",
+      confirmPassword: "",
+      school: "",
+
     },
-    validationSchema: LoginSchema,
-    onSubmit: handleLogin
+    validationSchema: SignupSchema,
+    onSubmit: () => { }
   });
 
   const steps = [
     <>
       <div className="w-full max-w-sm px-4 py-2">
-        <FormErrorDisplay field="first-name" formik={formik} />
-        <label htmlFor="first-name">Given name</label>
+        <FormErrorDisplay field="firstName" formik={formik} />
+        <label htmlFor="firstName">Given name</label>
         <input
-          type="email"
-          id="first-name"
+          id="firstName"
           className={styles.input}
-          {...formik.getFieldProps("first-name")}
+          {...formik.getFieldProps("firstName")}
         />
       </div>
-      <div className={styles.innerContainer}>
-        <label className={styles.label}>Last Name:</label>
-        <input className={styles.input} value={lastName} onChange={(e) => setLastName(e.target.value)} />
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="lastName" formik={formik} />
+        <label htmlFor="lastName">Last name</label>
+        <input
+          id="lastName"
+          className={styles.input}
+          {...formik.getFieldProps("lastName")}
+        />
       </div>
-      <div className={styles.innerContainer}>
-        <label className={styles.label}>Email Address:</label>
-        <input className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} />
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="email" formik={formik} />
+        <label htmlFor="email">Email address</label>
+        <input
+          id="email"
+          type="email"
+          className={styles.input}
+          {...formik.getFieldProps("email")}
+        />
       </div>
     </>,
     <>
-      <div className={styles.innerContainer}>
-        <label className={styles.label}>Password:</label>
-        <input className={styles.input} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="password" formik={formik} />
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          autoComplete="new-password"
+          className={styles.input}
+          {...formik.getFieldProps("password")}
+        />
       </div>
-      <div className={styles.innerContainer}>
-        <label className={styles.label}>Confirm Password:</label>
-        <input className={styles.input} type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="confirmPassword" formik={formik} />
+        <label htmlFor="confirmPassword">Confirm password</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          autoComplete="new-password"
+          className={styles.input}
+          {...formik.getFieldProps("confirmPassword")}
+        />
       </div>
     </>,
     <>
-      <div className={styles.innerContainer}>
+      {/* <div className={styles.innerContainer}>
         <label className={styles.label}>Highest Education Level Obtained:</label>
         <select className={styles.input} value={highestEducation} onChange={(e) => setHighestEducation(e.target.value)}>
           <option value="">--Select--</option>
@@ -126,7 +133,7 @@ const SignUp = () => {
       <div className={styles.innerContainer}>
         <label className={styles.label}>Current School's Name:</label>
         <input className={styles.input} value={schoolName} onChange={(e) => setSchoolName(e.target.value)} />
-      </div>
+      </div> */}
     </>
   ];
 

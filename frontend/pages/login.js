@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import Link from "next/link";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
 import useAxios from "../helpers/useAxios";
+import Yup from "../helpers/Yup";
 import styles from "../styles/forms.module.css";
 
 function Login() {

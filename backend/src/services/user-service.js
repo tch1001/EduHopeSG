@@ -24,7 +24,7 @@ const JWT_OPTIONS = {
  * @param {string} password Password
  * @returns {boolean} Whether strong or not strong
  */
-function    isStrongPassword(password) {
+function isStrongPassword(password) {
     // optional to add scoring in the future
     if (!password) return false;
 

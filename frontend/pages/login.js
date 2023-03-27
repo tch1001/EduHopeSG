@@ -7,7 +7,7 @@ import Container from "../components/Container";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
 import useAxios from "../helpers/useAxios";
-import styles from "../styles/login.module.css";
+import styles from "../styles/forms.module.css";
 
 function Login() {
     const LoginSchema = Yup.object({

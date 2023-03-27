@@ -49,6 +49,7 @@ import userRoutes from "./routes/user-route.js";
 import tuteeRoutes from "./routes/tutee-route.js";
 import tutorRoutes from "./routes/tutor-route.js";
 import subjectRoutes from "./routes/subject-route.js";
+import schoolRoutes from "./routes/school-route.js";
 import pool from "./utils/database.js";
 
 const app = express();
@@ -86,6 +87,8 @@ apiV1Router.use("/user", userRoutes);
 apiV1Router.use("/tutee", tuteeRoutes);
 apiV1Router.use("/tutor", tutorRoutes);
 apiV1Router.use("/subjects", subjectRoutes);
+
+apiV1Router.use("/school", schoolRoutes)
 app.use("/api/v0.1", apiV1Router);
 
 export function standardRouteErrorCallback(res, req, err) {

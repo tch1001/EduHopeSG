@@ -10,6 +10,7 @@ function useAxios({
         ...config,
         baseURL,
         timeout,
+        withCredentials: true,
         headers: {
             "Content-Type": "application/json"
         }

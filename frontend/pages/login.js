@@ -39,8 +39,8 @@ function Login() {
                 method: "post",
                 data: values
             });
-
-            console.log(response);
+            
+            if (!response?.logged_in) throw "Failed to login";
         } catch (err) {
             console.error(err);
         } finally {

@@ -63,7 +63,7 @@ app.use(compression({
 }))
 
 // App security
-app.use(cors());
+app.use(cors({ origin: process.env.FRONTEND_ORIGIN, credentials: true }));
 app.use(helmet());
 app.disable("x-powered-by");
 
@@ -129,7 +129,7 @@ app.use((err, req, res, next) => {
 
 // Server and safe existing when process stops/when FATAL error occurs
 
-const server = app.listen(process.env.EXPRESS_APP_PORT || 5000, () => {
+const server = app.listen(process.env.BACKEND_PORT || 5000, () => {
     const { address, family, port } = server.address();
 
     log.info(

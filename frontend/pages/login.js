@@ -80,7 +80,7 @@ function Login() {
                     <Button type="submit" loading={loading}>Login</Button>
                 </form>
             </Card>
-            <p>
+            <p className="p-2">
                 New to EduHope?{" "}
                 <Link href="/signup" className="link" passHref>Join us Now</Link>
             </p>

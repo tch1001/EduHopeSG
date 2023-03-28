@@ -235,7 +235,7 @@ const SignUp = () => {
           I have read the{" "}
           <Link href="/terms" passHref className="link">Terms and Conditions</Link>
         </label>
-        <input id="terms" type="checkbox" />
+        <input id="terms" type="checkbox" className="float-right" />
       </div>
       <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="guidelines" formik={formik} />
@@ -243,7 +243,7 @@ const SignUp = () => {
           I have read the{" "}
           <Link href="/guidelines/tutee" passHref className="link">Tutee Guidelines</Link>
         </label>
-        <input id="guidelines" type="checkbox" />
+        <input id="guidelines" type="checkbox" className="float-right" />
       </div>
     </>
   ];
@@ -265,7 +265,7 @@ const SignUp = () => {
 
   return (
     <Container center className="p-6 max-w-5xl">
-      <Card className="p-4 m-2 shadow-md shadow-slate-300">
+      <Card className="p-4 m-2 shadow-md shadow-slate-300 sm:min-w-xs">
         <div className="my-2">
           <span className="text-2xl font-bold block text-center">Sign Up</span>
           <span className="text-base block text-center">Step {step + 1} of {steps.length}</span>
@@ -288,7 +288,7 @@ const SignUp = () => {
           </div>
         </form>
       </Card>
-      <p>
+      <p className="p-2">
         Already have an account with us?{" "}
         <Link href="/login" className="link" passHref>Login in here</Link>
       </p>

@@ -13,7 +13,7 @@
 }
 
 .form input[type=checkbox] {
-    @apply h-4 inline
+    @apply align-middle mx-2 h-4 inline w-fit;
 }
 
 .form select {

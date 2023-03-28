@@ -12,8 +12,8 @@ const Terms = () => {
                     of your access to the service.
                 </p>
             </div>
-            <main className="flex flex-col gap-6 py-8">
-                <ol className="list-inside list-[lower-roman] flex flex-col gap-4">
+            <main className="flex flex-col gap-6 py-8 leading-relaxed">
+                <ol className="list-outside list-[lower-roman] flex flex-col gap-4">
                     <li>
                         <strong>Privacy of Tutors and Members:</strong>{" "}
                         You must have permission before taking any photos or videos

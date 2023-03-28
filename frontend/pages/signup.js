@@ -9,7 +9,7 @@ import useAxios from "../helpers/useAxios";
 import Yup from "../helpers/Yup";
 import styles from "../styles/forms.module.css";
 
-const levels = [
+const EDUCATION_TYPES = [
   "Lower Primary",
   "Upper Primary",
   "Secondary 1",
@@ -23,14 +23,13 @@ const levels = [
   "A level Private candidate",
 ]
 
-const referrals = [
+const REFERRALS = [
   "Reddit",
   "Instagram",
   "TikTok",
   "Telegram",
-  "Through friends",
-  "Online search",
-  "Others"
+  "Word of mouth",
+  "Online search"
 ]
 
 const SignUp = () => {
@@ -162,7 +161,7 @@ const SignUp = () => {
         <label htmlFor="levelOfEducation">Current level of education</label>
         <select id="levelOfEducation" {...formik.getFieldProps("levelOfEducation")}>
           <option>--Select--</option>
-          {levels.map((level, i) => (
+          {EDUCATION_TYPES.map((level, i) => (
             <option key={i}>{level}</option>
           ))}
         </select>
@@ -225,7 +224,7 @@ const SignUp = () => {
         <label htmlFor="referral">Referral</label>
         <select id="referral" {...formik.getFieldProps("referral")}>
           <option>--Select--</option>
-          {referrals.map((referral, i) => (
+          {REFERRALS.map((referral, i) => (
             <option key={i}>{referral}</option>
           ))}
         </select>

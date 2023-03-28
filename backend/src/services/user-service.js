@@ -7,9 +7,30 @@ import ServiceError from "../classes/ServiceError.js";
 import { notifyPasswordChange, sendEmailUpdateConfirmation, sendEmailUpdateNotification } from "./email-service.js";
 import { getSubjects } from "./subject-service.js";
 
-const EDUCATION_TYPES = ["Secondary 3", "Secondary 4", "Secondary 5", "JC 1", "JC 2", "O level Private candidate", "A level Private candidate"];
-const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i']; // n', o', a'lvl, pri, BI, IP
-const REFERRAL = ["Reddit", "Instagram", "TikTok", "Telegram", "Google", "Word of mouth"];
+const EDUCATION_TYPES = [
+    "Lower Primary",
+    "Upper Primary",
+    "Secondary 1",
+    "Secondary 2",
+    "Secondary 3",
+    "Secondary 4",
+    "Secondary 5",
+    "JC 1",
+    "JC 2",
+    "O level Private candidate",
+    "A level Private candidate",
+];
+
+const REFERRAL = [
+    "Reddit",
+    "Instagram",
+    "TikTok",
+    "Telegram",
+    "Word of mouth",
+    "Online search"
+]
+
+const STREAMS = ['N', 'O', 'A', 'P', 'B', 'I']; // n', o', a'lvl, pri, BI, IP
 const COMMUNICATIONS = ["Text", "Virtual Consult", "Face-to-face"]
 
 const JWT_OPTIONS = {

@@ -53,7 +53,7 @@ function Login() {
             <Card className="p-4 m-2 shadow-md shadow-slate-300">
                 <span className="text-2xl font-bold block text-center my-2">Login</span>
                 <form
-                    className="flex flex-col items-center gap-2"
+                    className={styles.form}
                     onSubmit={formik.handleSubmit}
                     noValidate
                 >
@@ -64,7 +64,6 @@ function Login() {
                             type="email"
                             id="email"
                             autoComplete="username"
-                            className={styles.input}
                             {...formik.getFieldProps("email")}
                         />
                     </div>
@@ -75,7 +74,6 @@ function Login() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
-                            className={styles.input}
                             {...formik.getFieldProps("password")}
                         />
                     </div>

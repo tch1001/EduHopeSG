@@ -9,6 +9,30 @@ import useAxios from "../helpers/useAxios";
 import Yup from "../helpers/Yup";
 import styles from "../styles/forms.module.css";
 
+const levels = [
+  "Lower Primary",
+  "Upper Primary",
+  "Secondary 1",
+  "Secondary 2",
+  "Secondary 3",
+  "Secondary 4",
+  "Secondary 5",
+  "JC 1",
+  "JC 2",
+  "O level Private candidate",
+  "A level Private candidate",
+]
+
+const referrals = [
+  "Reddit",
+  "Instagram",
+  "TikTok",
+  "Telegram",
+  "Through friends",
+  "Online search",
+  "Others"
+]
+
 const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [schools, setSchools] = useState([]);
@@ -18,10 +42,12 @@ const SignUp = () => {
     firstName: Yup.string()
       .min(3, "Given name has to be at least 3 characters")
       .max(35, "Given name is too long")
+      .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
       .required("Required"),
     lastName: Yup.string()
       .min(2, "Family name has to be at least 2 characters")
       .max(35, "Family name too long")
+      .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
       .required("Required"),
     school: Yup.string().required("Required"),
     email: Yup.string()
@@ -46,14 +72,16 @@ const SignUp = () => {
       .max(32, "Telegram handles can have at most 32 characters")
       .matches(/^[a-zA-Z0-9_]*$/, "Can only contain alphanumeric characters and underscores (_)"),
     levelOfEducation: Yup.string().required("Required"),
-    bio: Yup.string().max(500, "Maximum of 500 characters"),
-    referral: Yup.string()
+    bio: Yup.string()
+      .max(500, "Maximum of 500 characters")
+      .optional(),
+    referral: Yup.string().optional()
   });
 
 
   const formik = useFormik({
     validationSchema: SignupSchema,
-    onSubmit: () => { },
+    onSubmit: handleSignup,
     initialValues: {
       firstName: "",
       lastName: "",
@@ -75,7 +103,35 @@ const SignUp = () => {
     })
       .then(({ result }) => setSchools(result.map(({ name }) => name)))
       .catch(err => console.error(err));
+
+    // get education levels and referrals from server?
   }, [])
+
+  async function handleSignup(values) {
+    if (loading) return;
+    setLoading(true);
+
+    try {
+      const data = {
+        name: [values.firstName, values.lastName].join(" "),
+        level_of_education: values.levelOfEducation,
+        telegram: values.telegramHandle,
+        ...values
+      }
+
+      const response = await request({
+        method: "post",
+        path: "/user",
+        data
+      });
+
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const steps = [
     <>
@@ -96,8 +152,8 @@ const SignUp = () => {
           <option>--Select--</option>
           <option>Graduated</option>
           <option>In National Service</option>
-          {schools.map((school) => (
-            <option>{school}</option>
+          {schools.map((school, i) => (
+            <option key={i}>{school}</option>
           ))}
         </select>
       </div>
@@ -105,8 +161,9 @@ const SignUp = () => {
         <FormErrorDisplay field="levelOfEducation" formik={formik} />
         <label htmlFor="levelOfEducation">Current level of education</label>
         <select id="levelOfEducation" {...formik.getFieldProps("levelOfEducation")}>
-          {[].map((level) => (
-            <option>{level}</option>
+          <option>--Select--</option>
+          {levels.map((level, i) => (
+            <option key={i}>{level}</option>
           ))}
         </select>
       </div>
@@ -167,8 +224,9 @@ const SignUp = () => {
         <FormErrorDisplay field="referral" formik={formik} />
         <label htmlFor="referral">Referral</label>
         <select id="referral" {...formik.getFieldProps("referral")}>
-          {[].map((referral) => (
-            <option>{referral}</option>
+          <option>--Select--</option>
+          {referrals.map((referral, i) => (
+            <option key={i}>{referral}</option>
           ))}
         </select>
       </div>
@@ -177,10 +235,8 @@ const SignUp = () => {
         <label htmlFor="guidelines">Tutee guidelines</label>
         <input id="guidelines" type="checkbox" />
       </div>
-
     </>
   ];
-
 
   const [step, setStep] = useState(0);
 
@@ -206,13 +262,19 @@ const SignUp = () => {
         </div>
         <form
           className={styles.form}
-          onSubmit={e => e.preventDefault()}
+          onSubmit={formik.handleSubmit}
           noValidate
         >
           {steps[step]}
           <div className="flex flex-row gap-2">
             <Button disabled={checkPrevStep()} onClick={prevStep}>Back</Button>
-            <Button disabled={checkNextStep()} onClick={nextStep}>Next</Button>
+            {
+              checkNextStep() ? (
+                <Button type="submit" loading={loading}>Sign up</Button>
+              ) : (
+                <Button onClick={nextStep}>Next</Button>
+              )
+            }
           </div>
         </form>
       </Card>

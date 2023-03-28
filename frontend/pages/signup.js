@@ -65,7 +65,7 @@ const SignUp = () => {
         const { password } = context.parent;
         return password === value;
       }),
-    telegramHandle: Yup.string()
+    telegram: Yup.string()
       .required("Required")
       .min(5, "Telegram handles must have at least 5 characters")
       .max(32, "Telegram handles can have at most 32 characters")
@@ -74,7 +74,9 @@ const SignUp = () => {
     bio: Yup.string()
       .max(500, "Maximum of 500 characters")
       .optional(),
-    referral: Yup.string().optional()
+    referral: Yup.string().optional(),
+    terms: Yup.boolean().isTrue("Agree to terms").required("Required"),
+    guidelines: Yup.boolean().isTrue("Agree to guidelines").required("Required")
   });
 
 
@@ -91,7 +93,9 @@ const SignUp = () => {
       telegramHandle: "",
       levelOfEducation: "",
       bio: "",
-      referral: ""
+      referral: "",
+      terms: false,
+      guidelines: false
     },
   });
 
@@ -106,16 +110,30 @@ const SignUp = () => {
     // get education levels and referrals from server?
   }, [])
 
-  async function handleSignup(values) {
+  async function handleSignup({
+    firstName,
+    lastName,
+    email,
+    password,
+    school,
+    levelOfEducation,
+    telegram,
+    bio,
+    referral
+  }) {
     if (loading) return;
     setLoading(true);
 
     try {
       const data = {
-        name: [values.firstName, values.lastName].join(" "),
-        level_of_education: values.levelOfEducation,
-        telegram: values.telegramHandle,
-        ...values
+        name: [firstName, lastName].join(" "),
+        level_of_education: levelOfEducation,
+        telegram,
+        email,
+        password,
+        school,
+        bio,
+        referral
       }
 
       const response = await request({
@@ -169,14 +187,14 @@ const SignUp = () => {
     </>,
     <>
       <div className="w-full max-w-sm px-4 py-2">
-        <FormErrorDisplay field="telegramHandle" formik={formik} />
-        <label htmlFor="telegramHandle">Telegram Handle</label>
+        <FormErrorDisplay field="telegram" formik={formik} />
+        <label htmlFor="telegram">Telegram Handle</label>
         <div>
           <span className={styles.slotItem}>@</span>
           <input
-            id="telegramHandle"
+            id="telegram"
             className={styles.slot}
-            {...formik.getFieldProps("telegramHandle")}
+            {...formik.getFieldProps("telegram")}
           />
         </div>
       </div>
@@ -217,7 +235,10 @@ const SignUp = () => {
       <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="bio" formik={formik} />
         <label htmlFor="bio">Biography</label>
-        <textarea placeholder="Give a short biography of yourself (max 500 characters)" />
+        <textarea
+          {...formik.getFieldProps("bio")}
+          placeholder="Give a short biography of yourself (max 500 characters)" 
+        />
       </div>
       <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="referral" formik={formik} />
@@ -230,12 +251,17 @@ const SignUp = () => {
         </select>
       </div>
       <div className="w-full max-w-sm px-4 py-2">
-        <FormErrorDisplay field="guidelines" formik={formik} />
+        <FormErrorDisplay field="terms" formik={formik} />
         <label htmlFor="terms">
           I have read the{" "}
           <Link href="/terms" passHref className="link">Terms and Conditions</Link>
         </label>
-        <input id="terms" type="checkbox" className="float-right" />
+        <input
+          id="terms"
+          type="checkbox"
+          className="float-right"
+          {...formik.getFieldProps("terms")}
+        />
       </div>
       <div className="w-full max-w-sm px-4 py-2">
         <FormErrorDisplay field="guidelines" formik={formik} />
@@ -243,7 +269,12 @@ const SignUp = () => {
           I have read the{" "}
           <Link href="/guidelines/tutee" passHref className="link">Tutee Guidelines</Link>
         </label>
-        <input id="guidelines" type="checkbox" className="float-right" />
+        <input
+          id="guidelines"
+          type="checkbox"
+          className="float-right"
+          {...formik.getFieldProps("guidelines")}
+        />
       </div>
     </>
   ];
@@ -272,7 +303,7 @@ const SignUp = () => {
         </div>
         <form
           className={styles.form}
-          onSubmit={formik.handleSubmit}
+          onSubmit={(e) => e.preventDefault()}
           noValidate
         >
           {steps[step]}
@@ -280,9 +311,9 @@ const SignUp = () => {
             <Button disabled={checkPrevStep()} onClick={prevStep}>Back</Button>
             {
               checkNextStep() ? (
-                <Button type="submit" loading={loading}>Sign up</Button>
+                <Button type="submit" onClick={formik.handleSubmit} loading={loading}>Sign up</Button>
               ) : (
-                <Button onClick={nextStep}>Next</Button>
+                <Button type="button" onClick={nextStep}>Next</Button>
               )
             }
           </div>

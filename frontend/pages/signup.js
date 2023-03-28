@@ -230,8 +230,19 @@ const SignUp = () => {
         </select>
       </div>
       <div className="w-full max-w-sm px-4 py-2">
-        <FormErrorDisplay field="referral" formik={formik} />
-        <label htmlFor="guidelines">Tutee guidelines</label>
+        <FormErrorDisplay field="guidelines" formik={formik} />
+        <label htmlFor="terms">
+          I have read the{" "}
+          <Link href="/terms" passHref className="link">Terms and Conditions</Link>
+        </label>
+        <input id="terms" type="checkbox" />
+      </div>
+      <div className="w-full max-w-sm px-4 py-2">
+        <FormErrorDisplay field="guidelines" formik={formik} />
+        <label htmlFor="guidelines">
+          I have read the{" "}
+          <Link href="/guidelines/tutee" passHref className="link">Tutee Guidelines</Link>
+        </label>
         <input id="guidelines" type="checkbox" />
       </div>
     </>

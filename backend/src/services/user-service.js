@@ -418,7 +418,7 @@ export async function create(user) {
  * Login to a user with email and password, creates a JWT cookie if success
  * @param {string} email User email
  * @param {string} password User password
- * @returns {{expireAt: number, cookie: string}} Success body with JWT cookie
+ * @returns {{ id: User.id, name: User.name expireAt: number, cookie: string}} Success body with JWT cookie
  */
 export async function login(email, password) {
     if (!email || !password || !validator.isEmail(email) || !isStrongPassword(password)) {
@@ -439,15 +439,19 @@ export async function login(email, password) {
     await query("UPDATE eduhope_user SET last_login = now() WHERE id = $1", [user.id]);
 
     // returning cookie and success object
+    const payload = {
+        id: user.id,
+        name: user.name
+    };
+
     const cookie = jwt.sign(
-        {
-            id: user.id,
-            name: user.name
-        },
-        process.env.JWT_KEY, JWT_OPTIONS
+        payload,
+        process.env.JWT_KEY,
+        JWT_OPTIONS
     )
 
     return {
+        ...payload,
         expireAt: jwt.decode(cookie).exp,
         cookie
     }

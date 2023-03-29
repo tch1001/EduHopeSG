@@ -27,6 +27,12 @@ router.post("/login", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
+router.get("/logout", (req, res) => {
+    res.status(204)
+        .clearCookie("user")
+        .end();
+})
+
 router.post("/signup", (req, res) => {
     userService.signup(req.body)
         .then(() => res.status(201).send({}))

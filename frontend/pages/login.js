@@ -35,13 +35,18 @@ function Login() {
 
         try {
             const response = await request({
-                path: "/user/login",
                 method: "post",
+                path: "/user/login",
                 data: values
             });
-            
-            if (!response?.logged_in) throw "Failed to login";
+
+            if (!response?.id) throw "Failed to login";
+
+            localStorage.setItem("user_id", response.id);
+            localStorage.setItem("username", response.name);
+            window.location.href = "/";
         } catch (err) {
+            // do notifications
             console.error(err);
         } finally {
             setLoading(false);

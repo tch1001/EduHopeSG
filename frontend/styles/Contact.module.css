@@ -1,0 +1,88 @@
+/* Contact Us social media icon href styling */
+
+.contactSocialMedia {
+    border: 2px solid #111;
+  }
+  
+  /* .contactSocialMedia {
+    align-items: center;
+    border: 2px solid #111;
+    font-family: Inter,sans-serif;
+    font-size: 16px;
+    height: 48px;
+    justify-content: center;
+    line-height: 24px;
+    max-width: 100%;
+    width: 100%;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  } */
+  
+  .contactSocialMedia::after {
+    background-color: #111;
+    border-radius: 8px;
+    content: "";
+    display: block;
+    height: 48px;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    top: -2px;
+    transform: translate(8px, 8px);
+    transition: transform .2s ease-out;
+    z-index: -1;
+  }
+  
+  .contactSocialMedia:hover:after {
+    transform: translate(0, 0);
+  }
+  
+  .contactSocialMedia:active {
+    background-color: #ADD8E6;
+    outline: 0;
+  }
+  
+  .contactSocialMedia:hover {
+    outline: 0;
+  }
+  
+  @media (min-width: 576px) {
+    .contactSocialMedia {
+      padding: 0 40px;
+    }
+  }
+  
+  @media (max-width: 575px) {
+    .contactSocialMedia {
+      padding: 0 10px;
+    }
+  }
+  
+  /* Contact Us form styling */
+  /* .contact__form {
+    padding: 1.375rem .75rem;
+      line-height: 1.5;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      border-radius: 0 !important;
+      border: 1px solid var(--secondary-color);
+  }
+  
+  .contact__form input.form-control {
+    margin-bottom: 2em;
+    height: calc(2.5em + .75rem + 2px);
+  }
+  
+  .btn{
+    color: blueviolet;
+  }
+  
+  .formInput {
+    padding: 25px 10px;
+    color: var(--green);
+  } */

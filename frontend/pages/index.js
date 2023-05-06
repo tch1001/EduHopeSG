@@ -88,7 +88,7 @@ const Home = ({ subjects, testimonials }) => {
                 <Image
                     src="/images/landing_page/cover_banner.jpg"
                     className="w-screen h-fit object-cover"
-                    style={{ height: "calc(100vh - 61px)" }}
+                    style={{ height: "calc(100vh - 61px)", filter: "brightness(90%)" }}
                     width={width}
                     height={width}
                     quality={80}
@@ -97,7 +97,7 @@ const Home = ({ subjects, testimonials }) => {
                 />
                 <div className={`${styles.cover} flex flex-col gap-1 m-auto text-white text-center text-3xl`}>
                     <p className="uppercase font-bold">Connect, Learn and Grow</p>
-                    <p>Empowering students through free and flexible tutoring.</p>
+                    <p>To create a more affordable alternative for students seeking supplementary education.</p>
                 </div>
             </div>
             <Container className="flex flex-col gap-20 my-16">

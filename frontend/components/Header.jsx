@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import { Button } from './Button';
 import { Icon } from "./Icon";
+import useUser from '../helpers/useUser';
+import { DropdownMenu } from './Dropdown';
 
 const Links = () => {
     return (
@@ -26,6 +28,7 @@ const Links = () => {
 
 export const Header = () => {
     const [navbar, setNavbar] = useState(false);
+    const [user, { logout }] = useUser();
 
     useEffect(() => {
         window.addEventListener("resize", () => {
@@ -38,14 +41,53 @@ export const Header = () => {
         setNavbar(!navbar);
     }
 
-    const LoginButton = () => (
-        <Button secondary href="/login">
-            Login
-        </Button>
-    )
+    const UserSection = () => {
+        if (!user.id) {
+            return (
+                <Button secondary href="/login">
+                    Login
+                </Button>
+            )
+        }
+
+        const dropdownContent = (
+            <>
+                <Link href="/tutees">My tutees</Link>
+                <Link href="/tutors" passHref>My tutors</Link>
+                <Link href="/settings" passHref>Settings</Link>
+                <div onClick={logout}>Logout</div>
+            </>
+        )
+
+        return (
+            <div>
+                <DropdownMenu dropdownContent={dropdownContent}>
+                    <div
+                        className="flex flex-row gap-1 items-center"
+                    >
+                        <Icon
+                            icon="user-circle"
+                            className="w-6 h-6"
+                            alt=""
+                            width={3}
+                            height={3}
+                        />
+                        <Icon
+                            icon="chevron-down"
+                            className="w-4 h-4"
+                            alt=""
+                            width={3}
+                            height={3}
+                        />
+                    </div>
+                </DropdownMenu>
+
+            </div>
+        )
+    }
 
     return (
-        <header className={`px-12 py-2 bg-blue text-sm font-medium ${navbar ? "rounded-b-md" : ""}`}>
+        <header className={`px-14 py-2 bg-blue text-sm font-medium ${navbar ? "rounded-b-md" : ""}`}>
             <div className="flex flex-row w-full justify-between">
                 <Link href="/" passHref>
                     <Image
@@ -61,7 +103,7 @@ export const Header = () => {
                     <div className="flex flex-row gap-x-5 my-auto">
                         <Links />
                     </div>
-                    <LoginButton />
+                    <UserSection />
                 </nav>
                 <Button
                     className="sm:hidden"
@@ -73,7 +115,7 @@ export const Header = () => {
             </div>
             <nav className={`flex flex-col items-center justify-center gap-y-3 py-2 text-base ${navbar ? "block" : "hidden"}`}>
                 <Links />
-                <LoginButton />
+                <UserSection />
             </nav>
         </header>
     );

@@ -177,3 +177,4 @@ node_modules
 psd
 thumb
 sketch
+frontend/.env.development

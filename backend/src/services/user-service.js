@@ -7,9 +7,30 @@ import ServiceError from "../classes/ServiceError.js";
 import { notifyPasswordChange, sendEmailUpdateConfirmation, sendEmailUpdateNotification } from "./email-service.js";
 import { getSubjects } from "./subject-service.js";
 
-const EDUCATION_TYPES = ["Secondary 3", "Secondary 4", "Secondary 5", "JC 1", "JC 2", "O level Private candidate", "A level Private candidate"];
-const STREAMS = ['N', 'O', 'A', 'P', 'B', 'i']; // n', o', a'lvl, pri, BI, IP
-const REFERRAL = ["Reddit", "Instagram", "TikTok", "Telegram", "Google", "Word of mouth"];
+const EDUCATION_TYPES = [
+    "Lower Primary",
+    "Upper Primary",
+    "Secondary 1",
+    "Secondary 2",
+    "Secondary 3",
+    "Secondary 4",
+    "Secondary 5",
+    "JC 1",
+    "JC 2",
+    "O level Private candidate",
+    "A level Private candidate",
+];
+
+const REFERRAL = [
+    "Reddit",
+    "Instagram",
+    "TikTok",
+    "Telegram",
+    "Word of mouth",
+    "Online search"
+]
+
+const STREAMS = ['N', 'O', 'A', 'P', 'B', 'I']; // n', o', a'lvl, pri, BI, IP
 const COMMUNICATIONS = ["Text", "Virtual Consult", "Face-to-face"]
 
 const JWT_OPTIONS = {
@@ -397,7 +418,7 @@ export async function create(user) {
  * Login to a user with email and password, creates a JWT cookie if success
  * @param {string} email User email
  * @param {string} password User password
- * @returns {{expireAt: number, cookie: string}} Success body with JWT cookie
+ * @returns {{ id: User.id, name: User.name expireAt: number, cookie: string}} Success body with JWT cookie
  */
 export async function login(email, password) {
     if (!email || !password || !validator.isEmail(email) || !isStrongPassword(password)) {
@@ -418,15 +439,19 @@ export async function login(email, password) {
     await query("UPDATE eduhope_user SET last_login = now() WHERE id = $1", [user.id]);
 
     // returning cookie and success object
+    const payload = {
+        id: user.id,
+        name: user.name
+    };
+
     const cookie = jwt.sign(
-        {
-            id: user.id,
-            name: user.name
-        },
-        process.env.JWT_KEY, JWT_OPTIONS
+        payload,
+        process.env.JWT_KEY,
+        JWT_OPTIONS
     )
 
     return {
+        ...payload,
         expireAt: jwt.decode(cookie).exp,
         cookie
     }

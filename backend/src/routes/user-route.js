@@ -13,20 +13,32 @@ router.post("/", (req, res) => {
 
 router.post("/login", (req, res) => {
     userService.login(req.body?.email, req.body?.password)
-        .then(({ cookie, expiresAt }) => {
+        .then(({ cookie, expireAt, ...payload }) => {
             const cookieOptions = {
-                expires: new Date(expiresAt),
-                maxAge: 1209600,  // 14 days * 24 * 60 * 60 minutes
+                expires: new Date(expireAt * 1000),
                 secure: process.env.NODE_ENV === "production"
             }
 
             res.status(200)
                 .cookie("user", cookie, cookieOptions)
-                .send({ logged_in: true })
+                .send(payload)
                 .end();
         })
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
+
+router.get("/logout", (req, res) => {
+    res.status(204)
+        .clearCookie("user")
+        .end();
+})
+
+router.post("/signup", (req, res) => {
+    userService.signup(req.body)
+        .then(() => res.status(201).send({}))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+})
+
 
 router.patch("/", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);

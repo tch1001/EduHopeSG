@@ -1,4 +1,11 @@
+import { existsSync as fsCheckExists, mkdirSync as fsMkdir } from "fs";
+import { fileURLToPath } from "url";
+import { resolve as path } from "path";
 import bunyan from "bunyan";
+
+// Make "logs" directory if non-existent
+const logPath = path(fileURLToPath(import.meta.url), "../../../", "logs");
+if (!fsCheckExists(logPath)) fsMkdir(logPath);
 
 export default bunyan.createLogger({
     name: "eduhope-server",

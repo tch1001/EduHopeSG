@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
+import { useFormik } from "formik";
 import Link from 'next/link'
 import Button from "../components/Button";
 import Container from "../components/Container";
+import FormErrorDisplay from "../components/FormErrorDisplay";
+
+import useAxios from "../helpers/useAxios";
+import Yup from "../helpers/Yup";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
@@ -11,26 +16,45 @@ import styles from '../styles/Contact.module.css'
 
 const Contact = () => {
     const [sending, setSending] = useState(false);
+    const request = useAxios();
 
-    const [details, setDetails] = useState({
-        name: "",
-        email: "",
-        message: ""
+    const MessageSchema = Yup.object({
+        name: Yup.string()
+            .min(3, "Name has to be at least 3 characters")
+            .max(35, "Name is too long")
+            .matches(/^[A-Z][a-zA-Z]*(?:\s[A-Z][a-zA-Z]*)*$/, "Capitalise the first letter of every word")
+            .required("Required"),
+        email: Yup.string()
+            .email("Invalid email address")
+            .required("Required")
+            .max(320, "Email address too long"),
+        message: Yup.string()
+            .min(32, "Message is too short (at least 32 characters)")
+            .max(8000, "Message is too long (at most 8,000 characters)")
+            .required("Message is required")
+
     });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const sendMessage = async (data) => {
         setSending(true);
 
-        fetch("http://localhost:3000/contact", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8",
-            },
-            body: JSON.stringify(details),
+        request({
+            method: "post",
+            path: "/contact",
+            data
         })
             .finally(() => setSending(false));
     };
+
+    const formik = useFormik({
+        validationSchema: MessageSchema,
+        onSubmit: sendMessage,
+        initialValues: {
+            name: "",
+            email: "",
+            message: ""
+        },
+    });
 
     return (
         <Container className="p-6 max-w-5xl">
@@ -107,41 +131,48 @@ const Contact = () => {
                         <form>
                             <div className="grid grid-cols-6 gap-6">
                                 <div className="col-span-6 sm:col-span-3">
+                                    <FormErrorDisplay field="name" formik={formik} />
                                     <label for="name" className="text-sm font-medium text-gray-900 block mb-2">Name</label>
                                     <input
-                                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
                                         type="text"
                                         name="name"
                                         id="name"
                                         placeholder="Name"
+                                        autoComplete="name"
                                         required
+                                        className={styles.input}
+                                        {...formik.getFieldProps("name")}
                                     />
                                 </div>
                                 <div className="col-span-6 sm:col-span-3">
-                                    <label for="name" className="text-sm font-medium text-gray-900 block mb-2">Email</label>
+                                    <FormErrorDisplay field="email" formik={formik} />
+                                    <label for="email" className="text-sm font-medium text-gray-900 block mb-2">Email</label>
                                     <input
-                                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                                        type="email"
+                                        type="text"
                                         name="email"
                                         id="email"
-                                        placeholder="Email Address"
+                                        placeholder="Email address"
+                                        autoComplete="email"
                                         required
+                                        className={styles.input}
+                                        {...formik.getFieldProps("email")}
                                     />
                                 </div>
                                 <div className="col-span-full mb-5">
+                                    <FormErrorDisplay field="message" formik={formik} />
                                     <label for="message" className="text-sm font-medium text-gray-900 block mb-2">Message</label>
                                     <textarea
-                                        className="bg-gray-50 resize-none border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-4"
+                                        type="text"
                                         rows="6"
                                         id="message"
                                         placeholder="Type your message here..."
                                         required
+                                        className="bg-gray-50 resize-none border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-4"
+                                        {...formik.getFieldProps("message")}
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <Button className="py-3 px-8" type="submit" disabled={sending}>{sending ? "Sending..." : "Send"}</Button>
-                            </div>
+                            <Button onClick={formik.handleSubmit} disabled={sending}>{sending ? "Sending..." : "Send"}</Button>
                         </form>
                     </div>
                 </div>

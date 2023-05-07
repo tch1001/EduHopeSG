@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useFormik } from "formik";
-import Link from 'next/link'
+import Link from 'next/link';
+import Image from 'next/image';
 import Button from "../components/Button";
 import Container from "../components/Container";
 import FormErrorDisplay from "../components/FormErrorDisplay";
@@ -8,11 +9,10 @@ import FormErrorDisplay from "../components/FormErrorDisplay";
 import useAxios from "../helpers/useAxios";
 import Yup from "../helpers/Yup";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
-import { faTiktok as faTikTok, faInstagram, faTelegram } from '@fortawesome/free-brands-svg-icons'
+import styles from '../styles/Contact.module.css';
 
-import styles from '../styles/Contact.module.css'
+const ICON_SIZE = 48;
+const ICON_QUALITY = 60;
 
 const Contact = () => {
     const [sending, setSending] = useState(false);
@@ -98,25 +98,54 @@ const Contact = () => {
                             <div className="flex flex-wrap justify-evenly">
                                 <Link href="https://t.me/eduhopesg/" target="_blank" passHref>
                                     <Button className={styles.contactSocialMedia} role="button">
-                                        <FontAwesomeIcon icon={faTelegram} size="2xl" />
+
+                                        <Image
+                                            className="rounded-full md:w-9 h-auto"
+                                            src="/images/telegram.png"
+                                            width={ICON_SIZE}
+                                            height={ICON_SIZE}
+                                            quality={ICON_QUALITY}
+                                            alt="Our Telegram channel"
+                                        />
                                         <div className="hidden lg:block">Telegram</div>
                                     </Button>
                                 </Link>
                                 <Link href="https://www.instagram.com/eduhopesg/" target="_blank" passHref>
                                     <Button className={styles.contactSocialMedia} role="button">
-                                        <FontAwesomeIcon icon={faInstagram} size="2xl" />
+                                        <Image
+                                            className="rounded-full md:w-9 h-auto"
+                                            src="/images/instagram.png"
+                                            width={ICON_SIZE}
+                                            height={ICON_SIZE}
+                                            quality={ICON_QUALITY}
+                                            alt="Our Instagram account"
+                                        />
                                         <div className="hidden lg:block">Instagram</div>
                                     </Button>
                                 </Link>
                                 <Link href="https://www.tiktok.com/@eduhopesg" target="_blank" passHref>
                                     <Button className={styles.contactSocialMedia} role="button">
-                                        <FontAwesomeIcon icon={faTikTok} size="2xl" />
+                                        <Image
+                                            className="rounded-full md:w-9 h-auto"
+                                            src="/images/tiktok.png"
+                                            width={ICON_SIZE}
+                                            height={ICON_SIZE}
+                                            quality={ICON_QUALITY}
+                                            alt="Our TikTok account"
+                                        />
                                         <div className="hidden lg:block">TikTok</div>
                                     </Button>
                                 </Link>
                                 <a href="mailto:eduhopesg@gmail.com">
                                     <Button className={styles.contactSocialMedia} role="button">
-                                        <FontAwesomeIcon icon={faEnvelope} size="2xl" />
+                                        <Image
+                                            className="rounded-full md:w-9 h-auto"
+                                            src="/images/email.png"
+                                            width={ICON_SIZE}
+                                            height={ICON_SIZE}
+                                            quality={ICON_QUALITY}
+                                            alt="Our email address"
+                                        />    
                                         <div className="hidden lg:block">Email</div>
                                     </Button>
                                 </a>

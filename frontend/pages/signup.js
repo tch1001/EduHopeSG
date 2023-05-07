@@ -5,8 +5,10 @@ import Button from "../components/Button";
 import Container from "../components/Container";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
+
 import useAxios from "../helpers/useAxios";
 import Yup from "../helpers/Yup";
+
 import styles from "../styles/forms.module.css";
 
 const EDUCATION_TYPES = [
@@ -166,22 +168,22 @@ const SignUp = () => {
                 <FormErrorDisplay field="school" formik={formik} />
                 <label htmlFor="school">School</label>
                 <select id="school" {...formik.getFieldProps("school")}>
-                <option>--Select--</option>
-                <option>Graduated</option>
-                <option>In National Service</option>
-                {schools.map((school, i) => (
-                    <option key={i}>{school}</option>
-                ))}
+                    <option>--Select--</option>
+                    <option>Graduated</option>
+                    <option>In National Service</option>
+                    {schools.map((school, i) => (
+                        <option key={i}>{school}</option>
+                    ))}
                 </select>
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="levelOfEducation" formik={formik} />
                 <label htmlFor="levelOfEducation">Current level of education</label>
                 <select id="levelOfEducation" {...formik.getFieldProps("levelOfEducation")}>
-                <option>--Select--</option>
-                {EDUCATION_TYPES.map((level, i) => (
-                    <option key={i}>{level}</option>
-                ))}
+                    <option>--Select--</option>
+                    {EDUCATION_TYPES.map((level, i) => (
+                        <option key={i}>{level}</option>
+                    ))}
                 </select>
             </div>
             </>,
@@ -202,32 +204,32 @@ const SignUp = () => {
                 <FormErrorDisplay field="email" formik={formik} />
                 <label htmlFor="email">Email address</label>
                 <input
-                id="email"
-                type="email"
-                className={styles.input}
-                {...formik.getFieldProps("email")}
+                    id="email"
+                    type="email"
+                    className={styles.input}
+                    {...formik.getFieldProps("email")}
                 />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="password" formik={formik} />
                 <label htmlFor="password">Password</label>
                 <input
-                id="password"
-                type="password"
-                autoComplete="new-password"
-                className={styles.input}
-                {...formik.getFieldProps("password")}
+                    id="password"
+                    type="password"
+                    autoComplete="new-password"
+                    className={styles.input}
+                    {...formik.getFieldProps("password")}
                 />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="confirmPassword" formik={formik} />
                 <label htmlFor="confirmPassword">Confirm password</label>
                 <input
-                id="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                className={styles.input}
-                {...formik.getFieldProps("confirmPassword")}
+                    id="confirmPassword"
+                    type="password"
+                    autoComplete="new-password"
+                    className={styles.input}
+                    {...formik.getFieldProps("confirmPassword")}
                 />
             </div>
             </>,
@@ -236,44 +238,44 @@ const SignUp = () => {
                 <FormErrorDisplay field="bio" formik={formik} />
                 <label htmlFor="bio">Biography</label>
                 <textarea
-                {...formik.getFieldProps("bio")}
-                placeholder="Give a short biography of yourself (max 500 characters)" 
+                    {...formik.getFieldProps("bio")}
+                    placeholder="Give a short biography of yourself (max 500 characters)" 
                 />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="referral" formik={formik} />
                 <label htmlFor="referral">Referral</label>
                 <select id="referral" {...formik.getFieldProps("referral")}>
-                <option>--Select--</option>
-                {REFERRALS.map((referral, i) => (
-                    <option key={i}>{referral}</option>
-                ))}
+                        <option>--Select--</option>
+                        {REFERRALS.map((referral, i) => (
+                            <option key={i}>{referral}</option>
+                        ))}
                 </select>
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="terms" formik={formik} />
                 <label htmlFor="terms">
-                I have read the{" "}
-                <Link href="/terms" passHref className="link">Terms and Conditions</Link>
+                    I have read the{" "}
+                    <Link href="/terms" passHref className="link">Terms and Conditions</Link>
                 </label>
                 <input
-                id="terms"
-                type="checkbox"
-                className="float-right"
-                {...formik.getFieldProps("terms")}
+                    id="terms"
+                    type="checkbox"
+                    className="float-right"
+                    {...formik.getFieldProps("terms")}
                 />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="guidelines" formik={formik} />
                 <label htmlFor="guidelines">
-                I have read the{" "}
-                <Link href="/guidelines/tutee" passHref className="link">Tutee Guidelines</Link>
+                    I have read the{" "}
+                    <Link href="/guidelines/tutee" passHref className="link">Tutee Guidelines</Link>
                 </label>
                 <input
-                id="guidelines"
-                type="checkbox"
-                className="float-right"
-                {...formik.getFieldProps("guidelines")}
+                    id="guidelines"
+                    type="checkbox"
+                    className="float-right"
+                    {...formik.getFieldProps("guidelines")}
                 />
             </div>
         </>

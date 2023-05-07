@@ -1,0 +1,43 @@
+/* Contact Us social media icon href styling */
+
+.contactSocialMedia {
+    @apply flex relative bg-blue items-center rounded-lg h-12 select-none touch-manipulation gap-2;
+    @apply box-border border-solid border-black border-2;
+}
+
+.contactSocialMedia::after {
+    @apply rounded-lg bg-black h-12 left-0 w-full absolute;
+    content: "";
+    transform: translate(8px, 8px);
+    transition: transform .2s ease-out;
+    z-index: -1;
+}
+
+.contactSocialMedia:hover:after {
+    transform: translate(0, 0);
+}
+
+.contactSocialMedia:active {
+    @apply bg-blue;
+    outline: 0;
+}
+
+.contactSocialMedia:hover {
+    outline: 0;
+}
+
+.input {
+    @apply shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5;
+}
+
+@media (min-width: 576px) {
+    .contactSocialMedia {
+        padding: 0 40px;
+    }
+}
+
+@media (max-width: 575px) {
+    .contactSocialMedia {
+        padding: 0 10px;
+    }
+}

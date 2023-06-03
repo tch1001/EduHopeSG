@@ -3,12 +3,13 @@ import useAxios from "./useAxios";
 
 function useUser() {
     const requester = useAxios();
-    const [user, setUser] = useState({ id: null, name: null });
+    const [user, setUser] = useState({ id: null, name: null, is_tutor: null });
 
     useEffect(() => {
         setUser({
             id: localStorage.getItem("user_id"),
-            name: localStorage.getItem("username")
+            name: localStorage.getItem("username"),
+            is_tutor: localStorage.getItem("is_tutor")
         })
     }, [])
 

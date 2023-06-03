@@ -44,6 +44,7 @@ function Login() {
 
             localStorage.setItem("user_id", response.id);
             localStorage.setItem("username", response.name);
+            localStorage.setItem("is_tutor", response.is_tutor);
             window.location.href = "/";
         } catch (err) {
             // do notifications

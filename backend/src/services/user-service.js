@@ -428,7 +428,7 @@ export async function login(email, password) {
     email = validator.normalizeEmail(validator.trim(email));
     password = validator.trim(password);
 
-    const user = await getByEmail(email, "password", { encrypted: false });
+    const user = await getByEmail(email, "password is_tutor", { encrypted: false });
     if (!user) throw new ServiceError("user-login-failed");
 
     // verify password
@@ -441,7 +441,8 @@ export async function login(email, password) {
     // returning cookie and success object
     const payload = {
         id: user.id,
-        name: user.name
+        name: user.name,
+        is_tutor: user.is_tutor
     };
 
     const cookie = jwt.sign(

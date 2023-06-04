@@ -55,7 +55,7 @@ export const Header = () => {
                 <Link href="/tutees">My tutees</Link>
                 <Link href="/tutors" passHref>My tutors</Link>
                 <Link href="/settings" passHref>Settings</Link>
-                <div onClick={logout}>Logout</div>
+                <div onClick={() => logout() && (window.location.href = "/")}>Logout</div>
             </>
         )
 

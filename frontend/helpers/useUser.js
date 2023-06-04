@@ -15,7 +15,7 @@ function useUser() {
 
     const methods = {
         logout,
-
+        login,
     }
 
     return [user, methods];
@@ -27,12 +27,37 @@ function useUser() {
                 path: "/user/logout"
             };
 
-
-            await requester(request);
+            const response = await requester(request);
             localStorage.removeItem("user_id");
             localStorage.removeItem("username");
+            localStorage.removeItem("is_tutor");
+
+            return response;
         } catch (err) {
             throw "Failed to logout"
+        }
+    }
+
+    async function login({ email, password }) {
+        if (!email || !password) throw "Missing required arguments";
+
+        try {
+            const request = {
+                method: "post",
+                path: "/user/login",
+                data: { email, password }
+            };
+
+            const response = await requester(request);
+            if (!response?.id) throw "Failed to login";
+
+            localStorage.setItem("user_id", response.id);
+            localStorage.setItem("username", response.name);
+            localStorage.setItem("is_tutor", response.is_tutor);
+
+            return response;
+        } catch (err) {
+            throw err;
         }
     }
 }

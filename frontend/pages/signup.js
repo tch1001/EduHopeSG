@@ -10,6 +10,7 @@ import useAxios from "../helpers/useAxios";
 import Yup from "../helpers/Yup";
 
 import styles from "../styles/forms.module.css";
+import useUser from "../helpers/useUser";
 
 const EDUCATION_TYPES = [
     "Lower Primary",
@@ -37,6 +38,7 @@ const REFERRALS = [
 const SignUp = () => {
     const [loading, setLoading] = useState(false);
     const [schools, setSchools] = useState([]);
+    const [user, { login }] = useUser();
     const request = useAxios();
 
     const SignupSchema = Yup.object({
@@ -138,14 +140,18 @@ const SignUp = () => {
                 referral
             }
 
-            const response = await request({
+            await request({
                 method: "post",
                 path: "/user",
                 data
             });
 
-            console.log(response);
+            await login({ email, password });
+            window.location.href = "/";
         } catch (err) {
+            // TODO: use dialogue/toast component for notification
+            // success and error messages
+            alert(`${err.name}: ${err.message}. ${err.details}`)
             console.error(err);
         } finally {
             setLoading(false);
@@ -186,18 +192,18 @@ const SignUp = () => {
                     ))}
                 </select>
             </div>
-            </>,
-            <>
+        </>,
+        <>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="telegram" formik={formik} />
                 <label htmlFor="telegram">Telegram Handle</label>
                 <div>
-                <span className={styles.slotItem}>@</span>
-                <input
-                    id="telegram"
-                    className={styles.slot}
-                    {...formik.getFieldProps("telegram")}
-                />
+                    <span className={styles.slotItem}>@</span>
+                    <input
+                        id="telegram"
+                        className={styles.slot}
+                        {...formik.getFieldProps("telegram")}
+                    />
                 </div>
             </div>
             <div className="w-full max-w-sm px-4 py-2">
@@ -232,24 +238,24 @@ const SignUp = () => {
                     {...formik.getFieldProps("confirmPassword")}
                 />
             </div>
-            </>,
-            <>
+        </>,
+        <>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="bio" formik={formik} />
                 <label htmlFor="bio">Biography</label>
                 <textarea
                     {...formik.getFieldProps("bio")}
-                    placeholder="Give a short biography of yourself (max 500 characters)" 
+                    placeholder="Give a short biography of yourself (max 500 characters)"
                 />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="referral" formik={formik} />
                 <label htmlFor="referral">Referral</label>
                 <select id="referral" {...formik.getFieldProps("referral")}>
-                        <option>--Select--</option>
-                        {REFERRALS.map((referral, i) => (
-                            <option key={i}>{referral}</option>
-                        ))}
+                    <option>--Select--</option>
+                    {REFERRALS.map((referral, i) => (
+                        <option key={i}>{referral}</option>
+                    ))}
                 </select>
             </div>
             <div className="w-full max-w-sm px-4 py-2">
@@ -286,7 +292,7 @@ const SignUp = () => {
     const checkNextStep = () => step + 1 >= steps.length;
     const checkPrevStep = () => step <= 0;
 
-    const nextStep = () => {        
+    const nextStep = () => {
         if (!checkNextStep) return;
         setStep(step + 1)
     }

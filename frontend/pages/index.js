@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 import styles from "../styles/Home.module.css";
 
-const SCROLL_MULTIPLIER = 1.5;
+const SCROLL_MULTIPLIER = 2;
 const LISTENER_OPTIONS = {
     capture: true,
     passive: true
@@ -23,7 +23,7 @@ const Home = ({ subjects, testimonials }) => {
         window.addEventListener("resize", updateWidth, LISTENER_OPTIONS);
 
         // horizontal scrolling
-        const horizontals = [...document.getElementsByClassName(styles["horizontal-scroll"])]
+        const horizontals = [...document.getElementsByClassName(styles["horizontal-scroll"])];
 
         horizontals.forEach((horizontal) => {
             horizontal.addEventListener("wheel", invertScroll, { ...LISTENER_OPTIONS, passive: false });
@@ -55,6 +55,7 @@ const Home = ({ subjects, testimonials }) => {
                 const x = e.pageX - horizontal.offsetLeft;
                 const walk = (x - startX) * SCROLL_MULTIPLIER;
                 horizontal.scrollLeft = scrollLeft - walk;
+                horizontal.parentElement.scrollTop = x;
 
                 horizontal.classList.remove("cursor-grabbing");
                 horizontal.classList.add("cursor-grab");
@@ -80,7 +81,7 @@ const Home = ({ subjects, testimonials }) => {
         function updateWidth() {
             setWidth(window.innerWidth);
         }
-    });
+    }, []);
 
     return (
         <div>
@@ -156,7 +157,7 @@ const Home = ({ subjects, testimonials }) => {
                             Testimonials from {" "}
                             <span className="text-dark-blue underline">tutors</span>
                         </p>
-                        <div className={`${styles["horizontal-scroll"]} pb-4 cursor-grab`}>
+                        <div className={`${styles["horizontal-scroll"]} pb-4 cursor-grab select-none`}>
 
                             {
                                 testimonials.tutors.map((testimonial, key) => (
@@ -177,7 +178,7 @@ const Home = ({ subjects, testimonials }) => {
                             Testimonials from {" "}
                             <span className="text-dark-blue underline">tutees</span>
                         </p>
-                        <div className={`${styles["horizontal-scroll"]} pb-4 cursor-grab`}>
+                        <div className={`${styles["horizontal-scroll"]} pb-4 cursor-grab select-none`}>
 
                             {
                                 testimonials.tutees.map((testimonial, key) => (

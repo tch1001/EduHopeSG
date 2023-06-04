@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
+import { useRouter } from "next/router";
 import Link from "next/link";
-import Button from "../components/Button";
-import Container from "../components/Container";
-import Card from "../components/Card";
-import FormErrorDisplay from "../components/FormErrorDisplay";
+import Button from "../../components/Button";
+import Container from "../../components/Container";
+import Card from "../../components/Card";
+import FormErrorDisplay from "../../components/FormErrorDisplay";
 
-import useAxios from "../helpers/useAxios";
-import Yup from "../helpers/Yup";
+import useAxios from "../../helpers/useAxios";
+import Yup from "../../helpers/Yup";
 
-import styles from "../styles/forms.module.css";
-import useUser from "../helpers/useUser";
+import styles from "../../styles/forms.module.css";
+import useUser from "../../helpers/useUser";
 
 const EDUCATION_TYPES = [
     "Lower Primary",
@@ -38,8 +39,11 @@ const REFERRALS = [
 const SignUp = () => {
     const [loading, setLoading] = useState(false);
     const [schools, setSchools] = useState([]);
+    const router = useRouter();
     const [user, { login }] = useUser();
     const request = useAxios();
+
+    if (user.id) router.push("/");
 
     const SignupSchema = Yup.object({
         firstName: Yup.string()
@@ -342,6 +346,10 @@ const SignUp = () => {
             <p className="p-2">
                 Already have an account with us?{" "}
                 <Link href="/login" className="link" passHref>Login in here</Link>
+            </p>
+            <p className="p-1">
+                Sign up as a tutor?{" "}
+                <Link href="/signup/tutor" className="link" passHref>Become a tutor</Link>
             </p>
         </Container>
     );

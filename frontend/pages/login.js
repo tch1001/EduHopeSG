@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useFormik } from "formik";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import Button from "../components/Button";
 import Container from "../components/Container";
@@ -18,7 +19,10 @@ function Login() {
     });
 
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
     const [user, { login }] = useUser()
+
+    if (user.id) router.push("/")
 
     const formik = useFormik({
         initialValues: {

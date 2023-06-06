@@ -8,7 +8,7 @@ export const Subject = ({ subject, tutors }) => {
     }
 
     return (
-        <Container className="flex flex-col gap-3 p-6 max-w-7xl">
+        <Container className="flex flex-col gap-6 p-6 max-w-5xl">
             <div>
                 <h1 className="text-3xl font-bold">
                     <span className="text-dark-aqua">{subject.course}</span>{" "}
@@ -25,16 +25,17 @@ export const Subject = ({ subject, tutors }) => {
             </div>
             <main className="flex flex-col gap-4">
                 {
-                    tutors.map((tutor, key) => (
-                        <Card className="py-4 px-6 max-w-max">
+                    tutors.map((tutor) => (
+                        <Card className="py-4 px-6 max-w-max" key={tutor.id}>
                             <div>
                                 <p className="text-dark-blue font-bold">
-                                    {tutor.given_name}, {" "}
-                                    <span className="text-black font-semibold">{tutor.current_institution}</span>
+                                    {tutor.name}, {" "}
+                                    <span className="text-black font-semibold">{tutor.school}</span>
                                 </p>
+                                <p className="text-black italic">{tutor.level_of_education}</p>
                                 <p>{tutor.description}</p>
                             </div>
-                            <div className="pt-2">
+                            <div className="mt-2">
                                 <Button onClick={() => handleRequest(tutor.id)}>Request</Button>
                             </div>
                         </Card>
@@ -46,17 +47,22 @@ export const Subject = ({ subject, tutors }) => {
 }
 
 export const getServerSideProps = async ({ query }) => {
-    // get tutor info
-    const transform = (object) => JSON.parse(JSON.stringify(object));
-    const tutors = transform((await import("../../../../data/tutors.json")).default);
-    const subjects = transform((await import("../../../../data/subjects.json")).default);
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/subjects/${query.course}/${query.subject}/tutors`;
+    const response = await fetch(URL, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include"
+    });
 
-    const subject = subjects.filter(({ name }) => name.toLowerCase() === query.subject.toLowerCase())[0];
+    const { tutors } = await response.json();
+    console.log(tutors);
 
     return {
         props: {
-            subject,
-            tutors
+            subject: {},
+            tutors: tutors
         }
     }
 }

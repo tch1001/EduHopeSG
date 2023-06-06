@@ -11,6 +11,7 @@ import { query } from "../utils/database.js";
  * @typedef {Object} Course
  * @property {string} course_id Course ID in the database
  * @property {string} course_name Course name in the database
+ * @property {string} short_name Janky workaround for URI-friendly names
  * @property {number} tutor_count Sum of tutors tutoring for each course subject
  */
 
@@ -20,6 +21,7 @@ import { query } from "../utils/database.js";
  * @property {string} course_id Subject's course ID in the database
  * @property {string} name Subject name
  * @property {string} course Subject's course name
+ * @property {number} tutor_count Number of tutors tutoring the subject
  */
 
 /**
@@ -71,7 +73,7 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
         WHERE u.is_tutor = TRUE
             AND u.tutor_terms = 'yes'
             AND similarity(c.name, $1) >= 0.5
-            AND similarity(s.name, $2) >= 0.2;
+            AND similarity(s.name, $2) >= 0.7;
     `;
 
     const { rows: tutors } = await query(queryText, [courseName, subjectName]);
@@ -90,7 +92,9 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
  */
 export async function getCourses() {
     const queryText = `
-        SELECT c.id AS course_id, c.name AS course_name, COUNT(u.id) AS tutor_count
+        SELECT c.id AS course_id, c.name AS course_name,
+            LOWER(TRANSLATE(REGEXP_REPLACE(c.name, 'GCE ([AON]) Levels', '\\1 level', 'gi'), ' ', '-')) AS short_name, 
+            COUNT(u.id)::integer AS tutor_count
         FROM courses c
         LEFT JOIN subjects s ON c.id = s.course
         LEFT JOIN eduhope_user u ON s.id = ANY(u.subjects) AND u.is_tutor = TRUE
@@ -110,24 +114,26 @@ export async function getCourses() {
 /**
  * Gets all subjects by the course name with the number of available tutors
  * @param {string} courseName Name of the course (e.g. 'o level')
- * @returns {Promise<{ success: boolean, message: string, courses: Course[] }>}
+ * @returns {Promise<{ success: boolean, message: string, subjects: CourseSubject[] }>}
  */
 export async function getCourseSubjects(courseName) {
     const queryText = `
-        SELECT s.id, s.name, COUNT(u.id) AS tutor_count
+        SELECT s.id AS subject_id, s.name, COUNT(u.id)::integer AS tutor_count,
+            c.id as course_id, c.name as course,
+            LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
         FROM subjects s
         LEFT JOIN eduhope_user u ON s.id = ANY(u.subjects) AND u.is_tutor = true
         LEFT JOIN courses c ON s.course = c.id
         WHERE similarity(c.name, $1) >= 0.5
-        GROUP BY s.id, s.name
+        GROUP BY s.id, c.id, s.name
         ORDER BY s.id;
     `;
 
-    const { rows: courses } = await query(queryText, [courseName]);
+    const { rows: subjects } = await query(queryText, [courseName]);
 
     return {
         success: true,
-        message: `${courses.length} rows returned from database`,
-        courses
+        message: `${subjects.length} rows returned from database`,
+        subjects
     }
 }

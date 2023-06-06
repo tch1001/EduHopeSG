@@ -25,8 +25,8 @@ export const Subject = ({ subject, tutors }) => {
             </div>
             <main className="flex flex-col gap-4">
                 {
-                    tutors.map((tutor) => (
-                        <Card className="py-4 px-6 max-w-max" key={tutor.id}>
+                    tutors.length ? tutors.map((tutor) => (
+                        <Card className="py-4 px-6 max-w-full" key={tutor.id}>
                             <div>
                                 <p className="text-dark-blue font-bold">
                                     {tutor.name}, {" "}
@@ -39,7 +39,9 @@ export const Subject = ({ subject, tutors }) => {
                                 <Button onClick={() => handleRequest(tutor.id)}>Request</Button>
                             </div>
                         </Card>
-                    ))
+                    )) : (
+                        <p>No tutors available for this subject :&#40;</p>
+                    )
                 }
             </main>
         </Container>
@@ -56,12 +58,14 @@ export const getServerSideProps = async ({ query }) => {
         credentials: "include"
     });
 
-    const { tutors } = await response.json();
-    console.log(tutors);
+    const { tutors, subject, course } = await response.json();
 
     return {
         props: {
-            subject: {},
+            subject: {
+                course: course.course_name,
+                name: subject.name
+            },
             tutors: tutors
         }
     }

@@ -77,17 +77,20 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
     `;
 
     const { rows: tutors } = await query(queryText, [courseName, subjectName]);
+    const course = await getCourseInfoByName(courseName);
+    const subject = await getSubjectInfoByName(subjectName);
 
     return {
         success: true,
         message: `${tutors.length} rows returned from database`,
-        tutors
+        tutors,
+        course,
+        subject
     }
 }
 
 /**
  * Get courses with the number of subjects available from tutors (tutor_count)
- * 
  * @returns {Promise<{success: boolean, message: string, courses: Course[]}>}
  */
 export async function getCourses() {
@@ -114,12 +117,11 @@ export async function getCourses() {
 /**
  * Gets all subjects by the course name with the number of available tutors
  * @param {string} courseName Name of the course (e.g. 'o level')
- * @returns {Promise<{ success: boolean, message: string, subjects: CourseSubject[] }>}
+ * @returns {Promise<{ success: boolean, message: string, subjects: CourseSubject[], course: Course }>}
  */
 export async function getCourseSubjects(courseName) {
     const queryText = `
         SELECT s.id AS subject_id, s.name, COUNT(u.id)::integer AS tutor_count,
-            c.id as course_id, c.name as course,
             LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
         FROM subjects s
         LEFT JOIN eduhope_user u ON s.id = ANY(u.subjects) AND u.is_tutor = true
@@ -130,10 +132,46 @@ export async function getCourseSubjects(courseName) {
     `;
 
     const { rows: subjects } = await query(queryText, [courseName]);
+    const course = await getCourseInfoByName(courseName);
 
     return {
         success: true,
         message: `${subjects.length} rows returned from database`,
-        subjects
+        subjects,
+        course
     }
+}
+
+/**
+ * Get course information by name
+ * @param {string} courseName Name of the course
+ * @returns {Promise<Course>}
+ */
+async function getCourseInfoByName(courseName) {
+    const queryText = `
+        SELECT c.id AS course_id, c.name AS course_name,
+            LOWER(TRANSLATE(REGEXP_REPLACE(c.name, 'GCE ([AON]) Levels', '\\1 level', 'gi'), ' ', '-')) AS short_name
+        FROM courses c
+        WHERE similarity(c.name, $1) >= 0.5;
+    `;
+
+    const { rows: courses } = await query(queryText, [courseName]);
+    return courses[0];
+}
+
+/**
+ * Get subject information by name
+ * @param {string} subjectName Name of the subject
+ * @returns {Promise<Subject>}
+ */
+async function getSubjectInfoByName(subjectName) {
+    const queryText = `
+        SELECT s.name, s.id,
+            LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
+        FROM subjects s
+        WHERE similarity(s.name, $1) >= 0.7;
+    `;
+
+    const { rows: subjects } = await query(queryText, [subjectName]);
+    return subjects[0];
 }

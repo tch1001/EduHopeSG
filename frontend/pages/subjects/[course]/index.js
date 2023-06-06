@@ -52,13 +52,13 @@ export const getServerSideProps = async ({ params }) => {
         credentials: "include"
     });
 
-    const { subjects } = await response.json();
+    const { subjects, course } = await response.json();
 
     return {
         props: {
             course: {
-                id: subjects[0]?.course_id,
-                name: subjects[0]?.course || null
+                id: course.course_id,
+                name: course.course_name
             },
             subjects
         }

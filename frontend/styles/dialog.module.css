@@ -1,0 +1,27 @@
+.background {
+    @apply fixed inset-0 bg-black/50;
+}
+
+.dialog {
+    @apply flex flex-col gap-4;
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+    @apply bg-white p-5 rounded-lg;
+    @apply w-full sm:max-w-md md:max-w-2xl;
+}
+
+.title {
+    @apply text-2xl text-dark-blue font-bold text-center;
+}
+
+.message {
+    @apply text-base text-black;
+}
+
+.buttonGroup {
+    @apply flex flex-row flex-wrap gap-4 ml-auto;
+}
+
+.button {
+    @apply px-2 py-1.5;
+    @apply text-white border-none cursor-pointer rounded-md;
+}

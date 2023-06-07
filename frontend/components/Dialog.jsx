@@ -1,6 +1,9 @@
-import { dialogSettingsContext } from "../helpers/dialogContext";
 import { useContext } from "react";
 import Button from "./Button";
+import { dialogSettingsContext } from "../helpers/dialogContext";
+
+import styles from "../styles/dialog.module.css";
+
 
 export function Dialog() {
     const { dialogSettings, closeDialog } = useContext(dialogSettingsContext);
@@ -13,20 +16,20 @@ export function Dialog() {
         >
             {
                 dialogSettings.display && (
-                    <div className="fixed inset-0 bg-black/50 " onClick={closeDialog}>
+                    <div className={styles.background} onClick={closeDialog}>
                         <div
-                            className="flex flex-col gap-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg min-w-sm"
+                            className={styles.dialog}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="text-2xl text-dark-blue font-bold text-center">{dialogSettings.title}</div>
-                            <div className="text-base text-black">{dialogSettings.message}</div>
-                            <div className="flex flex-row flex-wrap gap-4 ml-auto">
+                            <div className={styles.title}>{dialogSettings.title}</div>
+                            <div className={styles.message}>{dialogSettings.message}</div>
+                            <div className={styles.buttonGroup}>
                                 {
                                     dialogSettings.buttons.map(({ callback, bg, text }, index) => (
                                         <Button
                                             key={index}
                                             onClick={callback}
-                                            className={`px-2 py-1.5 ${bg} text-white border-none cursor-pointer rounded-md`}
+                                            className={`${bg} ${styles.button}`}
                                         >
                                             {text}
                                         </Button>

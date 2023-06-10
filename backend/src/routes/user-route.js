@@ -3,6 +3,9 @@ import { standardRouteErrorCallback } from "../index.js";
 import RouteError from "../classes/RouteError.js";
 import * as userService from "../services/user-service.js";
 
+const tutorFields = "name email school level_of_education telegram bio is_tutor tutoring subjects tutee_limit commitment_end preferred_communications avg_response_time"
+const tuteeFields = "name email school level_of_education telegram bio is_tutor"
+
 const router = Router();
 
 router.post("/", (req, res) => {
@@ -39,6 +42,24 @@ router.post("/signup", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
+router.get("/profile", (req, res) => {
+    const user = userService.verifyAuthentication(req.cookies.user);
+
+    if (!user) {
+        return standardRouteErrorCallback(
+            res, req, new RouteError("user-unauthenticated", req.originalUrl)
+        );
+    }
+
+    const additionalFields = user.payload.is_tutor ? tutorFields : tuteeFields
+
+    userService.getByID(user.payload.id, additionalFields)
+        .then(response => {
+            response.email = userService.decrypt(response.email)
+            res.status(200).send(response)
+        })
+        .catch((err) => standardRouteErrorCallback(res, req, err)); 
+})
 
 router.patch("/", (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
+import { useRouter } from 'next/router'
 import { useFormik } from "formik";
 import Link from "next/link";
 import Button from "../components/Button";
@@ -35,6 +36,9 @@ const REFERRALS = [
 ]
 
 const SignUp = () => {
+    const router = useRouter()
+    const originalURL = router.query?.originalURL
+
     const [loading, setLoading] = useState(false);
     const [schools, setSchools] = useState([]);
     const request = useAxios();
@@ -335,7 +339,7 @@ const SignUp = () => {
             </Card>
             <p className="p-2">
                 Already have an account with us?{" "}
-                <Link href="/login" className="link" passHref>Login in here</Link>
+                <Link href={`/login?originalURL=${originalURL}`} className="link" passHref>Login in here</Link>
             </p>
         </Container>
     );

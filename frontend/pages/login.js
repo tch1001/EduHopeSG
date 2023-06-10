@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from 'next/router';
 import { useFormik } from "formik";
 import Link from "next/link";
 import Button from "../components/Button";
@@ -10,6 +11,9 @@ import Yup from "../helpers/Yup";
 import styles from "../styles/forms.module.css";
 
 function Login() {
+    const router = useRouter()
+    const originalURL = router.query?.originalURL
+
     const LoginSchema = Yup.object({
         email: Yup.string()
             .email("Invalid email address")
@@ -44,8 +48,8 @@ function Login() {
 
             localStorage.setItem("user_id", response.id);
             localStorage.setItem("username", response.name);
-            localStorage.setItem("is_tutor", response.is_tutor);
-            window.location.href = "/";
+            localStorage.setItem("is_tutor", Boolean(response.is_tutor));
+            router.push(originalURL)
         } catch (err) {
             // do notifications
             console.error(err);
@@ -88,7 +92,7 @@ function Login() {
             </Card>
             <p className="p-2">
                 New to EduHope?{" "}
-                <Link href="/signup" className="link" passHref>Join us Now</Link>
+                <Link href={`/signup?originalURL=${originalURL}`} className="link" passHref>Join us Now</Link>
             </p>
         </Container>
     );

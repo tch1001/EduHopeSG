@@ -31,7 +31,6 @@ function useUser() {
             localStorage.removeItem("user_id");
             localStorage.removeItem("username");
             localStorage.removeItem("is_tutor");
-            window.location.href = '/'
 
             return response;
         } catch (err) {

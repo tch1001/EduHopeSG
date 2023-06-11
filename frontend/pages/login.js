@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from 'next/router';
 import { useFormik } from "formik";
 import Link from "next/link";
@@ -6,32 +6,37 @@ import Button from "../components/Button";
 import Container from "../components/Container";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
+
+import { dialogSettingsContext } from "../helpers/dialogContext";
 import useUser from "../helpers/useUser";
 import Yup from "../helpers/Yup";
+
 import styles from "../styles/forms.module.css";
 
 function Login() {
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+    const originalURL = router.query?.originalURL || "/"
+    
+    const [user, { login }] = useUser(); 
+    if (user.id) router.push(originalURL);
+
+    const { dialogSettings, setDialogSettings } = useContext(dialogSettingsContext);
 
     const LoginSchema = Yup.object({
         email: Yup.string()
+            .default("")
             .email("Invalid email address")
             .required("Required"),
-        password: Yup.string().required("Required")
+        password: Yup.string()
+            .default("")
+            .required("Required")
     });
 
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
-    const originalURL = router.query?.originalURL || "/"
-    const [user, { login }] = useUser()
-
-    if (user.id) router.push(originalURL)
-
     const formik = useFormik({
-        initialValues: {
-            email: "",
-            password: ""
-        },
         validationSchema: LoginSchema,
+        initialValues: LoginSchema.default(),
         onSubmit: handleLogin
     });
 
@@ -43,9 +48,13 @@ function Login() {
             await login(values);
             router.push(originalURL);
         } catch (err) {
-            // TODO: use dialogue/toast component for notification
-            // success and error messages
-            alert(`${err.name}: ${err.message}. ${err.details}`)
+            setDialogSettings({
+                ...dialogSettings,
+                title: err.name,
+                message: `${err.message}. ${err.details}`,
+                display: true
+            });
+
             console.error(err);
         } finally {
             setLoading(false);

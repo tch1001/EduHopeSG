@@ -107,7 +107,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
             levelOfEducation,
             bio,
         })
-        console.log("reached")
+
         if (loading) return;
         setLoading(true);
 
@@ -151,18 +151,13 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
         setPreviouslySavedTutorSettings({
             commitmentEnd
         })
-        /*
+
         if (loading) return;
         setLoading(true);
 
         try {
             const data = {
-                name: [firstName, lastName].join(" "),
-                level_of_education: levelOfEducation,
-                telegram,
-                email,
-                school,
-                bio
+                commitment_end: commitmentEnd
             }
 
             const response = await request({
@@ -176,8 +171,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
             console.error(err);
         } finally {
             setLoading(false);
-        }
-        */
+        }        
     }
     const tutorSettingsFormik = useFormik({
         validationSchema: TutorSettingsSchema,
@@ -386,7 +380,7 @@ export const getServerSideProps = async ({ req }) => {
             levelOfEducation: response.level_of_education,
             bio: response.bio,
         }
-        console.log(response)
+
         if (!response.is_tutor) {
             return {
                 props: {

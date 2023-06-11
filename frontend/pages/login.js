@@ -54,7 +54,7 @@ function Login() {
 
     return (
         <Container center className="p-6 max-w-5xl">
-            <Card className="p-4 m-2 shadow-md shadow-slate-300">
+            <Card className="p-4 m-2 shadow-md shadow-slate-300 min-w-full xs:min-w-xs">
                 <span className="text-2xl font-bold block text-center my-2">Login</span>
                 <form
                     className={styles.form}
@@ -63,20 +63,18 @@ function Login() {
                 >
                     <div className="w-full max-w-sm px-4 py-2">
                         <FormErrorDisplay field="email" formik={formik} />
-                        <label htmlFor="email">Email address</label>
                         <input
                             type="email"
-                            id="email"
+                            placeholder="Email address"
                             autoComplete="username"
                             {...formik.getFieldProps("email")}
                         />
                     </div>
                     <div className="w-full max-w-sm px-4 py-2">
                         <FormErrorDisplay field="password" formik={formik} />
-                        <label htmlFor="password">Password</label>
                         <input
                             type="password"
-                            id="password"
+                            placeholder="Password"
                             autoComplete="current-password"
                             {...formik.getFieldProps("password")}
                         />

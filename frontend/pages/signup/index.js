@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react";
+import { useEffect, useState, useContext } from "react";
 import { useRouter } from 'next/router'
 import { useFormik } from "formik";
 import Link from "next/link";
@@ -7,6 +7,7 @@ import Container from "../../components/Container";
 import Card from "../../components/Card";
 import FormErrorDisplay from "../../components/FormErrorDisplay";
 
+import { dialogSettingsContext } from "../../helpers/dialogContext";
 import useAxios from "../../helpers/useAxios";
 import Yup from "../../helpers/Yup";
 
@@ -37,37 +38,48 @@ const REFERRALS = [
 ]
 
 const SignUp = () => {
-
     const [loading, setLoading] = useState(false);
-    const [schools, setSchools] = useState([]);
-    const router = useRouter();
-    const originalURL = router.query?.originalURL || "/"
+    const [schools, setSchools] = useState([]);    
+    
     const [user, { login }] = useUser();
     const request = useAxios();
-
+    
+    const router = useRouter();
+    const originalURL = router.query?.originalURL || "/"
+    
     if (user.id) router.push(originalURL);
+
+    const { dialogSettings, setDialogSettings } = useContext(dialogSettingsContext);
 
     const SignupSchema = Yup.object({
         firstName: Yup.string()
+            .default("")
             .min(3, "Given name has to be at least 3 characters")
             .max(35, "Given name is too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),
         lastName: Yup.string()
+            .default("")
             .min(2, "Family name has to be at least 2 characters")
             .max(35, "Family name too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),
-        school: Yup.string().required("Required"),
+        school: Yup.string()
+            .default("")
+            .required("Required")
+            .test("requirement-check", "Required", (value) => value !== "--Select your school--"),
         email: Yup.string()
+            .default("")
             .email("Invalid email address")
             .required("Required")
             .max(320, "Email address too long"),
         password: Yup.string()
+            .default("")
             .required("Required")
             .password()
             .min(12, "Password has to be at least 12 characters"),
         confirmPassword: Yup.string()
+            .default("")
             .required("Required")
             .password()
             .min(12, "Password has to be at least 12 characters")
@@ -76,37 +88,34 @@ const SignUp = () => {
                 return password === value;
             }),
         telegram: Yup.string()
+            .default("")
             .required("Required")
             .min(5, "Telegram handles must have at least 5 characters")
             .max(32, "Telegram handles can have at most 32 characters")
             .matches(/^[a-zA-Z0-9_]*$/, "Can only contain alphanumeric characters and underscores (_)"),
-        levelOfEducation: Yup.string().required("Required"),
+        levelOfEducation: Yup
+            .string()
+            .default("")
+            .required("Required")
+            .test("requirement-check", "Required", (value) =>value !== "--Current education level of education--"),
         bio: Yup.string()
+            .default("")
             .max(500, "Maximum of 500 characters")
             .optional(),
-        referral: Yup.string().optional(),
-        terms: Yup.boolean().isTrue("Agree to terms").required("Required"),
-        guidelines: Yup.boolean().isTrue("Agree to guidelines").required("Required")
+        referral: Yup
+            .string()
+            .default("")
+            .optional()
+            .test("requirement-check", "Required", (value) => value !== "--How did you hear about us?--"),
+        terms: Yup.boolean().default(false).isTrue("Agree to terms").required("Required"),
+        guidelines: Yup.boolean().default(false).isTrue("Agree to guidelines").required("Required")
     });
 
 
     const formik = useFormik({
         validationSchema: SignupSchema,
         onSubmit: handleSignup,
-        initialValues: {
-            firstName: "",
-            lastName: "",
-            school: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-            telegram: "",
-            levelOfEducation: "",
-            bio: "",
-            referral: "",
-            terms: false,
-            guidelines: false
-        },
+        initialValues: SignupSchema.default(),
     });
 
     useEffect(() => {
@@ -153,11 +162,15 @@ const SignUp = () => {
             });
 
             await login({ email, password });
-            router.push(originalURL)
+            window.location.href = originalURL;
         } catch (err) {
-            // TODO: use dialogue/toast component for notification
-            // success and error messages
-            alert(`${err.name}: ${err.message}. ${err.details}`)
+            setDialogSettings({
+                ...dialogSettings,
+                title: err.name,
+                message: `${err.message}. ${err.details}`,
+                display: true
+            })
+
             console.error(err);
         } finally {
             setLoading(false);
@@ -168,19 +181,17 @@ const SignUp = () => {
         <>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="firstName" formik={formik} />
-                <label htmlFor="firstName">Given name</label>
-                <input id="firstName" {...formik.getFieldProps("firstName")} />
+                
+                <input placeholder="Given name" {...formik.getFieldProps("firstName")} />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="lastName" formik={formik} />
-                <label htmlFor="lastName">Last name</label>
-                <input id="lastName" {...formik.getFieldProps("lastName")} />
+                <input placeholder="Last name" {...formik.getFieldProps("lastName")} />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="school" formik={formik} />
-                <label htmlFor="school">School</label>
-                <select id="school" {...formik.getFieldProps("school")}>
-                    <option>--Select--</option>
+                <select {...formik.getFieldProps("school")}>
+                    <option>--Select your school--</option>
                     <option>Graduated</option>
                     <option>In National Service</option>
                     {schools.map((school, i) => (
@@ -190,9 +201,8 @@ const SignUp = () => {
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="levelOfEducation" formik={formik} />
-                <label htmlFor="levelOfEducation">Current level of education</label>
-                <select id="levelOfEducation" {...formik.getFieldProps("levelOfEducation")}>
-                    <option>--Select--</option>
+                <select {...formik.getFieldProps("levelOfEducation")}>
+                    <option>--Current education level of education--</option>
                     {EDUCATION_TYPES.map((level, i) => (
                         <option key={i}>{level}</option>
                     ))}
@@ -202,11 +212,10 @@ const SignUp = () => {
         <>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="telegram" formik={formik} />
-                <label htmlFor="telegram">Telegram Handle</label>
                 <div>
                     <span className={styles.slotItem}>@</span>
                     <input
-                        id="telegram"
+                        placeholder="Telegram Handle"
                         className={styles.slot}
                         {...formik.getFieldProps("telegram")}
                     />
@@ -214,32 +223,32 @@ const SignUp = () => {
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="email" formik={formik} />
-                <label htmlFor="email">Email address</label>
                 <input
                     id="email"
                     type="email"
+                    placeholder="Email address"
                     className={styles.input}
                     {...formik.getFieldProps("email")}
                 />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="password" formik={formik} />
-                <label htmlFor="password">Password</label>
                 <input
                     id="password"
                     type="password"
                     autoComplete="new-password"
+                    placeholder="Password"
                     className={styles.input}
                     {...formik.getFieldProps("password")}
                 />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="confirmPassword" formik={formik} />
-                <label htmlFor="confirmPassword">Confirm password</label>
                 <input
                     id="confirmPassword"
                     type="password"
                     autoComplete="new-password"
+                    placeholder="Confirm password"
                     className={styles.input}
                     {...formik.getFieldProps("confirmPassword")}
                 />
@@ -248,7 +257,6 @@ const SignUp = () => {
         <>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="bio" formik={formik} />
-                <label htmlFor="bio">Biography</label>
                 <textarea
                     {...formik.getFieldProps("bio")}
                     placeholder="Give a short biography of yourself (max 500 characters)"
@@ -256,9 +264,8 @@ const SignUp = () => {
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="referral" formik={formik} />
-                <label htmlFor="referral">Referral</label>
                 <select id="referral" {...formik.getFieldProps("referral")}>
-                    <option>--Select--</option>
+                    <option>--How did you hear about us?--</option>
                     {REFERRALS.map((referral, i) => (
                         <option key={i}>{referral}</option>
                     ))}
@@ -310,7 +317,7 @@ const SignUp = () => {
 
     return (
         <Container center className="p-6 max-w-5xl">
-            <Card className="p-4 m-2 shadow-md shadow-slate-300 sm:min-w-xs">
+            <Card className="p-4 m-2 shadow-md shadow-slate-300 min-w-full xs:min-w-xs">
                 <div className="my-2">
                     <span className="text-2xl font-bold block text-center">Sign Up</span>
                     <span className="text-base block text-center">Step {step + 1} of {steps.length}</span>

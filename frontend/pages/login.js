@@ -11,7 +11,6 @@ import Yup from "../helpers/Yup";
 import styles from "../styles/forms.module.css";
 
 function Login() {
-    const originalURL = router.query?.originalURL
 
     const LoginSchema = Yup.object({
         email: Yup.string()
@@ -22,9 +21,10 @@ function Login() {
 
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const originalURL = router.query?.originalURL
     const [user, { login }] = useUser()
 
-    if (user.id) router.push("/")
+    if (user.id) router.push(originalURL)
 
     const formik = useFormik({
         initialValues: {

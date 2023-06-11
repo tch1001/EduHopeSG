@@ -31,7 +31,7 @@ const limiterOptions = {
 // Standard rate limiter for all endpoints (3 requests/second)
 const globalLimiter = rateLimit({
     windowMs: 1000, // 1 second
-    max: 3, // Limit each IP to 3 requests 1 second
+    max: 10, // Limit each IP to 10 requests 1 second
     ...limiterOptions
 });
 
@@ -39,7 +39,7 @@ const globalLimiter = rateLimit({
 // as there are expensive operations involved
 const userLimiter = rateLimit({
     windowMs: 1000, // 1 second
-    max: 1, // Limit each IP to 3 requests 1 second
+    max: 3, // Limit each IP to 3 requests 1 second
     ...limiterOptions
 })
 

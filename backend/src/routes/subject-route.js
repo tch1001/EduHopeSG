@@ -5,20 +5,13 @@ import * as subjectService from "../services/subject-service.js";
 
 const router = Router();
 
-router.post("/", (req, res) => {
-    const { subjects } = req.body;
-
-    if (!subjects || !subjects.length) {
-        const error = new RouteError("missing-arguments", req.originalUrl);
-        return standardRouteErrorCallback(res, req, error);
-    }
-
-    subjectService.getSubjectsByID(subjects)
+router.get("/", (req, res) => {
+    subjectService.getCourses()
         .then((response) => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 });
 
-router.get("/course/:course", (req, res) => {
+router.get("/:course", (req, res) => {
     const { course } = req.params;
 
     if (!course) {
@@ -26,20 +19,20 @@ router.get("/course/:course", (req, res) => {
         return standardRouteErrorCallback(res, req, error);
     }
 
-    subjectService.getSubjectsByCourse(course)
+    subjectService.getCourseSubjects(course)
         .then((response) => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 });
 
-router.get("/tutors/:subject", (req, res) => {
-    const { subject } = req.params;
+router.get("/:course/:subject/tutors", (req, res) => {
+    const { course, subject } = req.params;
 
-    if (!subject) {
+    if (!course || !subject) {
         const error = new RouteError("missing-arguments", req.originalUrl);
         return standardRouteErrorCallback(res, req, error);
     }
 
-    subjectService.getTutorsBySubject(subject)
+    subjectService.getTutorsByCourseAndSubjectName(course, subject)
         .then((response) => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 });

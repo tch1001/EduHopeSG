@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useRouter } from 'next/router';
 import { useFormik } from "formik";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
-import useAxios from "../helpers/useAxios";
+import useUser from "../helpers/useUser";
 import Yup from "../helpers/Yup";
 import styles from "../styles/forms.module.css";
 
 function Login() {
-    const router = useRouter()
     const originalURL = router.query?.originalURL
 
     const LoginSchema = Yup.object({
@@ -22,7 +22,10 @@ function Login() {
     });
 
     const [loading, setLoading] = useState(false);
-    const request = useAxios();
+    const router = useRouter();
+    const [user, { login }] = useUser()
+
+    if (user.id) router.push("/")
 
     const formik = useFormik({
         initialValues: {
@@ -38,26 +41,12 @@ function Login() {
         setLoading(true);
 
         try {
-            const response = await request({
-                method: "post",
-                path: "/user/login",
-                data: values
-            });
-
-            if (!response?.id) throw "Failed to login";
-
-            localStorage.setItem("user_id", response.id);
-            localStorage.setItem("username", response.name);
-            localStorage.setItem("is_tutor", Boolean(response.is_tutor));
-            
-            if (originalURL) {
-                router.push(originalURL)
-            } else {
-                router.push("/")
-            }
-
+            await login(values);
+            window.location.href = "/";
         } catch (err) {
-            // do notifications
+            // TODO: use dialogue/toast component for notification
+            // success and error messages
+            alert(`${err.name}: ${err.message}. ${err.details}`)
             console.error(err);
         } finally {
             setLoading(false);

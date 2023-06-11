@@ -14,7 +14,7 @@ import styles from '../styles/Contact.module.css';
 const ICON_SIZE = 48;
 const ICON_QUALITY = 60;
 
-const Contact = () => {
+const Contact = ({ joinUs, connectUs }) => {
     const [sending, setSending] = useState(false);
     const request = useAxios();
 
@@ -67,27 +67,17 @@ const Contact = () => {
                 <div className="flex flex-col gap-1">
                     <h2 className="text-xl font-bold">Join our organisation!</h2>
                     <div className="sm:flex sm:justify-center lg:justify-evenly">
-                        <div className="mt-3 sm:mt-0 sm:ml-3">
-                            <Link href="https://forms.gle/go6DKruGaZUyQwLp9" target="_blank" passHref>
-                                <Button className={styles.contactSocialMedia} role="button">
-                                    Tutee Sign-Up
-                                </Button>
-                            </Link>
-                        </div>
-                        <div className="mt-3 sm:mt-0 sm:ml-3">
-                            <Link href="https://forms.gle/rGfEasoyakNT4oMb8" target="_blank" passHref>
-                                <Button className={styles.contactSocialMedia} role="button">
-                                    Tutor Sign-Up
-                                </Button>
-                            </Link>
-                        </div>
-                        <div className="mt-3 sm:mt-0 sm:ml-3">
-                            <Link href="https://forms.gle/1URf8q3MxHeFzefF9" target="_blank" passHref>
-                                <Button className={styles.contactSocialMedia} role="button">
-                                    EXCO Sign-Up
-                                </Button>
-                            </Link>
-                        </div>
+                        {
+                            joinUs.map(({ url, name }, i) => (
+                                <div className="mt-3 sm:mt-0 sm:ml-3" key={i}>
+                                    <Link href={url} target="_blank" passHref>
+                                        <Button className={styles.contactSocialMedia} role="button">
+                                            {name}
+                                        </Button>
+                                    </Link>
+                                </div>
+                            ))
+                        }
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -96,59 +86,23 @@ const Contact = () => {
                     <div className="flex flex-col md:flex-row">
                         <div className="flex-1 m-6">
                             <div className="flex flex-wrap justify-evenly">
-                                <Link href="https://t.me/eduhopesg/" target="_blank" passHref>
-                                    <Button className={styles.contactSocialMedia} role="button">
-
-                                        <Image
-                                            className="rounded-full md:w-9 h-auto"
-                                            src="/images/telegram.png"
-                                            width={ICON_SIZE}
-                                            height={ICON_SIZE}
-                                            quality={ICON_QUALITY}
-                                            alt="Our Telegram channel"
-                                        />
-                                        <div className="hidden lg:block">Telegram</div>
-                                    </Button>
-                                </Link>
-                                <Link href="https://www.instagram.com/eduhopesg/" target="_blank" passHref>
-                                    <Button className={styles.contactSocialMedia} role="button">
-                                        <Image
-                                            className="rounded-full md:w-9 h-auto"
-                                            src="/images/instagram.png"
-                                            width={ICON_SIZE}
-                                            height={ICON_SIZE}
-                                            quality={ICON_QUALITY}
-                                            alt="Our Instagram account"
-                                        />
-                                        <div className="hidden lg:block">Instagram</div>
-                                    </Button>
-                                </Link>
-                                <Link href="https://www.tiktok.com/@eduhopesg" target="_blank" passHref>
-                                    <Button className={styles.contactSocialMedia} role="button">
-                                        <Image
-                                            className="rounded-full md:w-9 h-auto"
-                                            src="/images/tiktok.png"
-                                            width={ICON_SIZE}
-                                            height={ICON_SIZE}
-                                            quality={ICON_QUALITY}
-                                            alt="Our TikTok account"
-                                        />
-                                        <div className="hidden lg:block">TikTok</div>
-                                    </Button>
-                                </Link>
-                                <a href="mailto:eduhopesg@gmail.com">
-                                    <Button className={styles.contactSocialMedia} role="button">
-                                        <Image
-                                            className="rounded-full md:w-9 h-auto"
-                                            src="/images/email.png"
-                                            width={ICON_SIZE}
-                                            height={ICON_SIZE}
-                                            quality={ICON_QUALITY}
-                                            alt="Our email address"
-                                        />    
-                                        <div className="hidden lg:block">Email</div>
-                                    </Button>
-                                </a>
+                                {
+                                    connectUs.map(({ url, name, altText, image }, i) => (
+                                        <Link href={url} target="_blank" passHref key={i}>
+                                            <Button className={styles.contactSocialMedia} role="button">
+                                                <Image
+                                                    className="rounded-full md:w-9 h-auto"
+                                                    src={image}
+                                                    alt={altText}
+                                                    width={ICON_SIZE}
+                                                    height={ICON_SIZE}
+                                                    quality={ICON_QUALITY}
+                                                />
+                                                <div className="hidden lg:block">{name}</div>
+                                            </Button>
+                                        </Link>
+                                    ))
+                                }
                             </div>
                         </div>
                     </div>
@@ -161,7 +115,7 @@ const Contact = () => {
                             <div className="grid grid-cols-6 gap-6">
                                 <div className="col-span-6 sm:col-span-3">
                                     <FormErrorDisplay field="name" formik={formik} />
-                                    <label for="name" className="text-sm font-medium text-gray-900 block mb-2">Name</label>
+                                    <label htmlFor="name" className="text-sm font-medium text-gray-900 block mb-2">Name</label>
                                     <input
                                         type="text"
                                         name="name"
@@ -175,7 +129,7 @@ const Contact = () => {
                                 </div>
                                 <div className="col-span-6 sm:col-span-3">
                                     <FormErrorDisplay field="email" formik={formik} />
-                                    <label for="email" className="text-sm font-medium text-gray-900 block mb-2">Email</label>
+                                    <label htmlFor="email" className="text-sm font-medium text-gray-900 block mb-2">Email</label>
                                     <input
                                         type="text"
                                         name="email"
@@ -189,7 +143,7 @@ const Contact = () => {
                                 </div>
                                 <div className="col-span-full mb-5">
                                     <FormErrorDisplay field="message" formik={formik} />
-                                    <label for="message" className="text-sm font-medium text-gray-900 block mb-2">Message</label>
+                                    <label htmlFor="message" className="text-sm font-medium text-gray-900 block mb-2">Message</label>
                                     <textarea
                                         type="text"
                                         rows="6"
@@ -208,6 +162,53 @@ const Contact = () => {
             </main>
         </Container>
     )
+}
+
+export const getStaticProps = async () => {
+    return {
+        props: {
+            connectUs: [
+                {
+                    url: "https://t.me/eduhopesg/",
+                    image: "/images/telegram.png",
+                    altText: "Our Telegram channel",
+                    name: "Telegram"
+                },
+                {
+                    url: "https://www.instagram.com/eduhopesg/",
+                    image: "/images/instagram.png",
+                    altText: "Our Instagram account",
+                    name: "Instagram"
+                },
+                {
+                    url: "https://www.tiktok.com/@eduhopesg",
+                    image: "/images/tiktok.png",
+                    altText: "Our TikTok account",
+                    name: "TikTok"
+                },
+                {
+                    url: "mailto:eduhopesg@gmail.com",
+                    image: "/images/email.png",
+                    altText: "Our email address",
+                    name: "Email"
+                },
+            ],
+            joinUs: [
+                {
+                    url: "https://forms.gle/go6DKruGaZUyQwLp9",
+                    name: "Sign up as a tutee"
+                },
+                {
+                    url: "https://forms.gle/rGfEasoyakNT4oMb8",
+                    name: "Sign up as a tutor"
+                },
+                {
+                    url: "https://forms.gle/1URf8q3MxHeFzefF9",
+                    name: "Join as an EXCO"
+                },
+            ]
+        }
+    }
 }
 
 export default Contact

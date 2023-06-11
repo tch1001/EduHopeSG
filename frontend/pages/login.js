@@ -49,7 +49,13 @@ function Login() {
             localStorage.setItem("user_id", response.id);
             localStorage.setItem("username", response.name);
             localStorage.setItem("is_tutor", Boolean(response.is_tutor));
-            router.push(originalURL)
+            
+            if (originalURL) {
+                router.push(originalURL)
+            } else {
+                router.push("/")
+            }
+
         } catch (err) {
             // do notifications
             console.error(err);

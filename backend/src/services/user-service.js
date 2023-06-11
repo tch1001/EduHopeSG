@@ -504,6 +504,10 @@ export async function update(userID, attributes = {}) {
             await query("UPDATE eduhope_user SET bio = $1 WHERE id = $2", [attributes.bio, userID]);
         }
 
+        if (attributes.commitment_end) {
+            await query("UPDATE eduhope_user SET commitment_end = $1 WHERE id = $2", [attributes.commitment_end, userID])
+        }
+
         await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
 
         return {

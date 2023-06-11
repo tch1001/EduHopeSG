@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from './Button';
 import { Icon } from "./Icon";
 import useUser from '../helpers/useUser';
 import { DropdownMenu } from './Dropdown';
+
 
 const Links = () => {
     return (
@@ -29,6 +31,7 @@ const Links = () => {
 export const Header = () => {
     const [navbar, setNavbar] = useState(false);
     const [user, { logout }] = useUser();
+    const router = useRouter()
 
     useEffect(() => {
         window.addEventListener("resize", () => {
@@ -44,7 +47,7 @@ export const Header = () => {
     const UserSection = () => {
         if (!user.id) {
             return (
-                <Button secondary href="/login">
+                <Button secondary href={`/login?originalURL=${router.pathname}`}>
                     Login
                 </Button>
             )

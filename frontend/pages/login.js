@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { useRouter } from 'next/router';
 import { useFormik } from "formik";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import Button from "../components/Button";
 import Container from "../components/Container";
@@ -11,6 +11,7 @@ import Yup from "../helpers/Yup";
 import styles from "../styles/forms.module.css";
 
 function Login() {
+
     const LoginSchema = Yup.object({
         email: Yup.string()
             .email("Invalid email address")
@@ -20,9 +21,10 @@ function Login() {
 
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const originalURL = router.query?.originalURL || "/"
     const [user, { login }] = useUser()
 
-    if (user.id) router.push("/")
+    if (user.id) router.push(originalURL)
 
     const formik = useFormik({
         initialValues: {
@@ -39,7 +41,7 @@ function Login() {
 
         try {
             await login(values);
-            window.location.href = "/";
+            router.push(originalURL);
         } catch (err) {
             // TODO: use dialogue/toast component for notification
             // success and error messages
@@ -84,7 +86,7 @@ function Login() {
             </Card>
             <p className="p-2">
                 New to EduHope?{" "}
-                <Link href="/signup" className="link" passHref>Join us Now</Link>
+                <Link href={`/signup?originalURL=${originalURL}`} className="link" passHref>Join us Now</Link>
             </p>
         </Container>
     );

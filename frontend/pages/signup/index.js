@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
+import { useRouter } from 'next/router'
 import { useFormik } from "formik";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import Button from "../../components/Button";
 import Container from "../../components/Container";
@@ -37,13 +37,15 @@ const REFERRALS = [
 ]
 
 const SignUp = () => {
+
     const [loading, setLoading] = useState(false);
     const [schools, setSchools] = useState([]);
     const router = useRouter();
+    const originalURL = router.query?.originalURL || "/"
     const [user, { login }] = useUser();
     const request = useAxios();
 
-    if (user.id) router.push("/");
+    if (user.id) router.push(originalURL);
 
     const SignupSchema = Yup.object({
         firstName: Yup.string()
@@ -98,7 +100,7 @@ const SignUp = () => {
             email: "",
             password: "",
             confirmPassword: "",
-            telegramHandle: "",
+            telegram: "",
             levelOfEducation: "",
             bio: "",
             referral: "",
@@ -151,7 +153,7 @@ const SignUp = () => {
             });
 
             await login({ email, password });
-            window.location.href = "/";
+            router.push(originalURL)
         } catch (err) {
             // TODO: use dialogue/toast component for notification
             // success and error messages
@@ -345,7 +347,7 @@ const SignUp = () => {
             </Card>
             <p className="p-2">
                 Already have an account with us?{" "}
-                <Link href="/login" className="link" passHref>Login in here</Link>
+                <Link href={`/login?originalURL=${originalURL}`} className="link" passHref>Login in here</Link>
             </p>
             <p className="p-1">
                 Sign up as a tutor?{" "}

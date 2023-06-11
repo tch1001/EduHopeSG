@@ -169,7 +169,7 @@ const SignUp = () => {
                 title: err.name,
                 message: `${err.message}. ${err.details}`,
                 display: true
-            })
+            });
 
             console.error(err);
         } finally {

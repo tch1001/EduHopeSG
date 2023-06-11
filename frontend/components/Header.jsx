@@ -7,27 +7,6 @@ import { Icon } from "./Icon";
 import useUser from '../helpers/useUser';
 import { DropdownMenu } from './Dropdown';
 
-
-const Links = () => {
-    return (
-        <>
-            <Link href="/subjects" passHref>
-                Find a tutor
-            </Link>
-            <Link href="/about" passHref>
-                About us
-            </Link>
-            <Link href="/faq" passHref>
-                FAQ
-            </Link>
-            <Link href="/get-involved" passHref>
-                Get involved
-            </Link>
-        </>
-    )
-}
-
-
 export const Header = () => {
     const [navbar, setNavbar] = useState(false);
     const [user, { logout }] = useUser();
@@ -44,6 +23,34 @@ export const Header = () => {
         setNavbar(!navbar);
     }
 
+    console.log(user);
+
+    const Links = () => {
+        return (
+            <>
+                <Link href="/subjects" passHref>
+                    Find a tutor
+                </Link>
+                <Link href="/about" passHref>
+                    About us
+                </Link>
+                {
+                    user.id ? (
+                        <>
+                            {user.is_tutor && <Link href="/tutees" passHref>My tutees</Link>}
+                            <Link href="/tutors" passHref>My tutors</Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link href="/faq" passHref>FAQ</Link>
+                            <Link href="/get-involved" passHref>Get involved</Link>
+                        </>
+                    )
+                }
+            </>
+        )
+    }
+
     const UserSection = () => {
         if (!user.id) {
             return (
@@ -55,9 +62,8 @@ export const Header = () => {
 
         const dropdownContent = (
             <>
-                <Link href="/tutees">My tutees</Link>
-                <Link href="/tutors" passHref>My tutors</Link>
-                <Link href="/settings" passHref>Settings</Link>
+
+                <Link href="/edit-profile" passHref>Edit profile</Link>
                 <div onClick={() => logout() && (window.location.href = "/")}>Logout</div>
             </>
         )

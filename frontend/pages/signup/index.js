@@ -38,7 +38,6 @@ const REFERRALS = [
 ]
 
 const SignUp = () => {
-    const router = useRouter()
     const originalURL = router.query?.originalURL
 
     const [loading, setLoading] = useState(false);

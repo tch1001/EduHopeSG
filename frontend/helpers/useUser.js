@@ -31,6 +31,8 @@ function useUser() {
             await requester(request);
             localStorage.removeItem("user_id");
             localStorage.removeItem("username");
+            localStorage.removeItem("is_tutor");
+            window.location.href = '/'
         } catch (err) {
             throw "Failed to logout"
         }

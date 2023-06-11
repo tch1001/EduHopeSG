@@ -21,7 +21,7 @@ function Login() {
 
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const originalURL = router.query?.originalURL
+    const originalURL = router.query?.originalURL || "/"
     const [user, { login }] = useUser()
 
     if (user.id) router.push(originalURL)
@@ -41,7 +41,7 @@ function Login() {
 
         try {
             await login(values);
-            window.location.href = "/";
+            router.push(originalURL);
         } catch (err) {
             // TODO: use dialogue/toast component for notification
             // success and error messages

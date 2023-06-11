@@ -27,23 +27,7 @@ const EDUCATION_TYPES = [
 ]
 
 const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, error }) => {
-    // For testing without backend server
-    /*
-    initPersonalParticulars = {
-        firstName: "Tom",
-        lastName: "Tan",
-        school: "Graduated",
-        email: "tomtan@gmail.com",
-        telegram: "tomtan",
-        levelOfEducation: "JC 2",
-        bio: "This is a test",        
-    }
 
-    initTutorSettings = {
-        commitmentEnd: "2023-08-05"
-    }
-    */
-    //
     const [user, { logout }] = useUser()
     const [loading, setLoading] = useState(false);
     const [schools, setSchools] = useState([]);

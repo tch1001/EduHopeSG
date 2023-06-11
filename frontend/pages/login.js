@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRouter } from 'next/router';
 import { useFormik } from "formik";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import Button from "../components/Button";
 import Container from "../components/Container";

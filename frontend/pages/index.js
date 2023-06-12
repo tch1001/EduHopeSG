@@ -12,6 +12,7 @@ const LISTENER_OPTIONS = {
     passive: true
 }
 
+
 const Home = ({ testimonials }) => {
     const [width, setWidth] = useState(0);
 

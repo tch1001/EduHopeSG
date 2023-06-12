@@ -23,7 +23,7 @@ export const Header = () => {
         setNavbar(!navbar);
     }
 
-    console.log(user);
+    // TODO: Show "my tutors" if user has tutors or have tutor requests
 
     const Links = () => {
         return (

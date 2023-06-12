@@ -3,7 +3,7 @@ import Container from "../components/Container";
 import TestimonialCard from "../components/home/TestimonialCard";
 import { useEffect, useState } from "react";
 
-import styles from "../styles/Home.module.css";
+import styles from "../styles/home.module.css";
 
 const SCROLL_MULTIPLIER = 2;
 const LISTENER_OPTIONS = {
@@ -99,7 +99,7 @@ const Home = ({ testimonials }) => {
                 </div>
             </div>
             <Container className="flex flex-col gap-20 my-16">
-               
+
                 <div className="flex flex-col gap-16 my-20">
                     <div className="flex flex-col items-center gap-9">
                         <p className="text-2xl font-semibold">

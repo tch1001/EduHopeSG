@@ -9,7 +9,7 @@ import FormErrorDisplay from "../components/FormErrorDisplay";
 import useAxios from "../helpers/useAxios";
 import Yup from "../helpers/Yup";
 
-import styles from '../styles/Contact.module.css';
+import styles from '../styles/contact.module.css';
 
 const ICON_SIZE = 48;
 const ICON_QUALITY = 60;

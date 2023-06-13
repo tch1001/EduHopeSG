@@ -65,8 +65,12 @@ export async function getSubjects(subjects = []) {
  * @returns {Promise<{success: boolean, message: string, tutors: Tutor[]}>}
  */
 export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
+    // TODO: query tutors that are no longer in commitment (check date is more than commitment_end),
+    // and that tutors are still under their tutee_limit. If either checks fail, don't
+    // display the tutor
     const queryText = `
-        SELECT u.id, u.name, u.school, u.level_of_education, u.bio AS description
+        SELECT u.id, u.name, u.school, u.level_of_education, u.bio AS description,
+            u.commitment_end, u.preferred_communications, u.avg_response_time
         FROM eduhope_user AS u
         JOIN subjects AS s ON s.id = ANY(u.subjects)
         JOIN courses AS c ON c.id = s.course

@@ -9,8 +9,8 @@ function useUser() {
         setUser({
             id: localStorage.getItem("user_id"),
             name: localStorage.getItem("username"),
-            is_tutor: localStorage.getItem("is_tutor") === true
-        })
+            is_tutor: localStorage.getItem("is_tutor") === "true"
+        });
     }, [])
 
     const methods = {
@@ -34,7 +34,7 @@ function useUser() {
 
             return response;
         } catch (err) {
-            throw "Failed to logout"
+            throw "Failed to logout";
         }
     }
 

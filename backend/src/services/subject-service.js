@@ -130,7 +130,7 @@ export async function getCourseSubjects(courseName) {
         SELECT s.id AS subject_id, s.name, COUNT(u.id)::integer AS tutor_count,
             LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
         FROM subjects s
-        LEFT JOIN eduhope_user u ON s.id = ANY(u.subjects) AND u.is_tutor = true
+        LEFT JOIN eduhope_user u ON s.id = ANY(u.subjects) AND u.is_tutor = TRUE
         LEFT JOIN courses c ON s.course = c.id
         WHERE similarity(c.name, $1) >= 0.5
         GROUP BY s.id, c.id, s.name

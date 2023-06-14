@@ -46,7 +46,7 @@ function Login() {
 
         try {
             await login(values);
-            router.push(originalURL);
+            window.location.href = originalURL;
         } catch (err) {
             setDialogSettings({
                 ...dialogSettings,

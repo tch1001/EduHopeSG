@@ -62,22 +62,24 @@ export async function getSubjects(subjects = []) {
  * 
  * @param {string} courseName Name of the course (e.g. 'a level')
  * @param {string} subjectName Name of the subject (e.g. 'chemistry')
- * @returns {Promise<{success: boolean, message: string, tutors: Tutor[]}>}
+ * @returns {Promise<{success: boolean, message: string, tutors: Tutor[], course: Course, subject: Subject}>}
  */
 export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
-    // TODO: query tutors that are no longer in commitment (check date is more than commitment_end),
-    // and that tutors are still under their tutee_limit. If either checks fail, don't
-    // display the tutor
     const queryText = `
         SELECT u.id, u.name, u.school, u.level_of_education, u.bio AS description,
             u.commitment_end, u.preferred_communications, u.avg_response_time
         FROM eduhope_user AS u
-        JOIN subjects AS s ON s.id = ANY(u.subjects)
-        JOIN courses AS c ON c.id = s.course
+        LEFT JOIN subjects AS s ON s.id = ANY(u.subjects)
+        LEFT JOIN courses AS c ON c.id = s.course
+        LEFT JOIN tutee_tutor_relationship AS ttr ON ttr.tutor_id = u.id AND ttr.relationship_status = 1
         WHERE u.is_tutor = TRUE
             AND u.tutor_terms = 'yes'
+            AND u.commitment_end >= now()
             AND similarity(c.name, $1) >= 0.5
-            AND similarity(s.name, $2) >= 0.7;
+            AND similarity(s.name, $2) >= 0.7
+        GROUP BY ttr.tutor_id, u.id
+        HAVING count(ttr.tutor_id) <= u.tutee_limit
+        ORDER BY count(ttr.tutor_id);
     `;
 
     const { rows: tutors } = await query(queryText, [courseName, subjectName]);
@@ -128,7 +130,7 @@ export async function getCourseSubjects(courseName) {
         SELECT s.id AS subject_id, s.name, COUNT(u.id)::integer AS tutor_count,
             LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
         FROM subjects s
-        LEFT JOIN eduhope_user u ON s.id = ANY(u.subjects) AND u.is_tutor = true
+        LEFT JOIN eduhope_user u ON s.id = ANY(u.subjects) AND u.is_tutor = TRUE
         LEFT JOIN courses c ON s.course = c.id
         WHERE similarity(c.name, $1) >= 0.5
         GROUP BY s.id, c.id, s.name

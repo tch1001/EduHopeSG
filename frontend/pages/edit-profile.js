@@ -388,8 +388,7 @@ export const getServerSideProps = async ({ req }) => {
         }
 
     } catch (e) {
-        console.log(e)
-        if (e.status){
+        if (e.status == 401){
             return {
                 redirect: {
                     destination: '/login?originalURL=/edit-profile',

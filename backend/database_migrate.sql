@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS tutor (
 
 DROP TABLE IF EXISTS tutee_tutor_relationship;
 CREATE TABLE IF NOT EXISTS tutee_tutor_relationship (
-    id UUID,
+    id PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     tutee UUID,
     tutor UUID,
 

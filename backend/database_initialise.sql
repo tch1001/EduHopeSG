@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS tutor (
 );
 
 CREATE TABLE IF NOT EXISTS tutee_tutor_relationship (
-    id UUID,
+    id PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     tutee UUID,
     tutor UUID,
 

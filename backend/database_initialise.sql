@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS eduhope_user (
     course COURSE_ENUM,
     telegram VARCHAR(32) NOT NULL UNIQUE CHECK (length(name) BETWEEN 5 AND 32),
     bio VARCHAR(200) DEFAULT '',
-    profile_image TEXT UNIQUE,
+    profile_image TEXT,
 
     referral VARCHAR(64), -- Reddit, Telegram, etc.
 

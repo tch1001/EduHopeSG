@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from './Button';
@@ -6,29 +7,10 @@ import { Icon } from "./Icon";
 import useUser from '../helpers/useUser';
 import { DropdownMenu } from './Dropdown';
 
-const Links = () => {
-    return (
-        <>
-            <Link href="/subjects" passHref>
-                Find a tutor
-            </Link>
-            <Link href="/about" passHref>
-                About us
-            </Link>
-            <Link href="/faq" passHref>
-                FAQ
-            </Link>
-            <Link href="/get-involved" passHref>
-                Get involved
-            </Link>
-        </>
-    )
-}
-
-
 export const Header = () => {
     const [navbar, setNavbar] = useState(false);
     const [user, { logout }] = useUser();
+    const router = useRouter()
 
     useEffect(() => {
         window.addEventListener("resize", () => {
@@ -41,10 +23,38 @@ export const Header = () => {
         setNavbar(!navbar);
     }
 
+    // TODO: Show "my tutors" if user has tutors or have tutor requests
+
+    const Links = () => {
+        return (
+            <>
+                <Link href="/subjects" passHref>
+                    Find a tutor
+                </Link>
+                <Link href="/about" passHref>
+                    About us
+                </Link>
+                {
+                    user.id ? (
+                        <>
+                            {user.is_tutor && <Link href="/tutees" passHref>My tutees</Link>}
+                            <Link href="/tutors" passHref>My tutors</Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link href="/faq" passHref>FAQ</Link>
+                            <Link href="/get-involved" passHref>Get involved</Link>
+                        </>
+                    )
+                }
+            </>
+        )
+    }
+
     const UserSection = () => {
         if (!user.id) {
             return (
-                <Button secondary href="/login">
+                <Button secondary href={`/login?originalURL=${router.pathname}`}>
                     Login
                 </Button>
             )
@@ -52,10 +62,9 @@ export const Header = () => {
 
         const dropdownContent = (
             <>
-                <Link href="/tutees">My tutees</Link>
-                <Link href="/tutors" passHref>My tutors</Link>
-                <Link href="/settings" passHref>Settings</Link>
-                <div onClick={logout}>Logout</div>
+
+                <Link href="/edit-profile" passHref>Edit profile</Link>
+                <div onClick={() => logout() && (window.location.href = "/")}>Logout</div>
             </>
         )
 

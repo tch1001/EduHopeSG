@@ -1,13 +1,46 @@
+import { useState, useContext } from 'react';
 import Button from '../../../../components/Button';
+import Card from '../../../../components/Card';
 import Container from '../../../../components/Container';
 
-export const Subject = ({ subject, tutors }) => {
     const handleRequest = (tutorID) => {
         // request to tutor
     }
-    
+
     return (
-        <Container className="flex flex-col gap-3 p-6 max-w-7xl">
+        <Card className="py-4 px-6 max-w-full" key={tutor.id}>
+            <div>
+                <p className="text-dark-blue font-bold">
+                    {tutor.name}, {" "}
+                    <span className="text-black font-semibold">{tutor.school}</span>
+                </p>
+                <p className="text-black italic">{tutor.level_of_education}</p>
+                <p>{tutor.description}</p>
+                <p>
+                    <strong className="mr-2">Preferred communication:</strong>
+                    <div className="inline-flex flex-row gap-1">
+                        {
+                            tutor.preferred_communications.map(
+                                (communication) => (<span className="bg-dark-aqua text-white py-1 px-2 rounded-sm">{communication}</span>)
+                            )
+                        }
+                    </div>
+                </p>
+            </div>
+            <div className="mt-2">
+                <Button
+                    onClick={() => handleRequest(tutor.id)}
+                    disabled={loading}>
+                    {loading ? "Requesting..." : "Request"}
+                </Button>
+            </div>
+        </Card>
+    )
+}
+
+export const Subject = ({ subject, tutors }) => {
+    return (
+        <Container className="flex flex-col gap-6 p-6 max-w-5xl">
             <div>
                 <h1 className="text-3xl font-bold">
                     <span className="text-dark-aqua">{subject.course}</span>{" "}
@@ -22,48 +55,36 @@ export const Subject = ({ subject, tutors }) => {
                     that would best suit you
                 </p>
             </div>
-            <main>
-                <div className="overflow-auto">
-                    <table className="table-fixed">
-                        <thead>
-                            <tr>
-                                <th className="min-w-[92px] w-1/12 border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Name</th>
-                                <th className="min-w-[118px] w-1/6 border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Current education</th>
-                                <th className="min-w-[323px] w-full border-b-2 border-slate-600 text-lg font-semibold px-2 py-4 text-left">Description</th>
-                                <th className="w-12 border-b-2 border-slate-600"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                tutors.map((tutor, key) => (
-                                    <tr className="" key={key}>
-                                        <td className="px-2">{tutor.given_name}</td>
-                                        <td className="px-2">{tutor.current_institution}</td>
-                                        <td className="px-2 py-6">{tutor.description}</td>
-                                        <td><Button onClick={() => handleRequest(tutor.id)}>Request</Button></td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                </div>
+            <main className="flex flex-col gap-4">
+                {
+                    tutors.length ?
+                        tutors.map((tutor) => <TutorCard tutor={tutor} />)
+                        : <p>No tutors available for this subject :&#40;</p>
+                }
             </main>
         </Container>
     )
 }
 
 export const getServerSideProps = async ({ query }) => {
-    // get tutor info
-    const transform = (object) => JSON.parse(JSON.stringify(object));
-    const tutors = transform((await import("../../../../data/tutors.json")).default);
-    const subjects = transform((await import("../../../../data/subjects.json")).default);
+    const URL = `${process.env.NEXT_PUBLIC_API_URL}/subjects/${query.course}/${query.subject}/tutors`;
+    const response = await fetch(URL, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include"
+    });
 
-    const subject = subjects.filter(({ name }) => name.toLowerCase() === query.subject.toLowerCase())[0];
+    const { tutors, subject, course } = await response.json();
 
     return {
         props: {
-            subject,
-            tutors
+            subject: {
+                course: course.course_name,
+                name: subject.name
+            },
+            tutors: tutors
         }
     }
 }

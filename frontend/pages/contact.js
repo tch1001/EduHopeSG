@@ -9,12 +9,12 @@ import FormErrorDisplay from "../components/FormErrorDisplay";
 import useAxios from "../helpers/useAxios";
 import Yup from "../helpers/Yup";
 
-import styles from '../styles/Contact.module.css';
+import styles from '../styles/contact.module.css';
 
 const ICON_SIZE = 36;
 const ICON_QUALITY = 60;
 
-const Contact = () => {
+const Contact = ({ joinUs, connectUs }) => {
     const [sending, setSending] = useState(false);
     const request = useAxios();
 
@@ -160,7 +160,7 @@ const Contact = () => {
                             <div className="grid grid-cols-6 gap-6">
                                 <div className="col-span-6 sm:col-span-3">
                                     <FormErrorDisplay field="name" formik={formik} />
-                                    <label for="name" className="text-sm font-medium text-gray-900 block mb-2">Name</label>
+                                    <label htmlFor="name" className="text-sm font-medium text-gray-900 block mb-2">Name</label>
                                     <input
                                         type="text"
                                         name="name"
@@ -174,7 +174,7 @@ const Contact = () => {
                                 </div>
                                 <div className="col-span-6 sm:col-span-3">
                                     <FormErrorDisplay field="email" formik={formik} />
-                                    <label for="email" className="text-sm font-medium text-gray-900 block mb-2">Email</label>
+                                    <label htmlFor="email" className="text-sm font-medium text-gray-900 block mb-2">Email</label>
                                     <input
                                         type="text"
                                         name="email"
@@ -200,7 +200,7 @@ const Contact = () => {
                                 </div>
                                 <div className="col-span-full mb-5">
                                     <FormErrorDisplay field="message" formik={formik} />
-                                    <label for="message" className="text-sm font-medium text-gray-900 block mb-2">Message</label>
+                                    <label htmlFor="message" className="text-sm font-medium text-gray-900 block mb-2">Message</label>
                                     <textarea
                                         type="text"
                                         rows="6"
@@ -219,6 +219,53 @@ const Contact = () => {
             </main>
         </Container>
     )
+}
+
+export const getStaticProps = async () => {
+    return {
+        props: {
+            connectUs: [
+                {
+                    url: "https://t.me/eduhopesg/",
+                    image: "/images/telegram.png",
+                    altText: "Our Telegram channel",
+                    name: "Telegram"
+                },
+                {
+                    url: "https://www.instagram.com/eduhopesg/",
+                    image: "/images/instagram.png",
+                    altText: "Our Instagram account",
+                    name: "Instagram"
+                },
+                {
+                    url: "https://www.tiktok.com/@eduhopesg",
+                    image: "/images/tiktok.png",
+                    altText: "Our TikTok account",
+                    name: "TikTok"
+                },
+                {
+                    url: "mailto:eduhopesg@gmail.com",
+                    image: "/images/email.png",
+                    altText: "Our email address",
+                    name: "Email"
+                },
+            ],
+            joinUs: [
+                {
+                    url: "https://forms.gle/go6DKruGaZUyQwLp9",
+                    name: "Sign up as a tutee"
+                },
+                {
+                    url: "https://forms.gle/rGfEasoyakNT4oMb8",
+                    name: "Sign up as a tutor"
+                },
+                {
+                    url: "https://forms.gle/1URf8q3MxHeFzefF9",
+                    name: "Join as an EXCO"
+                },
+            ]
+        }
+    }
 }
 
 export default Contact

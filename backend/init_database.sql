@@ -1,3 +1,7 @@
+-- extensions
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+
 CREATE TABLE IF NOT EXISTS eduhope_user (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(32) NOT NULL CHECK (length(name) BETWEEN 3 AND 32),

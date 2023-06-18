@@ -1,31 +1,42 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useRouter } from 'next/router';
 import { useFormik } from "formik";
 import Link from "next/link";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
-import useAxios from "../helpers/useAxios";
+
+import { dialogSettingsContext } from "../helpers/dialogContext";
+import useUser from "../helpers/useUser";
 import Yup from "../helpers/Yup";
+
 import styles from "../styles/forms.module.css";
 
 function Login() {
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+    const originalURL = router.query?.originalURL || "/"
+    
+    const [user, { login }] = useUser(); 
+    if (user.id) router.push(originalURL);
+
+    const { dialogSettings, setDialogSettings } = useContext(dialogSettingsContext);
+
     const LoginSchema = Yup.object({
         email: Yup.string()
+            .default("")
             .email("Invalid email address")
             .required("Required"),
-        password: Yup.string().required("Required")
+        password: Yup.string()
+            .default("")
+            .required("Required")
     });
 
-    const [loading, setLoading] = useState(false);
-    const request = useAxios();
-
     const formik = useFormik({
-        initialValues: {
-            email: "",
-            password: ""
-        },
         validationSchema: LoginSchema,
+        initialValues: LoginSchema.default(),
         onSubmit: handleLogin
     });
 
@@ -34,19 +45,16 @@ function Login() {
         setLoading(true);
 
         try {
-            const response = await request({
-                method: "post",
-                path: "/user/login",
-                data: values
+            await login(values);
+            window.location.href = originalURL;
+        } catch (err) {
+            setDialogSettings({
+                ...dialogSettings,
+                title: err.name,
+                message: `${err.message}. ${err.details}`,
+                display: true
             });
 
-            if (!response?.id) throw "Failed to login";
-
-            localStorage.setItem("user_id", response.id);
-            localStorage.setItem("username", response.name);
-            window.location.href = "/";
-        } catch (err) {
-            // do notifications
             console.error(err);
         } finally {
             setLoading(false);
@@ -55,7 +63,7 @@ function Login() {
 
     return (
         <Container center className="p-6 max-w-5xl">
-            <Card className="p-4 m-2 shadow-md shadow-slate-300">
+            <Card className="p-4 m-2 shadow-md shadow-slate-300 min-w-full xs:min-w-xs">
                 <span className="text-2xl font-bold block text-center my-2">Login</span>
                 <form
                     className={styles.form}
@@ -64,20 +72,18 @@ function Login() {
                 >
                     <div className="w-full max-w-sm px-4 py-2">
                         <FormErrorDisplay field="email" formik={formik} />
-                        <label htmlFor="email">Email address</label>
                         <input
                             type="email"
-                            id="email"
+                            placeholder="Email address"
                             autoComplete="username"
                             {...formik.getFieldProps("email")}
                         />
                     </div>
                     <div className="w-full max-w-sm px-4 py-2">
                         <FormErrorDisplay field="password" formik={formik} />
-                        <label htmlFor="password">Password</label>
                         <input
                             type="password"
-                            id="password"
+                            placeholder="Password"
                             autoComplete="current-password"
                             {...formik.getFieldProps("password")}
                         />
@@ -87,7 +93,7 @@ function Login() {
             </Card>
             <p className="p-2">
                 New to EduHope?{" "}
-                <Link href="/signup" className="link" passHref>Join us Now</Link>
+                <Link href={`/signup?originalURL=${originalURL}`} className="link" passHref>Join us Now</Link>
             </p>
         </Container>
     );

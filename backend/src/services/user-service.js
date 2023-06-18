@@ -428,7 +428,7 @@ export async function login(email, password) {
     email = validator.normalizeEmail(validator.trim(email));
     password = validator.trim(password);
 
-    const user = await getByEmail(email, "password", { encrypted: false });
+    const user = await getByEmail(email, "password is_tutor", { encrypted: false });
     if (!user) throw new ServiceError("user-login-failed");
 
     // verify password
@@ -441,7 +441,8 @@ export async function login(email, password) {
     // returning cookie and success object
     const payload = {
         id: user.id,
-        name: user.name
+        name: user.name,
+        is_tutor: user.is_tutor
     };
 
     const cookie = jwt.sign(
@@ -501,6 +502,10 @@ export async function update(userID, attributes = {}) {
 
         if (attributes.bio) {
             await query("UPDATE eduhope_user SET bio = $1 WHERE id = $2", [attributes.bio, userID]);
+        }
+
+        if (attributes.commitment_end) {
+            await query("UPDATE eduhope_user SET commitment_end = $1 WHERE id = $2", [attributes.commitment_end, userID])
         }
 
         await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);

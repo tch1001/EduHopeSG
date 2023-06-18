@@ -65,7 +65,7 @@ const About = ({ teamMembers }) => {
                         {
                             teamMembers.map((member, key) => (
                                 <Card className="w-2/3 xs:w-full" key={key}>
-                                    <Image className="min-w-full" src={member.image} width={322} height={200} alt="" />
+                                    <Image className="h-[400px] object-cover" src={member.image} width={322} height={400} alt={`${member.name}'s photo`} />
                                     <div className="pt-2 pb-4 px-6">
                                         <p className="font-medium text-lg text-dark-aqua">{member.name}</p>
                                         <p className="font-medium text-sm text-dark-blue">{member.role}</p>

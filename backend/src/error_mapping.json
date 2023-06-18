@@ -159,7 +159,7 @@
         "status": 400,
         "name": "Invalid email or password",
         "message": "Either email or password are not provided or they are invalid",
-        "details": "Provide valid emails or password"
+        "details": "Provide a valid email and password"
     },
     "user-login-failed": {
         "status": 401,

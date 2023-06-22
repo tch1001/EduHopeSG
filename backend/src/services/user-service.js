@@ -464,6 +464,71 @@ export async function login(email, password) {
 }
 
 /**
+ * Update user attributes in the database
+ * @param {string} userID User ID
+ * @param {User} attributes User object
+ * @returns {{success: true, message: string}} Success message
+ */
+export async function update(userID, attributes = {}) {
+    if (!userID || !attributes || !Object.keys(attributes).length) {
+        throw new ServiceError("user-invalid")
+    }
+
+    if (attributes.telegram) {
+        attributes.telegram = validator.whitelist(
+            attributes.telegram || "",
+            "abcdefghijklmnopqrstuvwxyz0123456789_"
+        );
+    }
+
+    const valid = validateUserObject(attributes, attributes);
+    if (!valid) throw new ServiceError("user-invalid");
+
+    try {
+        if (attributes.given_name) {
+            await query("UPDATE eduhope_user SET given_name = $1 WHERE id = $2", [attributes.given_name, userID]);
+        }
+
+        if (attributes.family_name) {
+            await query("UPDATE eduhope_user SET family_name = $1 WHERE id = $2", [attributes.family_name, userID]);
+        }        
+
+        if (attributes.school) {
+            // TODO: validate schools
+            await query("UPDATE eduhope_user SET school = $1 WHERE id = $2", [attributes.school, userID]);
+        }
+
+        if (attributes.level_of_education) {
+            await query(
+                "UPDATE eduhope_user SET level_of_education = $1 WHERE id = $2",
+                [attributes.level_of_education, userID]
+            );
+        }
+
+        if (attributes.telegram) {
+            await query("UPDATE eduhope_user SET telegram = $1 WHERE id = $2", [attributes.telegram, userID]);
+        }
+
+        if (attributes.bio) {
+            await query("UPDATE eduhope_user SET bio = $1 WHERE id = $2", [attributes.bio, userID]);
+        }
+
+        if (attributes.commitment_end) {
+            await query("UPDATE eduhope_user SET commitment_end = $1 WHERE id = $2", [attributes.commitment_end, userID])
+        }
+
+        await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
+
+        return {
+            success: true,
+            message: `Updated the following attributes: ${Object.keys(attributes)}`
+        }
+    } catch (err) {
+        throw new ServiceError("user-update");
+    }
+}
+
+/**
  * Changes user password
  * @param {User.id} userID 
  * @param {User.password} currentPassword Old password to verify

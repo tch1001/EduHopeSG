@@ -1,3 +1,4 @@
+import validator from "validator";
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import { notifyTuteeAcceptance, notifyTuteeDeclination } from "./email-service.js";
@@ -96,6 +97,7 @@ export async function getByID(id, additionalFields = "") {
  * @returns {{success: true, message: string}} Success message
  */
 export async function update(tutorID, attributes = {}) {
+    console.log(attributes)
     if (!tutorID || !attributes || !Object.keys(attributes).length) {
         throw new ServiceError("user-invalid")
     }
@@ -105,10 +107,11 @@ export async function update(tutorID, attributes = {}) {
 
     try {
         if (attributes.commitment_end) {
-            await query("UPDATE tutor SET commitment_end = $1 WHERE id = $2", [attributes.commitment_end, tutorID])
+            console.log(tutorID)
+            await query("UPDATE tutor SET commitment_end = $1 WHERE user_id = $2", [attributes.commitment_end, tutorID])
         }
 
-        await query("UPDATE tutor SET updated_on = now() WHERE id = $1", [tutorID]);
+        await query("UPDATE tutor SET updated_on = now() WHERE user_id = $1", [tutorID]);
 
         return {
             success: true,

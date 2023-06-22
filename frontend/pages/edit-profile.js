@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Container from "../components/Container";
 import Button from "../components/Button";
 import Card from "../components/Card";
@@ -13,17 +13,29 @@ import styles from "../styles/forms.module.css";
 
 
 const EDUCATION_TYPES = [
-    "Lower Primary",
-    "Upper Primary",
-    "Secondary 1",
-    "Secondary 2",
-    "Secondary 3",
-    "Secondary 4",
-    "Secondary 5",
-    "JC 1",
-    "JC 2",
-    "O level Private candidate",
-    "A level Private candidate",
+    'SEC_1',
+    'SEC_2',
+    'SEC_3',
+    'SEC_4',
+    'SEC_5',
+    'JC_1',
+    'JC_2',
+    'PRIVATE_O_LEVEL',
+    'PRIVATE_A_LEVEL',
+    'IP_1',
+    'IP_2',
+    'IP_3',
+    'IP_4',
+    'IP_5',
+    'IP_6',
+    'IB_1',
+    'IB_2',
+    'POLYTECHNIC_0',
+    'POLYTECHNIC_1',
+    'POLYTECHNIC_2',
+    'POLYTECHNIC_3',
+    'UNI_UNDERGRADUATE',
+    'UNI_GRADUATE'
 ]
 
 const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, error }) => {
@@ -44,6 +56,17 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
     if (error) {
         return <div>{error}</div>
     }
+
+    useEffect(() => {
+        request({
+            method: "get",
+            path: "/school"
+        })
+            .then(({ result }) => setSchools(result.map(({ name }) => name)))
+            .catch(err => console.error(err));
+
+        // get education levels and referrals from server?
+    }, [])
 
     const PersonalParticularsSchema = Yup.object({
         firstName: Yup.string()
@@ -356,16 +379,16 @@ export const getServerSideProps = async ({ req }) => {
         });
 
         const initPersonalParticulars = {
-            firstName: response.name,
-            lastName: response.name,
-            school: response.school,
-            email: response.email,
-            telegram: response.telegram,
-            levelOfEducation: response.level_of_education,
-            bio: response.bio,
+            firstName: response.userData.given_name,
+            lastName: response.userData.family_name,
+            school: response.userData.school,
+            email: response.userData.email,
+            telegram: response.userData.telegram,
+            levelOfEducation: response.userData.level_of_education,
+            bio: response.userData.bio,
         }
 
-        if (!response.is_tutor) {
+        if (!response.tutorData) {
             return {
                 props: {
                     initPersonalParticulars,
@@ -376,7 +399,7 @@ export const getServerSideProps = async ({ req }) => {
 
         else {
             const initTutorSettings = {
-                commitmentEnd: response.commitment_end.split("T")[0]
+                commitmentEnd: response.tutorData.commitment_end.split("T")[0]
             }
             return {
                 props: {

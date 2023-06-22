@@ -2,9 +2,10 @@ import { Router } from "express";
 import { standardRouteErrorCallback } from "../index.js";
 import RouteError from "../classes/RouteError.js";
 import * as userService from "../services/user-service.js";
+import * as tutorService from "../services/tutor-service.js";
 
-const TUTOR_FIELDS = "name email school level_of_education telegram bio is_tutor tutoring subjects tutee_limit commitment_end preferred_communications avg_response_time"
-const TUTEE_FIELDS = "name email school level_of_education telegram bio is_tutor"
+const USER_FIELDS = "given_name family_name email school level_of_education telegram bio"
+const TUTOR_FIELDS = "subjects tutee_limit commitment_end preferred_communications description average_response_time"
 
 const router = Router();
 
@@ -42,7 +43,7 @@ router.post("/signup", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
-router.get("/profile", (req, res) => {
+router.get("/profile", async(req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 
     if (!user) {
@@ -51,14 +52,19 @@ router.get("/profile", (req, res) => {
         );
     }
 
-    const additionalFields = user.payload.is_tutor ? TUTOR_FIELDS : TUTEE_FIELDS
+    try {
 
-    userService.getByID(user.payload.id, additionalFields)
-        .then(response => {
-            response.email = userService.decrypt(response.email)
-            res.status(200).send(response)
-        })
-        .catch((err) => standardRouteErrorCallback(res, req, err)); 
+        const userData = await userService.getByID(user.payload.id, USER_FIELDS)
+        userData.email = userService.decrypt(userData.email)
+
+        const tutorData = await tutorService.getByID(user.payload.id, TUTOR_FIELDS)
+
+        res.status(200).send({userData, tutorData})
+
+    } catch(err) {
+        standardRouteErrorCallback(res, req, err)
+    }
+
 })
 
 router.patch("/", (req, res) => {

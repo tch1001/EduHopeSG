@@ -2,6 +2,155 @@ import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import { notifyTuteeAcceptance, notifyTuteeDeclination } from "./email-service.js";
 
+const COMMUNICATIONS = ['TEXTING', 'VIRTUAL_CONSULTATION', 'FACE_TO_FACE']
+
+/**
+ * @typedef {Object} Tutor
+ * @property {string[]} subjects subject IDs corresponding from EduHope
+ * @property {number} tutee_limit Maximum number of tutees to be taken on
+ * @property {Date} commitment_end Expected date when tutor stops volunteering with Eduhope
+ * @property {string[]} preferred_communications Array of preferred communication [Texting, Zoom, etc.] 
+ * @property {string} description
+ * @property {string} average_response_time Expected and usual time to reply a tutee's inquiry
+ * 
+ * @typedef {BasicUser & Tutor} User
+ */
+
+function validateTutorObject(user, validate = {
+    subjects: false,
+    tutee_limit: false,
+    commitment_end: false,
+    preferred_communications: false,
+    description: false,
+    average_response_time: false,
+}) {
+    // validate tutor object
+    if (validate.tutee_limit) {
+        if (!user?.tutee_limit || !(user?.tutee_limit >= 1 && user?.tutee_limit <= 5)) {
+            throw new ServiceError("user-invalid-tutee-limit");
+        }
+    }
+
+    if (validate.subjects) {
+        if (!user?.subjects?.length) throw new ServiceError("user-invalid-subjects");
+        // TODO: add validation for subjects from tickninja
+    }
+
+    if (validate.commitment_end) {
+        // at least roughly a month (here is 29 days due to > instead of >= in date comparison)
+        const minimumCommitment = new Date(Date.now() + 2.5056e+9).toString();
+        const validCommitment = validator.isAfter(user?.commitment_end?.toString() || "", minimumCommitment)
+
+        if (!validCommitment) throw new ServiceError("user-invalid-commitment");
+    }
+
+    if (validate.preferred_communications) {
+        const invalid = !user?.preferred_communications?.length ||
+            user.preferred_communications?.some((communication) => (
+                !COMMUNICATIONS.includes(communication
+                )));
+
+        if (invalid) {
+            const error = new ServiceError("user-invalid-communications");
+            error.details += COMMUNICATIONS.join(", ");
+
+            throw error;
+        }
+    }
+
+    if (validate.description){
+        // 
+    }
+
+    if (validate.average_response_time) {
+        //
+    }
+
+    return true;
+}
+
+/**
+ * Get a user object by their ID
+ * @param {string} id User ID
+ * @param {string=} additionalFields Fields to request from database separated by a single space
+ * @returns {Promise<User?|Error>} Returns possible User with fields requested ONLY
+ */
+export async function getByID(id, additionalFields = "") {
+    if (!id) throw new ServiceError("user-by-id");
+
+    const fields = additionalFields ? additionalFields.split(" ") : [];
+    fields.unshift("user_id");
+
+    const { rows } = await query({
+        text: `SELECT ${fields.join(", ")} FROM tutor WHERE user_id = $1`,
+        values: [id]
+    });
+
+    return rows[0];
+}
+
+/**
+ * Update tutor attributes in the database
+ * @param {string} tutorID Tutor ID
+ * @param {Tutor} attributes Tutor object
+ * @returns {{success: true, message: string}} Success message
+ */
+export async function update(tutorID, attributes = {}) {
+    if (!tutorID || !attributes || !Object.keys(attributes).length) {
+        throw new ServiceError("user-invalid")
+    }
+
+    const valid = validateTutorObject(attributes, attributes);
+    if (!valid) throw new ServiceError("user-invalid");
+
+    try {
+        if (attributes.commitment_end) {
+            await query("UPDATE tutor SET commitment_end = $1 WHERE id = $2", [attributes.commitment_end, tutorID])
+        }
+
+        await query("UPDATE tutor SET updated_on = now() WHERE id = $1", [tutorID]);
+
+        return {
+            success: true,
+            message: `Updated the following attributes: ${Object.keys(attributes)}`
+        }
+    } catch (err) {
+        throw new ServiceError("user-update");
+    }
+}
+
+/**
+ * Get the tutee objects associated with a given tutor id.
+ * @param {string} id Tutor ID
+ * @returns {Promise<Users?|Error>} Returns all Tutee objects linked to the Tutor ID.
+ */
+export async function getTutees(tutorID) {
+    if (!tutorID) throw new ServiceError("tutee-tutor-not-found");
+
+    const { rows } =
+        await query(
+            `SELECT 
+                eduhope_user.id, 
+                eduhope_user.given_name, 
+                eduhope_user.family_name, 
+                eduhope_user.school, 
+                eduhope_user.level_of_education,
+                eduhope_user.bio AS description,
+                eduhope_user.email,
+                eduhope_user.telegram,
+                tutee_tutor_relationship.id AS relationship_id,                
+                tutee_tutor_relationship.status, 
+                tutee_tutor_relationship.subject
+            FROM tutee_tutor_relationship
+            INNER JOIN eduhope_user 
+            ON tutee_tutor_relationship.tutee = eduhope_user.id
+            AND tutee_tutor_relationship.tutor = $1`,
+            [tutorID]
+        );
+    
+    return rows;
+}
+
 /**
  * Rejects a tutee's request by deleing the request
  * @param {string} relationshipID Tutor-tutee relationship ID

@@ -43,7 +43,7 @@ router.post("/signup", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
-router.get("/profile", async(req, res) => {
+router.get("/profile", async (req, res) => {
     const user = userService.verifyAuthentication(req.cookies.user);
 
     if (!user) {
@@ -59,9 +59,9 @@ router.get("/profile", async(req, res) => {
 
         const tutorData = await tutorService.getByID(user.payload.id, TUTOR_FIELDS)
 
-        res.status(200).send({userData, tutorData})
+        res.status(200).send({ userData, tutorData })
 
-    } catch(err) {
+    } catch (err) {
         standardRouteErrorCallback(res, req, err)
     }
 
@@ -77,6 +77,10 @@ router.patch("/", (req, res) => {
     }
 
     userService.update(user.payload.id, req.body)
+        .then(response => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+
+    tutorService.update(user.payload.id, req.body)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })

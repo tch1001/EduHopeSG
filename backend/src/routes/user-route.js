@@ -79,10 +79,6 @@ router.patch("/", (req, res) => {
     userService.update(user.payload.id, req.body)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
-
-    tutorService.update(user.payload.id, req.body)
-        .then(response => res.status(200).send(response))
-        .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
 router.patch("/password", (req, res) => {

@@ -120,7 +120,8 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
 
         try {
             const data = {
-                name: [firstName, lastName].join(" "),
+                given_name: firstName,
+                family_name: lastName,
                 level_of_education: levelOfEducation,
                 telegram,
                 email,
@@ -169,7 +170,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
 
             const response = await request({
                 method: "patch",
-                path: "/user",
+                path: "/tutor",
                 data
             });
 

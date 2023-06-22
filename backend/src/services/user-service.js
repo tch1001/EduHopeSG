@@ -463,8 +463,6 @@ export async function login(email, password) {
     }
 }
 
-d
-
 /**
  * Changes user password
  * @param {User.id} userID 

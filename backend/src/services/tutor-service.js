@@ -196,7 +196,7 @@ export async function rejectTutee(relationshipID, reason) {
 
     // notify tutee of rejection
     await query(`DELETE ${queryText}`, [relationshipID]);
-    //await notifyTuteeDeclination(tutee, tutor, subject, reason);
+    await notifyTuteeDeclination(tutee, tutor, subject, reason);
 
     return {
         success: true,
@@ -222,7 +222,7 @@ export async function removeTutee(relationshipID, reason) {
 
     // notify tutee of removal
     await query(`DELETE ${queryText}`, [relationshipID]);
-    //await notifyTuteeDeclination(tutee, tutor, subjects, reason);
+    await notifyTuteeDeclination(tutee, tutor, subjects, reason);
 
     return {
         success: true,

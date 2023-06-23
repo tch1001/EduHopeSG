@@ -72,7 +72,7 @@ const SignUp = () => {
             .required("Required"),
         lastName: Yup.string()
             .default("")
-            .min(2, "Family name has to be at least 2 characters")
+            .min(1, "Family name has to be at least 2 characters")
             .max(35, "Family name too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),

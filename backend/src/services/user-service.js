@@ -271,7 +271,7 @@ function validateUserObject(user, validate = {
         }
     }
     if (validate.family_name) {
-        if (!validator.isLength(user.family_name || "", { min: 3, max: 32 })) {
+        if (!validator.isLength(user.family_name || "", { min: 1, max: 32 })) {
             throw new ServiceError("user-invalid-name");
         }
     }

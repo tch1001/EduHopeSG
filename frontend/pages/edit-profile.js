@@ -155,7 +155,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
             console.error(err);
         } finally {
             setLoading(false);
-        }        
+        }
     }
     const tutorSettingsFormik = useFormik({
         validationSchema: TutorSettingsSchema,
@@ -324,7 +324,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                         <div className="p-2 text-center text-lg">Tutor Settings</div>
                     </button>
                 )
-                : null}
+                    : null}
             </div>
             <Card className="p-4 m-2 shadow-md shadow-slate-300 sm:min-w-xs">
                 <form
@@ -342,8 +342,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
 export default EditProfile
 
 
-export const getServerSideProps = async ({ req }) => {
-
+export const getServerSideProps = async ({ req, resolvedUrl }) => {
     const request = useAxios()
 
     try {
@@ -387,20 +386,22 @@ export const getServerSideProps = async ({ req }) => {
             }
         }
 
-    } catch (e) {
-        if (e.status == 401){
+    } catch (err) {
+        console.error(err);
+
+        if (err.status) {
             return {
                 redirect: {
-                    destination: '/login?originalURL=/edit-profile',
+                    destination: `/login?originalURL=${resolvedUrl}`,
                     permanent: false,
                 },
             }
         }
-        
+
         else {
             return {
                 props: {
-                    error: e.message
+                    error: err.message
                 }
             }
         }

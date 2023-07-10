@@ -3,8 +3,39 @@ import Button from '../../../../components/Button';
 import Card from '../../../../components/Card';
 import Container from '../../../../components/Container';
 
-    const handleRequest = (tutorID) => {
-        // request to tutor
+import { dialogSettingsContext } from '../../../../helpers/dialogContext';
+import useAxios from '../../../../helpers/useAxios';
+
+const TutorCard = ({ tutor }) => {
+    return <></>
+    const [loading, setLoading] = useState(false);
+
+    const { dialogSettings, setDialogSettings } = useContext(dialogSettingsContext);
+    const request = useAxios();
+
+    const handleRequest = async (tutorID) => {
+        if (loading) return;
+        setLoading(true);
+
+        try {
+            const response = await request({
+                method: "post",
+                path: `/tutee/relationship/${tutorID}`
+            })
+
+            console.log(response);
+        } catch (err) {
+            setDialogSettings({
+                ...dialogSettings,
+                title: err.name,
+                message: `${err.message}. ${err.details}`,
+                display: true
+            });
+
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -77,6 +108,7 @@ export const getServerSideProps = async ({ query }) => {
     });
 
     const { tutors, subject, course } = await response.json();
+    console.log(tutors);
 
     return {
         props: {

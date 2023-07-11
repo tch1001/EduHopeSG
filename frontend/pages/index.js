@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Container from "../components/Container";
 import TestimonialCard from "../components/home/TestimonialCard";
+import Button from"../components/Button";
 import { useEffect, useState } from "react";
 
 import styles from "../styles/home.module.css";

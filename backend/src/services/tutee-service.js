@@ -4,6 +4,41 @@ import { sendTuitionRequest, notifyTuitionSubjectChange } from "./email-service.
 import { getByID } from "./user-service.js";
 
 /**
+ * Get the tutee objects associated with a given tutor id.
+ * @param {string} id Tutor ID
+ * @returns {Promise<Users?|Error>} Returns all Tutee objects linked to the Tutor ID.
+ */
+export async function getTutors(tuteeID) {
+    if (!tuteeID) throw new ServiceError("tutee-tutor-not-found");
+
+    const { rows } =
+        await query(
+            `SELECT 
+                eduhope_user.id, 
+                eduhope_user.given_name, 
+                eduhope_user.family_name, 
+                eduhope_user.school, 
+                eduhope_user.level_of_education,
+                eduhope_user.bio AS description,
+                eduhope_user.email,
+                eduhope_user.telegram,
+                tutee_tutor_relationship.id AS relationship_id,                
+                tutee_tutor_relationship.status, 
+                tutee_tutor_relationship.subject,
+                tutor.preferred_communications
+            FROM tutee_tutor_relationship
+            INNER JOIN eduhope_user 
+            ON tutee_tutor_relationship.tutor = eduhope_user.id
+            INNER JOIN tutor
+            ON tutee_tutor_relationship.tutor = tutor.user_id
+            AND tutee_tutor_relationship.tutee = $1`,
+            [tuteeID]
+        );
+    
+    return rows;
+}
+
+/**
  * Tutee requests for a tutor for selected subject(s)
  * @param {string} tutorID Tutor's user ID 
  * @param {string} tuteeID Tutee's user ID
@@ -93,7 +128,7 @@ export async function withdrawTutor(relationshipID) {
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
 
     const { rowCount } =
-        await query("DELETE FROM tutee_tutor_relationship WHERE id = $1", [relationshipID]);
+        await query("DELETE FROM tutee_tutor_relationship WHERE id = $1 RETURNING *", [relationshipID]);
 
     if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
 

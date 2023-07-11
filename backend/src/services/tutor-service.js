@@ -172,7 +172,7 @@ export async function acceptTutee(relationshipID) {
     const { tutee, tutor, subject } = rows[0];
 
     // notify tutee of acceptance
-    //await notifyTuteeAcceptance(tutee, tutor, subject);
+    await notifyTuteeAcceptance(tutee, tutor, subject);
 
     return {
         success: true,

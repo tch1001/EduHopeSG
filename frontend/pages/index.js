@@ -98,6 +98,16 @@ const Home = ({ testimonials }) => {
                     <p>To create a more affordable alternative for students seeking supplementary education.</p>
                 </div>
             </div>
+
+            <div className="flex justify-center space-x-20 my-16 uppercase font-bold text-2xl"> 
+                <Button href="/subjects">
+                    Find a Tutor! 
+                </Button>
+                <Button href="/signup/tutor">
+                    Become a Tutor!
+                </Button>
+            </div>
+
             <Container className="flex flex-col gap-20 my-16">
 
                 <div className="flex flex-col gap-16 my-20">

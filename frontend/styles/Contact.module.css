@@ -30,13 +30,18 @@
     @apply shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5;
 }
 
+.select:invalid {
+    color: grey;
+}
+
+
 @media (min-width: 576px) {
     .contactSocialMedia {
         padding: 0 40px;
     }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 685px) {
     .contactSocialMedia {
         padding: 0 10px;
     }

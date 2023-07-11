@@ -8,17 +8,29 @@ import { notifyPasswordChange, sendEmailUpdateConfirmation, sendEmailUpdateNotif
 import { getSubjects } from "./subject-service.js";
 
 const EDUCATION_TYPES = [
-    "Lower Primary",
-    "Upper Primary",
-    "Secondary 1",
-    "Secondary 2",
-    "Secondary 3",
-    "Secondary 4",
-    "Secondary 5",
-    "JC 1",
-    "JC 2",
-    "O level Private candidate",
-    "A level Private candidate",
+    'SEC_1',
+    'SEC_2',
+    'SEC_3',
+    'SEC_4',
+    'SEC_5',
+    'JC_1',
+    'JC_2',
+    'PRIVATE_O_LEVEL',
+    'PRIVATE_A_LEVEL',
+    'IP_1',
+    'IP_2',
+    'IP_3',
+    'IP_4',
+    'IP_5',
+    'IP_6',
+    'IB_1',
+    'IB_2',
+    'POLYTECHNIC_0',
+    'POLYTECHNIC_1',
+    'POLYTECHNIC_2',
+    'POLYTECHNIC_3',
+    'UNI_UNDERGRADUATE',
+    'UNI_GRADUATE'
 ];
 
 const REFERRAL = [
@@ -31,7 +43,7 @@ const REFERRAL = [
 ]
 
 const STREAMS = ['N', 'O', 'A', 'P', 'B', 'I']; // n', o', a'lvl, pri, BI, IP
-const COMMUNICATIONS = ["Text", "Virtual Consult", "Face-to-face"]
+const COMMUNICATIONS = ['TEXTING', 'VIRTUAL_CONSULTATION', 'FACE_TO_FACE']
 
 const JWT_OPTIONS = {
     expiresIn: "14d",
@@ -153,7 +165,8 @@ export function decrypt(text) {
 /**
  * @typedef {Object} BasicUser
  * @property {string} id User's ID
- * @property {string} name User's name
+ * @property {string} given_name User's given name
+ * @property {string} family_name User's family name
  * @property {string} email User's email address
  * @property {string} password User's account password
  * @property {string} school User's current school
@@ -166,19 +179,6 @@ export function decrypt(text) {
  */
 
 /**
- * @typedef {Object} Tutor
- * @property {boolean} is_tutor Tutor status for user
- * @property {string[]} tutoring An array of `chars` representing courses
- * @property {string[]} subjects subject IDs corresponding from EduHope
- * @property {number} tutee_limit Maximum number of tutees to be taken on
- * @property {Date} commitment_end Expected date when tutor stops volunteering with Eduhope
- * @property {string[]} preferred_communications Array of preferred communication [Texting, Zoom, etc.] 
- * @property {string} avg_response_time Expected and usual time to reply a tutee's inquiry
- * 
- * @typedef {BasicUser & Tutor} User
- */
-
-/**
  * Get a user object by their ID
  * @param {string} id User ID
  * @param {string=} additionalFields Fields to request from database separated by a single space
@@ -188,7 +188,7 @@ export async function getByID(id, additionalFields = "") {
     if (!id) throw new ServiceError("user-by-id");
 
     const fields = additionalFields ? additionalFields.split(" ") : [];
-    fields.unshift("name", "id");
+    fields.unshift("given_name", "family_name", "id");
 
     const { rows } = await query({
         text: `SELECT ${fields.join(", ")} FROM eduhope_user WHERE id = $1`,
@@ -212,7 +212,7 @@ export async function getByEmail(email, additionalFields = "", options = { encry
     if (!options.encrypted) email = encrypt(email);
 
     const fields = additionalFields ? additionalFields.split(" ") : [];
-    fields.unshift("name", "id");
+    fields.unshift("given_name", "family_name", "id");
 
     const { rows } = await query({
         text: `SELECT ${fields.join(", ")} FROM eduhope_user WHERE email = $1`,
@@ -227,7 +227,7 @@ export async function getByEmail(email, additionalFields = "", options = { encry
  * @param {string} cookie JWT cookie token
  * @returns {{
  *     header: jwt.JwtHeader,
- *     payload: jwt.JwtPayload & { id: string, name: string },
+ *     payload: jwt.JwtPayload & { id: string, given_name: string, family_name: string },
  *     signature: string
  * }?} JWT token object
  */
@@ -249,7 +249,8 @@ export function verifyAuthentication(cookie) {
  * @returns {true} True only if validate, not valid throws errors
  */
 function validateUserObject(user, validate = {
-    name: true,
+    given_name: true,
+    family_name: true,
     email: true,
     password: true,
     school: true,
@@ -264,12 +265,16 @@ function validateUserObject(user, validate = {
     preferred_communications: false
 }) {
     // validate user input
-    if (validate.name) {
-        if (!validator.isLength(user.name || "", { min: 3, max: 32 })) {
+    if (validate.given_name) {
+        if (!validator.isLength(user.given_name || "", { min: 3, max: 32 })) {
             throw new ServiceError("user-invalid-name");
         }
     }
-
+    if (validate.family_name) {
+        if (!validator.isLength(user.family_name || "", { min: 1, max: 32 })) {
+            throw new ServiceError("user-invalid-name");
+        }
+    }
     if (validate.email) {
         if (!validator.isEmail(user.email || "")) {
             throw new ServiceError("user-invalid-email");
@@ -387,12 +392,12 @@ export async function create(user) {
 
     try {
         const queryText = `
-        INSERT INTO eduhope_user(name, email, password, school, level_of_education, telegram, bio, referral)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *
+        INSERT INTO eduhope_user(given_name, family_name, email, password, school, level_of_education, telegram, bio, referral)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *
         `
 
         const values = [
-            user.name, encryptedEmail, hashedPass, user.school,
+            user.given_name, user.family_name, encryptedEmail, hashedPass, user.school,
             user.level_of_education, user.telegram, user.bio, user.referral
         ]
 
@@ -418,7 +423,7 @@ export async function create(user) {
  * Login to a user with email and password, creates a JWT cookie if success
  * @param {string} email User email
  * @param {string} password User password
- * @returns {{ id: User.id, name: User.name expireAt: number, cookie: string}} Success body with JWT cookie
+ * @returns {{ id: User.id, given_name: User.given_name, family_name: User.family_name expireAt: number, cookie: string}} Success body with JWT cookie
  */
 export async function login(email, password) {
     if (!email || !password || !validator.isEmail(email) || !isStrongPassword(password)) {
@@ -428,7 +433,7 @@ export async function login(email, password) {
     email = validator.normalizeEmail(validator.trim(email));
     password = validator.trim(password);
 
-    const user = await getByEmail(email, "password is_tutor", { encrypted: false });
+    const user = await getByEmail(email, "password", { encrypted: false });
     if (!user) throw new ServiceError("user-login-failed");
 
     // verify password
@@ -441,8 +446,8 @@ export async function login(email, password) {
     // returning cookie and success object
     const payload = {
         id: user.id,
-        name: user.name,
-        is_tutor: user.is_tutor
+        given_name: user.given_name,
+        family_name: user.family_name,
     };
 
     const cookie = jwt.sign(
@@ -480,9 +485,13 @@ export async function update(userID, attributes = {}) {
     if (!valid) throw new ServiceError("user-invalid");
 
     try {
-        if (attributes.name) {
-            await query("UPDATE eduhope_user SET name = $1 WHERE id = $2", [attributes.name, userID]);
+        if (attributes.given_name) {
+            await query("UPDATE eduhope_user SET given_name = $1 WHERE id = $2", [attributes.given_name, userID]);
         }
+
+        if (attributes.family_name) {
+            await query("UPDATE eduhope_user SET family_name = $1 WHERE id = $2", [attributes.family_name, userID]);
+        }        
 
         if (attributes.school) {
             // TODO: validate schools

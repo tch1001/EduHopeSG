@@ -15,17 +15,29 @@ import styles from "../../styles/forms.module.css";
 import useUser from "../../helpers/useUser";
 
 const EDUCATION_TYPES = [
-    "Lower Primary",
-    "Upper Primary",
-    "Secondary 1",
-    "Secondary 2",
-    "Secondary 3",
-    "Secondary 4",
-    "Secondary 5",
-    "JC 1",
-    "JC 2",
-    "O level Private candidate",
-    "A level Private candidate",
+    'SEC_1',
+    'SEC_2',
+    'SEC_3',
+    'SEC_4',
+    'SEC_5',
+    'JC_1',
+    'JC_2',
+    'PRIVATE_O_LEVEL',
+    'PRIVATE_A_LEVEL',
+    'IP_1',
+    'IP_2',
+    'IP_3',
+    'IP_4',
+    'IP_5',
+    'IP_6',
+    'IB_1',
+    'IB_2',
+    'POLYTECHNIC_0',
+    'POLYTECHNIC_1',
+    'POLYTECHNIC_2',
+    'POLYTECHNIC_3',
+    'UNI_UNDERGRADUATE',
+    'UNI_GRADUATE'
 ]
 
 const REFERRALS = [
@@ -60,7 +72,7 @@ const SignUp = () => {
             .required("Required"),
         lastName: Yup.string()
             .default("")
-            .min(2, "Family name has to be at least 2 characters")
+            .min(1, "Family name has to be at least 1 characters")
             .max(35, "Family name too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),
@@ -145,7 +157,8 @@ const SignUp = () => {
 
         try {
             const data = {
-                name: [firstName, lastName].join(" "),
+                given_name: firstName,
+                family_name: lastName,
                 level_of_education: levelOfEducation,
                 telegram,
                 email,

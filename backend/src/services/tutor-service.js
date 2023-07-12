@@ -133,21 +133,23 @@ export async function getTutees(tutorID) {
     const { rows } =
         await query(
             `SELECT 
-                eduhope_user.id, 
-                eduhope_user.given_name, 
-                eduhope_user.family_name, 
-                eduhope_user.school, 
-                eduhope_user.level_of_education,
-                eduhope_user.bio AS description,
-                eduhope_user.email,
-                eduhope_user.telegram,
-                tutee_tutor_relationship.id AS relationship_id,                
-                tutee_tutor_relationship.status, 
-                tutee_tutor_relationship.subject
-            FROM tutee_tutor_relationship
-            INNER JOIN eduhope_user 
-            ON tutee_tutor_relationship.tutee = eduhope_user.id
-            AND tutee_tutor_relationship.tutor = $1`,
+                u.id, 
+                u.given_name, 
+                u.family_name, 
+                u.school, 
+                u.level_of_education,
+                u.bio AS description,
+                u.email,
+                u.telegram,
+                ttr.id AS relationship_id,                
+                ttr.status, 
+                s.level || ' ' || s.name AS subject,
+            FROM tutee_tutor_relationship AS ttr
+            INNER JOIN eduhope_user AS u
+            ON ttr.tutee = eduhope_user.id
+            INNER JOIN subject AS s
+            ON s.id = ttr.subject            
+            AND ttr.tutor = $1`,
             [tutorID]
         );
     

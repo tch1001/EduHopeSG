@@ -71,12 +71,16 @@ export const PendingTutorCard = ({ tutor, pendingTutors, setPendingTutors, index
                     <p className="text-black italic">{tutor.level_of_education}</p>
                     <p className="mt-2 mb-2">{tutor.description}</p>
                 </div>
-                <div className="flex flex-col gap-2">
-                    <h3 className="text-base font-bold">{"Preferred Consultation Mode(s)"}</h3>
-                    <ul className="flex flex-col gap-2 list-disc ml-5">
-                        {tutor.preferred_communications.map((method, index) => <li key={index}>{method.split("_").join(" ")}</li>)}
-                    </ul>
-                </div>                
+                <div className>
+                    <strong className="mr-2">Preferred Consultation Mode(s):</strong>
+                    <div className="inline-flex flex-row gap-1">
+                        {
+                            tutor.preferred_communications.map(
+                                (communication, index) => (<span key={index} className="bg-dark-aqua text-white py-1 px-2 rounded-sm">{communication}</span>)
+                            )
+                        }
+                    </div>
+                </div>              
             </div>
             <div className="mt-4">
                 <Button

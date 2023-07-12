@@ -1,6 +1,7 @@
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import { sendTuitionRequest, notifyTuitionSubjectChange } from "./email-service.js";
+import * as userService from "../services/user-service.js";
 import { getByID } from "./user-service.js";
 
 /**
@@ -14,27 +15,33 @@ export async function getTutors(tuteeID) {
     const { rows } =
         await query(
             `SELECT 
-                eduhope_user.id, 
-                eduhope_user.given_name, 
-                eduhope_user.family_name, 
-                eduhope_user.school, 
-                eduhope_user.level_of_education,
-                eduhope_user.bio AS description,
-                eduhope_user.email,
-                eduhope_user.telegram,
-                tutee_tutor_relationship.id AS relationship_id,                
-                tutee_tutor_relationship.status, 
-                tutee_tutor_relationship.subject,
-                tutor.preferred_communications
-            FROM tutee_tutor_relationship
-            INNER JOIN eduhope_user 
-            ON tutee_tutor_relationship.tutor = eduhope_user.id
-            INNER JOIN tutor
-            ON tutee_tutor_relationship.tutor = tutor.user_id
-            AND tutee_tutor_relationship.tutee = $1`,
+                u.id, 
+                u.given_name, 
+                u.family_name, 
+                u.school, 
+                u.level_of_education,
+                u.bio AS description,
+                u.email,
+                u.telegram,
+                ttr.id AS relationship_id,                
+                ttr.status, 
+                s.level || ' ' || s.name AS subject,
+                t.preferred_communications
+            FROM tutee_tutor_relationship AS ttr
+            INNER JOIN eduhope_user AS u
+            ON ttr.tutor = u.id
+            INNER JOIN tutor AS t
+            ON ttr.tutor = t.user_id
+            INNER JOIN subject AS s
+            ON s.id = ttr.subject
+            AND ttr.tutee = $1`,
             [tuteeID]
         );
-    
+    rows.forEach(tutor => {
+        tutor.email = userService.decrypt(tutor.email)
+        tutor.preferred_communications = tutor.preferred_communications.slice(1, -1).split(",")
+            .map(type => type.replace(/"/g, ''))
+    });
     return rows;
 }
 

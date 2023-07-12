@@ -3,7 +3,7 @@ import RouteError from "../classes/RouteError.js";
 import { standardRouteErrorCallback } from "../index.js";
 import { verifyAuthentication } from "../services/user-service.js";
 import * as tuteeService from "../services/tutee-service.js";
-import * as userService from "../services/user-service.js";
+
 
 const router = Router();
 
@@ -31,13 +31,6 @@ router.get("/relationships", (req, res) => {
     }
 
     tuteeService.getTutors(user.payload.id)
-        .then(response => {
-            response.forEach(tutor => {
-                tutor.email = userService.decrypt(tutor.email) 
-                tutor.preferred_communications = tutor.preferred_communications.slice(1,-1).split(",")
-            });            
-            return response
-        })
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err)); 
 })

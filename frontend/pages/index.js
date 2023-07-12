@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Container from "../components/Container";
 import TestimonialCard from "../components/home/TestimonialCard";
-import Button from"../components/Button";
+import Button from "../components/Button";
 import { useEffect, useState } from "react";
 
 import styles from "../styles/home.module.css";
@@ -96,22 +96,19 @@ const Home = ({ testimonials }) => {
                 />
                 <div className={`${styles.cover} flex flex-col gap-1 m-auto text-white text-center text-3xl`}>
                     <p className="uppercase font-bold">Connect, Learn and Grow</p>
-                    <p>To create a more affordable alternative for students seeking supplementary education.</p>
+                    <p>To create a free alternative for students seeking supplementary education.</p>
                 </div>
             </div>
-
-            <div className="flex justify-center space-x-20 my-16 uppercase font-bold text-2xl"> 
-                <Button href="/subjects">
-                    Find a Tutor! 
-                </Button>
-                <Button href="/signup/tutor">
-                    Become a Tutor!
-                </Button>
-            </div>
-
-            <Container className="flex flex-col gap-20 my-16">
-
-                <div className="flex flex-col gap-16 my-20">
+            <Container className="flex flex-col gap-16 my-16">
+                <div className="flex justify-center space-x-10 md:space-x-15 lg:space-x-20 uppercase font-bold text-2xl mx-3">
+                    <Button href="/subjects">
+                        Find a Tutor!
+                    </Button>
+                    <Button href="/signup/tutor">
+                        Become a Tutor!
+                    </Button>
+                </div>
+                <div className="flex flex-col gap-16">
                     <div className="flex flex-col items-center gap-9">
                         <p className="text-2xl font-semibold">
                             Testimonials from {" "}

@@ -2,6 +2,7 @@ import validator from "validator";
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import { notifyTuteeAcceptance, notifyTuteeDeclination } from "./email-service.js";
+import * as userService from "../services/user-service.js";
 
 const COMMUNICATIONS = ['TEXTING', 'VIRTUAL_CONSULTATION', 'FACE_TO_FACE']
 
@@ -143,16 +144,18 @@ export async function getTutees(tutorID) {
                 u.telegram,
                 ttr.id AS relationship_id,                
                 ttr.status, 
-                s.level || ' ' || s.name AS subject,
+                s.level || ' ' || s.name AS subject
             FROM tutee_tutor_relationship AS ttr
             INNER JOIN eduhope_user AS u
-            ON ttr.tutee = eduhope_user.id
+            ON ttr.tutee = u.id
             INNER JOIN subject AS s
             ON s.id = ttr.subject            
             AND ttr.tutor = $1`,
             [tutorID]
         );
-    
+    rows.forEach(tutee => {
+        tutee.email = userService.decrypt(tutee.email) 
+    });  
     return rows;
 }
 

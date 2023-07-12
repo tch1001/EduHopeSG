@@ -80,12 +80,6 @@ router.get("/relationships", (req, res) => {
     }
 
     tutorService.getTutees(user.payload.id)
-        .then(response => {
-            response.forEach(tutee => {
-                tutee.email = userService.decrypt(tutee.email) 
-            });            
-            return response
-        })
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err)); 
 })

@@ -235,10 +235,34 @@
     },
     "tutee-request-tutor-unique": {
         "status": 409,
-        "name": "Error modifying Tutor-Tutee agreement",
+        "name": "Request already submitted",
         "message": "You have already requested for this tutor for this subject",
         "details": "Please visit the Manage Tutors page to view your pending tutor requests"
     },
+    "tutor-hit-tutee-limit": {
+        "status": 409,
+        "name": "Tutor is unavailable",
+        "message": "This tutor is currently tutoring the maximum number of tutees they are able to tutor.",
+        "details": "Please request for another tutor instead."
+    },
+    "tutee-hit-request-tutor-limit": {
+        "status": 409,
+        "name": "Maximum tutor requests reached",
+        "message": "You are only allowed to request for 1 tutor per subject at any time.",
+        "details": "To request for this tutor, you must first visit the Manage Tutors page to cancel your pending tutor request for this subject."
+    },     
+    "tutee-hit-accepted-tutor-limit": {
+        "status": 409,
+        "name": "Maximum tutors reached",
+        "message": "You are only allowed to have 1 tutor per subject at any time.",
+        "details": "To request for this tutor, you must first visit the Manage Tutors page to remove your current tutor for this subject."
+    },  
+    "tutee-hit-total-tutor-limit": {
+        "status": 409,
+        "name": "Maximum tutors reached",
+        "message": "You have hit the maximum number of total pending and accepted tutor requests.",
+        "details": "To request for this tutor, you must first visit the Manage Tutors page to remove either a pending request or existing tutor."
+    },               
     "invalid-tutee-tutor-relationship": {
         "status": 400,
         "name": "Invalid Tutor-Tutee relationship",

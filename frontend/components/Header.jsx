@@ -37,8 +37,8 @@ export const Header = () => {
                 {
                     user.id ? (
                         <>
-                            {user.is_tutor && <Link href="/tutees" passHref>My tutees</Link>}
-                            <Link href="/tutors" passHref>My tutors</Link>
+                            {user.is_tutor && <Link href="/manage-tutees" passHref>My tutees</Link>}
+                            <Link href="/manage-tutors" passHref>My tutors</Link>
                         </>
                     ) : (
                         <>

@@ -40,9 +40,9 @@ import { query } from "../utils/database.js";
  */
 export async function getSubjects(subjects = []) {
     const queryText = `
-        SELECT S.id, S.name, C.name AS course
-        FROM subjects as S
-        INNER JOIN courses C ON S.course = C.id
+        SELECT S.id, S.level || ' ' || S.name AS name, C.name AS course
+        FROM subject as S
+        INNER JOIN course C ON S.course = C.id
         WHERE S.id = $1;
     `;
 
@@ -66,23 +66,28 @@ export async function getSubjects(subjects = []) {
  */
 export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
     const queryText = `
-        SELECT u.id, u.name, u.school, u.level_of_education, u.bio AS description,
-            u.commitment_end, u.preferred_communications, u.avg_response_time
-        FROM eduhope_user AS u
-        LEFT JOIN subjects AS s ON s.id = ANY(u.subjects)
-        LEFT JOIN courses AS c ON c.id = s.course
-        LEFT JOIN tutee_tutor_relationship AS ttr ON ttr.tutor_id = u.id AND ttr.relationship_status = 1
-        WHERE u.is_tutor = TRUE
-            AND u.tutor_terms = 'yes'
-            AND u.commitment_end >= now()
-            AND similarity(c.name, $1) >= 0.5
-            AND similarity(s.name, $2) >= 0.7
-        GROUP BY ttr.tutor_id, u.id
-        HAVING count(ttr.tutor_id) <= u.tutee_limit
-        ORDER BY count(ttr.tutor_id);
-    `;
-
+    SELECT u.id, u.given_name, u.family_name, u.school, u.level_of_education, u.bio AS description,
+    t.commitment_end, t.preferred_communications, t.average_response_time, s.id AS subject_id, s.level || ' ' || s.name AS subject
+    FROM (
+        SELECT ttr.tutor AS tutor_id, COUNT(ttr.tutor) AS num_tutees
+        FROM tutee_tutor_relationship AS ttr 
+        WHERE ttr.status = 'ACCEPTED'
+        GROUP BY ttr.tutor   
+    ) AS filtered_tutor_ids
+    INNER JOIN tutor AS t on t.user_id = filtered_tutor_ids.tutor_id 
+        AND filtered_tutor_ids.num_tutees < t.tutee_limit
+        AND t.commitment_end >= now()   
+    LEFT JOIN subject AS s ON s.id = ANY(t.subjects) AND similarity(s.level || ' ' || s.name, $2) >= 0.7
+    LEFT JOIN course AS c ON c.id = s.course AND c.name = $1
+    LEFT JOIN eduhope_user AS u ON u.id = t.user_id   
+    ORDER BY num_tutees     
+    `
     const { rows: tutors } = await query(queryText, [courseName, subjectName]);
+    tutors.forEach(tutor => {
+        tutor.preferred_communications = tutor.preferred_communications.slice(1,-1).split(",") // Converts postgres array to js array
+                                                                        .map(type=>type.replace(/"/g, ''))
+    });
+
     const course = await getCourseInfoByName(courseName);
     const subject = await getSubjectInfoByName(subjectName);
 
@@ -102,11 +107,11 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
 export async function getCourses() {
     const queryText = `
         SELECT c.id AS course_id, c.name AS course_name,
-            LOWER(TRANSLATE(REGEXP_REPLACE(c.name, 'GCE ([AON]) Levels', '\\1 level', 'gi'), ' ', '-')) AS short_name, 
-            COUNT(u.id)::integer AS tutor_count
-        FROM courses c
-        LEFT JOIN subjects s ON c.id = s.course
-        LEFT JOIN eduhope_user u ON s.id = ANY(u.subjects) AND u.is_tutor = TRUE
+            c.name AS short_name, 
+            COUNT(t.id)::integer AS tutor_count
+        FROM course c
+        LEFT JOIN subject s ON c.id = s.course
+        LEFT JOIN tutor t ON s.id = ANY(t.subjects)
         GROUP BY c.id, c.name
         ORDER BY c.id;
     `;
@@ -127,12 +132,12 @@ export async function getCourses() {
  */
 export async function getCourseSubjects(courseName) {
     const queryText = `
-        SELECT s.id AS subject_id, s.name, COUNT(u.id)::integer AS tutor_count,
+        SELECT s.id AS subject_id, s.level || ' ' || s.name AS name, COUNT(t.id)::integer AS tutor_count,
             LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
-        FROM subjects s
-        LEFT JOIN eduhope_user u ON s.id = ANY(u.subjects) AND u.is_tutor = TRUE
-        LEFT JOIN courses c ON s.course = c.id
-        WHERE similarity(c.name, $1) >= 0.5
+        FROM subject s
+        LEFT JOIN tutor t ON s.id = ANY(t.subjects)
+        LEFT JOIN course c ON s.course = c.id
+        WHERE c.name = $1
         GROUP BY s.id, c.id, s.name
         ORDER BY s.id;
     `;
@@ -157,8 +162,8 @@ async function getCourseInfoByName(courseName) {
     const queryText = `
         SELECT c.id AS course_id, c.name AS course_name,
             LOWER(TRANSLATE(REGEXP_REPLACE(c.name, 'GCE ([AON]) Levels', '\\1 level', 'gi'), ' ', '-')) AS short_name
-        FROM courses c
-        WHERE similarity(c.name, $1) >= 0.5;
+        FROM course c
+        WHERE c.name = $1
     `;
 
     const { rows: courses } = await query(queryText, [courseName]);
@@ -172,10 +177,10 @@ async function getCourseInfoByName(courseName) {
  */
 async function getSubjectInfoByName(subjectName) {
     const queryText = `
-        SELECT s.name, s.id,
+        SELECT s.level || ' ' || s.name AS name, s.id,
             LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
-        FROM subjects s
-        WHERE similarity(s.name, $1) >= 0.7;
+        FROM subject s
+        WHERE similarity(s.level || ' ' || s.name, $1) >= 0.7;
     `;
 
     const { rows: subjects } = await query(queryText, [subjectName]);

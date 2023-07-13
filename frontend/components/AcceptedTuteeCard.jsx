@@ -39,8 +39,8 @@ export const AcceptedTuteeCard = ({tutee, acceptedTutees, setAcceptedTutees, ind
 
             } catch (err) {
                 setDialogSettings({
-                    title: err.name,
-                    message: `${err.message}. ${err.details}`,
+                    title: err.name.toUpperCase(),
+                    message: `${err.message}. ${err.details}.`,
                     display: true,
                     buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
                 });

@@ -35,8 +35,8 @@ export const PendingTutorCard = ({ tutor, pendingTutors, setPendingTutors, index
 
             } catch (err) {
                 setDialogSettings({
-                    title: err.name,
-                    message: `${err.message}. ${err.details}`,
+                    title: err.name.toUpperCase(),
+                    message: `${err.message}. ${err.details}.`,
                     display: true,
                     buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
                 });

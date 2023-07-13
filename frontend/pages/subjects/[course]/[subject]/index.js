@@ -49,8 +49,8 @@ const TutorCard = ({ tutor }) => {
                 });
             } else {
                 setDialogSettings({
-                    title: err.name,
-                    message: `${err.message}. ${err.details}`,
+                    title: err.name.toUpperCase(),
+                    message: `${err.message}. ${err.details}.`,
                     display: true,
                     buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],                
                 });
@@ -87,8 +87,9 @@ const TutorCard = ({ tutor }) => {
             <div className="mt-4">
                 <Button
                     onClick={() => handleRequest(tutor)}
-                    loading={loading}>
-                    {loading ? "" : "Request"}
+                    loading={loading}
+                    disabled={tutor.requested}>
+                    {loading ? "" : tutor.requested ? "Requested" : "Request"}
                 </Button>
             </div>
         </Card>

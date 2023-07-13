@@ -37,8 +37,8 @@ export const PendingTuteeCard = ({tutee, pendingTutees, setPendingTutees, accept
             });
         } catch (err) {
             setDialogSettings({
-                title: err.name,
-                message: `${err.message}. ${err.details}`,
+                title: err.name.toUpperCase(),
+                message: `${err.message}. ${err.details}.`,
                 display: true,
                 buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
             });
@@ -71,8 +71,8 @@ export const PendingTuteeCard = ({tutee, pendingTutees, setPendingTutees, accept
 
             } catch (err) {
                 setDialogSettings({
-                    title: err.name,
-                    message: `${err.message}. ${err.details}`,
+                    title: err.name.toUpperCase(),
+                    message: `${err.message}. ${err.details}.`,
                     display: true,
                     buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
                 });

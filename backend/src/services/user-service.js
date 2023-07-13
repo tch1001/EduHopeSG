@@ -6,6 +6,7 @@ import log from "../utils/logging.js";
 import ServiceError from "../classes/ServiceError.js";
 import { notifyPasswordChange, sendEmailUpdateConfirmation, sendEmailUpdateNotification } from "./email-service.js";
 import { getSubjects } from "./subject-service.js";
+import * as tutorService from "./tutor-service.js";
 
 const EDUCATION_TYPES = [
     'SEC_1',
@@ -440,6 +441,9 @@ export async function login(email, password) {
     const correct = await verifyPassword(password, user.password);
     if (!correct) throw new ServiceError("user-login-failed");
 
+    // figure out if the user is a tutor or tutee
+    const is_tutor = await tutorService.getByID(user.id)
+
     // update last login records
     await query("UPDATE eduhope_user SET last_login = now() WHERE id = $1", [user.id]);
 
@@ -448,6 +452,7 @@ export async function login(email, password) {
         id: user.id,
         given_name: user.given_name,
         family_name: user.family_name,
+        is_tutor: !!is_tutor
     };
 
     const cookie = jwt.sign(

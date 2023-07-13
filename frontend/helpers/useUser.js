@@ -29,7 +29,8 @@ function useUser() {
 
             const response = await requester(request);
             localStorage.removeItem("user_id");
-            localStorage.removeItem("username");
+            localStorage.removeItem("given_name");
+            localStorage.removeItem("family_name");            
             localStorage.removeItem("is_tutor");
 
             return response;
@@ -52,7 +53,8 @@ function useUser() {
             if (!response?.id) throw "Failed to login";
 
             localStorage.setItem("user_id", response.id);
-            localStorage.setItem("username", response.name);
+            localStorage.setItem("given_name", response.given_name);
+            localStorage.setItem("family_name", response.family_name);
             localStorage.setItem("is_tutor", response.is_tutor);
 
             return response;

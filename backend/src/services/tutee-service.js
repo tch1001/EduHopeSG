@@ -2,7 +2,7 @@ import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
 import { sendTuitionRequest, notifyTuitionSubjectChange } from "./email-service.js";
 import * as userService from "../services/user-service.js";
-import { getByID } from "./user-service.js";
+import * as tutorService from "../services/tutor-service.js";
 
 /**
  * Get the tutee objects associated with a given tutor id.
@@ -58,64 +58,50 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 
     if (tuteeID === tutorID) throw new ServiceError("tutee-tutor-same");
 
-    const user = await getByID(tuteeID, "email");
-    const tutor = await getByID(tutorID, "is_tutor subjects email");
+    const user = await userService.getByID(tuteeID, "email");
+    const tutor_user_data = await userService.getByID(tutorID, "email");
+    const tutor_data = await tutorService.getByID(tutorID, "subjects tutee_limit");
+    const tutor = {...tutor_user_data, ...tutor_data}
 
     if (!user || !tutor) throw new ServiceError("tutee-tutor-not-found");
-    if (!tutor.is_tutor) throw new ServiceError("user-not-tutor");
+    if (!tutor.subjects) throw new ServiceError("user-not-tutor");
 
     // check if subjects being requested is offered by tutor
     const notOffered = subjects.some(subject => !tutor.subjects.includes(subject));
-    const relationshipID = `${tuteeID}:${tutorID}`
     if (notOffered) throw new ServiceError("tutee-tutor-subject-unoffered");
 
     // check if tutor has hit the limit
     const { rows: count } = await query(
-        "SELECT count(id) FROM tutee_tutor_relationship WHERE id = $1",
-        [relationshipID]
+        `SELECT count(tutor) FROM tutee_tutor_relationship 
+            WHERE tutor = $1
+            AND status = 'ACCEPTED'`,
+        [tutorID]
     )
 
     if (parseInt(count[0].count) >= tutor.tutee_limit)
         throw new ServiceError("tutor-hit-tutee-limit");
 
-    // check already a request with the same subjects
-    const { rows: requests } = await query(
-        "SELECT * FROM tutee_tutor_relationship WHERE id = $1",
-        [relationshipID]
+    // check if the request for the same tutor, subject, and requesting student has already been made
+    const { rows: existingMatchingRequests } = await query(
+        `SELECT * FROM tutee_tutor_relationship 
+            WHERE tutor = $1
+            AND tutee = $2
+            AND subject = $3 `,
+        [tutorID, tuteeID, subjects[0]]
     );
 
-    if (requests.length) {
-        const { subjects: tutoredSubjects } = requests[0];
-        const requestedSubjects = subjects.length === tutoredSubjects.length &&
-            subjects.every(subject => tutoredSubjects.includes(subject));
+    if (existingMatchingRequests.length > 0) {
+        throw new ServiceError("tutee-request-tutor-unique")
+    }
 
-        if (!requestedSubjects) {
-            // update subjects
-
-            await query(
-                `UPDATE tutee_tutor_relationship SET subjects = $1 WHERE id = $2`,
-                [subjects, relationshipID]
-            )
-
-            await notifyTuitionSubjectChange(user, tutor, subjects, tutoredSubjects);
-
-            return {
-                success: true,
-                message: "Updated tuition subjects. Your tutor is notified of the changes"
-            }
-        } else {
-            // throw duplicate error
-            throw new ServiceError("tutee-request-tutor-unique")
-        }
-    };
 
     // change status of relationship if accepted, delete row if decline
     const queryText = `
-        INSERT INTO tutee_tutor_relationship(tutee_id, tutor_id, subjects)
-        VALUES($1, $2, $3) RETURNING *
+        INSERT INTO tutee_tutor_relationship(tutee, tutor, subject, status)
+        VALUES($1, $2, $3, $4) RETURNING *
     `
 
-    const queryValues = [tuteeID, tutorID, subjects];
+    const queryValues = [tuteeID, tutorID, subjects[0], 'PENDING'];
     await query(queryText, queryValues)
     await sendTuitionRequest(user, tutor, subjects);
 

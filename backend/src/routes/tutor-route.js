@@ -48,7 +48,7 @@ router.get("/accept/:tuteeID", (req, res) => {
 
     const relationshipID = req.query.relationshipID
 
-    tutorService.acceptTutee(relationshipID)
+    tutorService.acceptTutee(relationshipID, user.payload.id)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })

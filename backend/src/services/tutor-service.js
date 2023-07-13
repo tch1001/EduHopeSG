@@ -60,7 +60,7 @@ function validateTutorObject(user, validate = {
         }
     }
 
-    if (validate.description){
+    if (validate.description) {
         // 
     }
 
@@ -154,8 +154,8 @@ export async function getTutees(tutorID) {
             [tutorID]
         );
     rows.forEach(tutee => {
-        tutee.email = userService.decrypt(tutee.email) 
-    });  
+        tutee.email = userService.decrypt(tutee.email)
+    });
     return rows;
 }
 
@@ -164,8 +164,23 @@ export async function getTutees(tutorID) {
  * @param {string} relationshipID Tutor-tutee relationship ID
  * @returns {{success: true, message: string}} Success message
  */
-export async function acceptTutee(relationshipID) {
+export async function acceptTutee(relationshipID, tutorID) {
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
+
+    // check if the tutee limit has been reached
+    const { rows: limitHit } = await query(
+        `SELECT t.user_id 
+        FROM (
+            SELECT ttr.tutor AS tutor_id, COUNT(ttr.tutor) AS num_tutees
+            FROM tutee_tutor_relationship AS ttr 
+            WHERE ttr.status = 'ACCEPTED' AND ttr.tutor = $1
+            GROUP BY ttr.tutor   
+        ) AS filtered_tutor_id
+        INNER JOIN tutor AS t on t.user_id = filtered_tutor_id.tutor_id 
+        AND filtered_tutor_id.num_tutees >= t.tutee_limit`
+    , [tutorID])
+
+    if (limitHit) throw new ServiceError("tutor-hit-tutee-limit2")
 
     const { rows } =
         await query(
@@ -177,7 +192,7 @@ export async function acceptTutee(relationshipID) {
     const { tutee, tutor, subject } = rows[0];
 
     // notify tutee of acceptance
-    await notifyTuteeAcceptance(tutee, tutor, subject);
+    //await notifyTuteeAcceptance(tutee, tutor, subject);
 
     return {
         success: true,
@@ -201,7 +216,7 @@ export async function rejectTutee(relationshipID, reason) {
 
     // notify tutee of rejection
     await query(`DELETE ${queryText}`, [relationshipID]);
-    await notifyTuteeDeclination(tutee, tutor, subject, reason);
+    //await notifyTuteeDeclination(tutee, tutor, subject, reason);
 
     return {
         success: true,
@@ -217,7 +232,7 @@ export async function rejectTutee(relationshipID, reason) {
  * @returns {{ success: true, message: string}} Success message
  */
 export async function removeTutee(relationshipID, reason) {
-    if (!relationshipID|| !reason) throw new ServiceError("invalid-tutee-tutor-relationship");
+    if (!relationshipID || !reason) throw new ServiceError("invalid-tutee-tutor-relationship");
 
     const queryText = "FROM tutee_tutor_relationship WHERE id = $1";
     const { rows } = await query(`SELECT * ${queryText}`, [relationshipID]);
@@ -227,7 +242,7 @@ export async function removeTutee(relationshipID, reason) {
 
     // notify tutee of removal
     await query(`DELETE ${queryText}`, [relationshipID]);
-    await notifyTuteeDeclination(tutee, tutor, subjects, reason);
+    //await notifyTuteeDeclination(tutee, tutor, subjects, reason);
 
     return {
         success: true,

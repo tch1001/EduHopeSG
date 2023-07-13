@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS tutor (
     description VARCHAR(2000),
     average_response_time VARCHAR(50),
 
-    created_on timestamptz,
+    created_on timestamptz DEFAULT now(),
     updated_on timestamptz,
 
     CONSTRAINT fk_user_id
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS tutee_tutor_relationship (
     subject UUID, -- subject ids from TickNinja
     status RELATIONSHIP_STATUS,
 
-    created_on timestamptz,
+    created_on timestamptz DEFAULT now(),
     updated_on timestamptz,
 
     CONSTRAINT fk_tutee

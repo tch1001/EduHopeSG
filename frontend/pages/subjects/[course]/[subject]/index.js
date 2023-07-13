@@ -40,11 +40,11 @@ const TutorCard = ({ tutor }) => {
             if (err.status == 401) {
                 setDialogSettings({
                     title: "Login/Sign-up Required",
-                    message: `Please kindly login into your existing account or sign-up if you do not have an account yet. This way, we can facilitate communications between you and your tutor! `,
+                    message: `Please kindly login into your existing account or sign-up if you do not have an account yet. This way, we can facilitate communication between you and your tutor! `,
                     display: true,
                     buttons: [
-                        { text: "Login", bg: "bg-aqua", callback: () => {router.push(`/login?originalURL=/${router.pathname}`)} },
-                        { text: "Sign-up", bg: "bg-sky-blue", callback: () => {router.push(`/signup?originalURL=/${router.pathname}`)} }
+                        { text: "Login", bg: "bg-aqua", callback: () => {router.push(`/login?originalURL=${router.asPath}`); closeDialog()} },
+                        { text: "Sign-up", bg: "bg-sky-blue", callback: () => {router.push(`/signup?originalURL=${router.asPath}`); closeDialog()} }
                     ],              
                 });
             } else {

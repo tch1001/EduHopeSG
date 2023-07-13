@@ -17,7 +17,7 @@ const ManageTutors = ({ initPendingTutors, initAcceptedTutors, error }) => {
 
     return (
         <Container className="flex flex-col gap-6 p-6 max-w-5xl">
-            <h1 className="text-2xl font-bold">Tutor Requests</h1>
+            <h1 className="text-2xl font-bold">Tutor Requests {`(${pendingTutors.length})`}</h1>
             {pendingTutors.length == 0 && (
                 <p>You do not have any pending tutor requests.</p>
             )}
@@ -32,7 +32,7 @@ const ManageTutors = ({ initPendingTutors, initAcceptedTutors, error }) => {
                     setAcceptedTutors={setAcceptedTutors}
                 />
             ))}
-            <h1 className="text-2xl font-bold">Accepted Tutors</h1>
+            <h1 className="text-2xl font-bold">Accepted Tutors {`(${acceptedTutors.length})`}</h1>
             {acceptedTutors.length == 0 && (
                 <p>You do not have any existing tutors.</p>
             )}

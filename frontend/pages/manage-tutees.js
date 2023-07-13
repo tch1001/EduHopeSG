@@ -15,7 +15,7 @@ const ManageTutees = ({ initPendingTutees, initAcceptedTutees, error }) => {
 
     return (
         <Container className="flex flex-col gap-6 p-6 max-w-5xl">
-            <h1 className="text-2xl font-bold">Tutee Requests</h1>
+            <h1 className="text-2xl font-bold">Tutee Requests {`(${pendingTutees.length})`}</h1>
             {pendingTutees.length == 0 && (
                 <p>You do not have any pending tutee requests.</p>
             )}
@@ -30,7 +30,7 @@ const ManageTutees = ({ initPendingTutees, initAcceptedTutees, error }) => {
                     setAcceptedTutees={setAcceptedTutees}
                 />
             ))}
-            <h1 className="text-2xl font-bold">Accepted Tutees</h1>
+            <h1 className="text-2xl font-bold">Accepted Tutees {`(${acceptedTutees.length})`}</h1>
             {acceptedTutees.length == 0 && (
                 <p>You do not have any existing tutees.</p>
             )}

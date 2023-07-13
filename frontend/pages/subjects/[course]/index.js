@@ -21,7 +21,7 @@ export const CourseSubjects = ({ course, subjects }) => {
             <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-8">
                 {
                     subjects.map((subject, key) => (
-                        <Link key={key} href={`${currentPath}/${subject.short_name}`}>
+                        <Link key={key} href={`${currentPath}/${subject.name}`}>
                             <Card className="max-w-xs text-center py-4">
                                 <div className="border rounded-full p-10 inline-block">
                                     <Icon icon="clipboard-document" className="inline" alt="" />

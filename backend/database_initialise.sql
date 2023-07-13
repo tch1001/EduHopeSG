@@ -1,4 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm"
 
 -- Enums
 DROP TYPE IF EXISTS LEVEL;
@@ -50,9 +51,9 @@ CREATE TYPE COURSE_ENUM AS ENUM (
 
 DROP TYPE IF EXISTS COMMUNICATION;
 CREATE TYPE COMMUNICATION AS ENUM (
-    'TEXTING',
-    'VIRTUAL_CONSULTATION',
-    'FACE_TO_FACE'
+    'Texting',
+    'Virtual Consultation',
+    'Face-to-Face'
 );
 
 DROP TYPE IF EXISTS RELATIONSHIP_STATUS;
@@ -73,7 +74,7 @@ CREATE TABLE IF NOT EXISTS course (
 );
 
 CREATE TABLE IF NOT EXISTS subject (
-    id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     course UUID,
     name VARCHAR(32) UNIQUE NOT NULL,
     level LEVEL,
@@ -112,7 +113,7 @@ CREATE TABLE IF NOT EXISTS tutor (
     id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     user_id UUID UNIQUE NOT NULL,
 
-    subjects UUID[] NOT NULL, -- subject ids from TickNinja
+    subjects INT[] NOT NULL, -- subject ids from TickNinja
     course COURSE_ENUM,
     tutee_limit INT DEFAULT 3 CHECK (tutee_limit BETWEEN 1 AND 5),
     commitment_end TIMESTAMP,

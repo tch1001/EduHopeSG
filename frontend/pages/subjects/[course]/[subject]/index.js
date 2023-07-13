@@ -5,32 +5,56 @@ import Container from '../../../../components/Container';
 
 import { dialogSettingsContext } from '../../../../helpers/dialogContext';
 import useAxios from '../../../../helpers/useAxios';
+import { useRouter } from 'next/router';
 
 const TutorCard = ({ tutor }) => {
-    return <></>
     const [loading, setLoading] = useState(false);
+    const router = useRouter()
 
-    const { dialogSettings, setDialogSettings } = useContext(dialogSettingsContext);
+    const { dialogSettings, setDialogSettings, closeDialog } = useContext(dialogSettingsContext);
     const request = useAxios();
 
-    const handleRequest = async (tutorID) => {
+    const handleRequest = async (tutorData) => {
+        const {id, subject, subject_id, given_name, family_name} = tutorData
+
         if (loading) return;
         setLoading(true);
 
         try {
             const response = await request({
                 method: "post",
-                path: `/tutee/relationship/${tutorID}`
+                path: `/tutee/relationship/${id}`,
+                data: {subjects: [subject_id]}
             })
 
-            console.log(response);
-        } catch (err) {
             setDialogSettings({
-                ...dialogSettings,
-                title: err.name,
-                message: `${err.message}. ${err.details}`,
-                display: true
+                title: 'Request Submitted!',
+                message: `Please give ${given_name} ${family_name} a few days to consider your request for ${subject} tutoring. If you change your mind, you can cancel the request in the Manage Tutors.`,
+                display: true,
+                buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
             });
+
+        } catch (err) {
+            // if error is user-unauthenticated, open a dialog that explains to the user that they need to log in first, 
+            // and a button that redirects them to the login page.
+            if (err.status == 401) {
+                setDialogSettings({
+                    title: "Login/Sign-up Required",
+                    message: `Please kindly login into your existing account or sign-up if you do not have an account yet. This way, we can facilitate communications between you and your tutor! `,
+                    display: true,
+                    buttons: [
+                        { text: "Login", bg: "bg-aqua", callback: () => {router.push(`/login?originalURL=/${router.pathname}`)} },
+                        { text: "Sign-up", bg: "bg-sky-blue", callback: () => {router.push(`/signup?originalURL=/${router.pathname}`)} }
+                    ],              
+                });
+            } else {
+                setDialogSettings({
+                    title: err.name,
+                    message: `${err.message}. ${err.details}`,
+                    display: true,
+                    buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],                
+                });
+            }
 
             console.error(err);
         } finally {
@@ -40,29 +64,31 @@ const TutorCard = ({ tutor }) => {
 
     return (
         <Card className="py-4 px-6 max-w-full" key={tutor.id}>
-            <div>
-                <p className="text-dark-blue font-bold">
-                    {tutor.name}, {" "}
-                    <span className="text-black font-semibold">{tutor.school}</span>
-                </p>
-                <p className="text-black italic">{tutor.level_of_education}</p>
-                <p>{tutor.description}</p>
-                <p>
-                    <strong className="mr-2">Preferred communication:</strong>
+            <div className="flex flex-col gap-4">
+                <div>
+                    <p className="text-dark-blue font-bold">
+                        {`${tutor.given_name} ${tutor.family_name}`}, {" "}
+                        <span className="text-black font-semibold">{tutor.school}</span>
+                    </p>
+                    <p className="text-black italic">{tutor.level_of_education}</p>
+                    <p className="mt-2 mb-2">{tutor.description}</p>
+                </div>
+                <div>
+                    <strong className="mr-2">Preferred Consultation Mode(s):</strong>
                     <div className="inline-flex flex-row gap-1">
                         {
                             tutor.preferred_communications.map(
-                                (communication) => (<span className="bg-dark-aqua text-white py-1 px-2 rounded-sm">{communication}</span>)
+                                (communication, index) => (<span key={index} className="bg-dark-aqua text-white py-1 px-2 rounded-sm">{communication}</span>)
                             )
                         }
                     </div>
-                </p>
+                </div>
             </div>
-            <div className="mt-2">
+            <div className="mt-4">
                 <Button
-                    onClick={() => handleRequest(tutor.id)}
-                    disabled={loading}>
-                    {loading ? "Requesting..." : "Request"}
+                    onClick={() => handleRequest(tutor)}
+                    loading={loading}>
+                    {loading ? "" : "Request"}
                 </Button>
             </div>
         </Card>

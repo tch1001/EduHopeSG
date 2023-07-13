@@ -4,6 +4,8 @@ import { sendTuitionRequest, notifyTuitionSubjectChange } from "./email-service.
 import * as userService from "../services/user-service.js";
 import * as tutorService from "../services/tutor-service.js";
 
+const  MAX_TUTOR_PER_SUBJECT = 1
+
 /**
  * Get the tutee objects associated with a given tutor id.
  * @param {string} id Tutor ID
@@ -26,6 +28,7 @@ export async function getTutors(tuteeID) {
                 ttr.id AS relationship_id,                
                 ttr.status, 
                 s.level || ' ' || s.name AS subject,
+                s.id AS subject_id,
                 t.preferred_communications
             FROM tutee_tutor_relationship AS ttr
             INNER JOIN eduhope_user AS u
@@ -58,6 +61,35 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 
     if (tuteeID === tutorID) throw new ServiceError("tutee-tutor-same");
 
+    // check if the request for the same tutor, subject, and requesting student has already been made
+    const { rows: existingMatchingRequests } = await query(
+        `SELECT * FROM tutee_tutor_relationship 
+            WHERE tutor = $1
+            AND tutee = $2
+            AND subject = $3 `,
+        [tutorID, tuteeID, subjects[0]]
+    );
+
+    if (existingMatchingRequests.length > 0) {
+        throw new ServiceError("tutee-request-tutor-unique")
+    }
+
+
+    // check if the tutee has hit the requesting limit (on a per subject basis)
+    const tutors = await getTutors(tuteeID)
+    const relevantTutors = tutors.filter(tutor=> tutor.subject_id == subjects[0] )
+
+    if (relevantTutors.filter(tutor=> tutor.status == "PENDING").length >= MAX_TUTOR_PER_SUBJECT) {
+        throw new ServiceError("tutee-hit-request-tutor-limit")
+    }
+    if (relevantTutors.filter(tutor=> tutor.status == "ACCEPTED").length >= MAX_TUTOR_PER_SUBJECT) {
+        throw new ServiceError("tutee-hit-accepted-tutor-limit")
+    }   
+    if (relevantTutors.length >= MAX_TUTOR_PER_SUBJECT) {
+        throw new ServiceError("tutee-hit-total-tutor-limit")
+    }     
+
+
     const user = await userService.getByID(tuteeID, "email");
     const tutor_user_data = await userService.getByID(tutorID, "email");
     const tutor_data = await tutorService.getByID(tutorID, "subjects tutee_limit");
@@ -81,21 +113,8 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
     if (parseInt(count[0].count) >= tutor.tutee_limit)
         throw new ServiceError("tutor-hit-tutee-limit");
 
-    // check if the request for the same tutor, subject, and requesting student has already been made
-    const { rows: existingMatchingRequests } = await query(
-        `SELECT * FROM tutee_tutor_relationship 
-            WHERE tutor = $1
-            AND tutee = $2
-            AND subject = $3 `,
-        [tutorID, tuteeID, subjects[0]]
-    );
 
-    if (existingMatchingRequests.length > 0) {
-        throw new ServiceError("tutee-request-tutor-unique")
-    }
-
-
-    // change status of relationship if accepted, delete row if decline
+    // add a pending tutor request in the ttr table
     const queryText = `
         INSERT INTO tutee_tutor_relationship(tutee, tutor, subject, status)
         VALUES($1, $2, $3, $4) RETURNING *

@@ -236,8 +236,8 @@
     "tutee-request-tutor-unique": {
         "status": 409,
         "name": "Error modifying Tutor-Tutee agreement",
-        "message": "The current agreeable subjects and requested subjects are the same (no changes)",
-        "details": "To update the agreement, please choose a different subject combination"
+        "message": "You have already requested for this tutor for this subject",
+        "details": "Please visit the Manage Tutors page to view your pending tutor requests"
     },
     "invalid-tutee-tutor-relationship": {
         "status": 400,

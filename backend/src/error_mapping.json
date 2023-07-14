@@ -249,7 +249,7 @@
         "status": 409,
         "name": "Tutee limit hit",
         "message": "You have hit the tutee limit that you set previously",
-        "details": "To accept this tutee's request, please increase your tutor limit via the \"Edit profile\" page"
+        "details": "To accept this tutee's request, please increase your tutee limit via the \"Edit profile\" page"
     },    
     "tutee-hit-request-tutor-limit": {
         "status": 409,

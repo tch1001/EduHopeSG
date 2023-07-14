@@ -19,8 +19,17 @@ function DialogContext({ children }) {
         setDialogSettings({ ...dialogSettings, display: false });
     }
 
+    function displayErrorDialog(err){
+        setDialogSettings({
+            title: err.name.toUpperCase(),
+            message: `${err.message}. ${err.details}.`,
+            display: true,
+            buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
+        });
+    }
+
     return (
-        <dialogSettingsContext.Provider value={{ dialogSettings, setDialogSettings, openDialog, closeDialog }}>
+        <dialogSettingsContext.Provider value={{ dialogSettings, setDialogSettings, openDialog, closeDialog, displayErrorDialog }}>
             {children}
         </dialogSettingsContext.Provider>
     );

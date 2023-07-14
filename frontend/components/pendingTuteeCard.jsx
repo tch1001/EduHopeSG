@@ -8,7 +8,7 @@ import { dialogSettingsContext } from "../helpers/dialogContext"
 export const PendingTuteeCard = ({tutee, pendingTutees, setPendingTutees, acceptedTutees, setAcceptedTutees, index}) => {
     const [loading, setLoading] = useState(false)
 
-    const { dialogSettings, setDialogSettings, closeDialog } = useContext(dialogSettingsContext);
+    const { dialogSettings, setDialogSettings, closeDialog, displayErrorDialog } = useContext(dialogSettingsContext);
 
     const request = useAxios()
 
@@ -36,12 +36,7 @@ export const PendingTuteeCard = ({tutee, pendingTutees, setPendingTutees, accept
                 buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
             });
         } catch (err) {
-            setDialogSettings({
-                title: err.name.toUpperCase(),
-                message: `${err.message}. ${err.details}.`,
-                display: true,
-                buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
-            });
+            displayErrorDialog(err)
 
         } finally {
             setLoading(false);

@@ -8,7 +8,7 @@ import { dialogSettingsContext } from "../helpers/dialogContext"
 export const PendingTutorCard = ({ tutor, pendingTutors, setPendingTutors, index }) => {
     const [loading, setLoading] = useState(false)
 
-    const { dialogSettings, setDialogSettings, closeDialog } = useContext(dialogSettingsContext);
+    const { dialogSettings, setDialogSettings, closeDialog, displayErrorDialog } = useContext(dialogSettingsContext);
 
     const request = useAxios()
 
@@ -34,12 +34,7 @@ export const PendingTutorCard = ({ tutor, pendingTutors, setPendingTutors, index
                 closeDialog()
 
             } catch (err) {
-                setDialogSettings({
-                    title: err.name.toUpperCase(),
-                    message: `${err.message}. ${err.details}.`,
-                    display: true,
-                    buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
-                });
+                displayErrorDialog(err)
 
             } finally {
                 setLoading(false);

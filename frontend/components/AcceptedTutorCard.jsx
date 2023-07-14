@@ -12,7 +12,7 @@ const ICON_QUALITY = 60;
 export const AcceptedTutorCard = ({ tutor, acceptedTutors, setAcceptedTutors, index }) => {
     const [loading, setLoading] = useState(false)
 
-    const { dialogSettings, setDialogSettings, closeDialog } = useContext(dialogSettingsContext);
+    const { dialogSettings, setDialogSettings, closeDialog, displayErrorDialog } = useContext(dialogSettingsContext);
 
     const request = useAxios()
 
@@ -38,12 +38,7 @@ export const AcceptedTutorCard = ({ tutor, acceptedTutors, setAcceptedTutors, in
                 closeDialog()
 
             } catch (err) {
-                setDialogSettings({
-                    title: err.name.toUpperCase(),
-                    message: `${err.message}. ${err.details}.`,
-                    display: true,
-                    buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
-                });
+                displayErrorDialog(err)
 
             } finally {
                 setLoading(false);

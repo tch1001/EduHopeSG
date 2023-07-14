@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Button from "../../components/Button";
@@ -7,6 +7,7 @@ import Card from "../../components/Card";
 import FormErrorDisplay from "../../components/FormErrorDisplay";
 
 import useAxios from "../../helpers/useAxios";
+import { dialogSettingsContext } from "../../helpers/dialogContext";
 
 import styles from "../../styles/forms.module.css";
 import useUser from "../../helpers/useUser";
@@ -14,6 +15,9 @@ import useUser from "../../helpers/useUser";
 const TutorSignUp = () => {
     const [loading, setLoading] = useState(false);
     const [schools, setSchools] = useState([]);
+
+    const { dialogSettings, setDialogSettings, closeDialog, displayErrorDialog } = useContext(dialogSettingsContext);
+
     const [user, { login }] = useUser();
     const request = useAxios();
 
@@ -25,7 +29,7 @@ const TutorSignUp = () => {
             path: "/school"
         })
             .then(({ result }) => setSchools(result.map(({ name }) => name)))
-            .catch(err => console.error(err));
+            .catch(err => displayErrorDialog(err));
 
         // get education levels and referrals from server?
     }, [])
@@ -65,10 +69,7 @@ const TutorSignUp = () => {
             await login({ email, password });
             window.location.href = "/";
         } catch (err) {
-            // TODO: use dialogue/toast component for notification
-            // success and error messages
-            alert(`${err.name}: ${err.message}. ${err.details}`)
-            console.error(err);
+            displayErrorDialog(err);
         } finally {
             setLoading(false);
         }

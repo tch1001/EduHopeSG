@@ -1,10 +1,11 @@
 import { useFormik } from "formik";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Container from "../components/Container";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
 
+import { dialogSettingsContext } from "../helpers/dialogContext";
 import useAxios from "../helpers/useAxios"
 import useUser from "../helpers/useUser"
 import Yup from "../helpers/Yup";
@@ -51,6 +52,8 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
     const [previouslySavedPersonalParticulars, setPreviouslySavedPersonalParticulars] = useState(initPersonalParticulars)
     const [previouslySavedTutorSettings, setPreviouslySavedTutorSettings] = useState(initTutorSettings)
 
+    const { dialogSettings, setDialogSettings, closeDialog, displayErrorDialog } = useContext(dialogSettingsContext);
+
     const request = useAxios();
 
     if (error) {
@@ -63,7 +66,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
             path: "/school"
         })
             .then(({ result }) => setSchools(result.map(({ name }) => name)))
-            .catch(err => console.error(err));
+            .catch(err => displayErrorDialog(err));
 
         // get education levels and referrals from server?
     }, [])
@@ -103,18 +106,6 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
         telegram,
         bio
     }) {
-        // This will reset the formik's initialValues, allowing the resetForm method to function as a "cancel" method that
-        // revert's the form's fields to their previously saved values. 
-        setPreviouslySavedPersonalParticulars({
-            firstName,
-            lastName,
-            school,
-            email,
-            telegram,
-            levelOfEducation,
-            bio,
-        })
-
         if (loading) return;
         setLoading(true);
 
@@ -135,9 +126,21 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                 data
             });
 
+            // This will reset the formik's initialValues, allowing the resetForm method to function as a "cancel" method that
+            // revert's the form's fields to their previously saved values. 
+            setPreviouslySavedPersonalParticulars({
+                firstName,
+                lastName,
+                school,
+                email,
+                telegram,
+                levelOfEducation,
+                bio,
+            })
+
             console.log(response);
         } catch (err) {
-            console.error(err);
+            displayErrorDialog(err);
         } finally {
             setLoading(false);
         }
@@ -154,12 +157,6 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
     async function handleTutorSettingsSave({
         commitmentEnd
     }) {
-        // This will reset the formik's initialValues, allowing the resetForm method to function as a "cancel" method that
-        // revert's the form's fields to their previously saved values. 
-        setPreviouslySavedTutorSettings({
-            commitmentEnd
-        })
-
         if (loading) return;
         setLoading(true);
 
@@ -174,9 +171,15 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                 data
             });
 
+            // This will reset the formik's initialValues, allowing the resetForm method to function as a "cancel" method that
+            // revert's the form's fields to their previously saved values. 
+            setPreviouslySavedTutorSettings({
+                commitmentEnd
+            })
+
             console.log(response);
         } catch (err) {
-            console.error(err);
+            displayErrorDialog(err);
         } finally {
             setLoading(false);
         }
@@ -271,10 +274,15 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                             <Button
                                 type="submit"
                                 onClick={() => {
-                                    console.log(personalParticularsFormik)
                                     if (!Object.keys(personalParticularsFormik.errors).length) {
                                         personalParticularsFormik.handleSubmit()
                                         setPersonalParticularsSaved(true)
+                                    } else {
+                                        displayErrorDialog({
+                                            name: "Missing/Invalid Field Value(s)".toUpperCase(),
+                                            message: "One or more fields have missing or invalid values",
+                                            details: "Please refer to the red error message above each field for more information"
+                                        })
                                     }
                                 }}
                                 loading={loading}
@@ -318,6 +326,12 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                                     if (!Object.keys(tutorSettingsFormik.errors).length) {
                                         tutorSettingsFormik.handleSubmit()
                                         setTutorSettingsSaved(true)
+                                    } else {
+                                        displayErrorDialog({
+                                            name: "Missing/Invalid Field Value(s)".toUpperCase(),
+                                            message: "One or more fields have missing or invalid values",
+                                            details: "Please refer to the red error message above each field for more information"
+                                        })
                                     }
                                 }}
                                 loading={loading}

@@ -22,7 +22,7 @@ function Login() {
     const [user, { login }] = useUser(); 
     if (user.id) router.push(originalURL);
 
-    const { dialogSettings, setDialogSettings } = useContext(dialogSettingsContext);
+    const { dialogSettings, setDialogSettings, closeDialog, displayErrorDialog } = useContext(dialogSettingsContext);
 
     const LoginSchema = Yup.object({
         email: Yup.string()
@@ -48,14 +48,7 @@ function Login() {
             await login(values);
             window.location.href = originalURL;
         } catch (err) {
-            setDialogSettings({
-                ...dialogSettings,
-                title: err.name,
-                message: `${err.message}. ${err.details}`,
-                display: true
-            });
-
-            console.error(err);
+            displayErrorDialog(err);
         } finally {
             setLoading(false);
         }

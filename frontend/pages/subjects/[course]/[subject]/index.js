@@ -11,7 +11,7 @@ const TutorCard = ({ tutor }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter()
 
-    const { dialogSettings, setDialogSettings, closeDialog } = useContext(dialogSettingsContext);
+    const { dialogSettings, setDialogSettings, closeDialog, displayErrorDialog } = useContext(dialogSettingsContext);
     const request = useAxios();
 
     const handleRequest = async (tutorData) => {
@@ -48,12 +48,7 @@ const TutorCard = ({ tutor }) => {
                     ],              
                 });
             } else {
-                setDialogSettings({
-                    title: err.name.toUpperCase(),
-                    message: `${err.message}. ${err.details}.`,
-                    display: true,
-                    buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],                
-                });
+                displayErrorDialog(err)
             }
 
             console.error(err);
@@ -116,7 +111,7 @@ export const Subject = ({ subject, tutors }) => {
             <main className="flex flex-col gap-4">
                 {
                     tutors.length ?
-                        tutors.map((tutor) => <TutorCard tutor={tutor} />)
+                        tutors.map((tutor) => <TutorCard key={tutor.id} tutor={tutor} />)
                         : <p>No tutors available for this subject :&#40;</p>
                 }
             </main>

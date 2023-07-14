@@ -74,7 +74,7 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
         WHERE ttr.status = 'ACCEPTED'
         GROUP BY ttr.tutor   
     ) AS filtered_tutor_ids
-    INNER JOIN tutor AS t on t.user_id = filtered_tutor_ids.tutor_id 
+    RIGHT JOIN tutor AS t on t.user_id = filtered_tutor_ids.tutor_id 
         AND filtered_tutor_ids.num_tutees < t.tutee_limit
         AND t.commitment_end >= now()   
     LEFT JOIN subject AS s ON s.id = ANY(t.subjects) AND similarity(s.level || ' ' || s.name, $2) >= 0.7

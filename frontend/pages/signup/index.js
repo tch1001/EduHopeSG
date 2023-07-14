@@ -288,7 +288,7 @@ const SignUp = () => {
                 <FormErrorDisplay field="terms" formik={formik} />
                 <label htmlFor="terms">
                     I have read the{" "}
-                    <Link href="/terms" passHref className="link">Terms and Conditions</Link>
+                    <Link href="/terms" passHref className="link" rel="noopener noreferrer" target="_blank">Terms and Conditions</Link>
                 </label>
                 <input
                     id="terms"
@@ -301,7 +301,7 @@ const SignUp = () => {
                 <FormErrorDisplay field="guidelines" formik={formik} />
                 <label htmlFor="guidelines">
                     I have read the{" "}
-                    <Link href="/guidelines/tutee" passHref className="link">Tutee Guidelines</Link>
+                    <Link href="/guidelines/tutee" passHref className="link" rel="noopener noreferrer" target="_blank">Tutee Guidelines</Link>
                 </label>
                 <input
                     id="guidelines"

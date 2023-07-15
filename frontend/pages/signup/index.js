@@ -345,7 +345,6 @@ const SignUp = () => {
                                         if (!Object.keys(formik.errors).length) {
                                             formik.handleSubmit()
                                         } else {
-                                            console.log(formik)
                                             formik.setTouched(Object.fromEntries(Object.keys(formik.values).map(field => [field, true])))
                                             displayErrorDialog({
                                                 name: "Missing/Invalid Field Value(s)".toUpperCase(),

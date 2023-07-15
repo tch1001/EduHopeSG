@@ -103,7 +103,6 @@ const TutorCard = ({ tutor, setTutors }) => {
 
 export const Subject = ({ subject, initTutors }) => {
     const [tutors, setTutors] = useState(initTutors)
-    console.log(tutors)
 
     return (
         <Container className="flex flex-col gap-6 p-6 max-w-5xl">
@@ -144,7 +143,6 @@ export const getServerSideProps = async ({ query, req }) => {
     });
 
     const { tutors, subject, course } = response;
-    console.log(response);
 
     return {
         props: {

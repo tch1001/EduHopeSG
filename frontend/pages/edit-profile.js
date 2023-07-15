@@ -383,7 +383,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                             tutorSettingsFormik.setFieldValue("preferredCommunications", selectedOptions)
                         }
                         }
-                        value={tutorSettingsFormik.values.preferredCommunications}
+                        value={tutorSettingsFormik.values?.preferredCommunications}
                         onBlur={() => tutorSettingsFormik.setFieldTouched("preferredCommunications", true)}
                     />
                 </div>
@@ -401,7 +401,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                             console.log(tutorSettingsFormik)
                         }
                         }
-                        value={tutorSettingsFormik.values.subjects}
+                        value={tutorSettingsFormik.values?.subjects}
                         onBlur={() => tutorSettingsFormik.setFieldTouched("subjects", true)}
                     />
                 </div>

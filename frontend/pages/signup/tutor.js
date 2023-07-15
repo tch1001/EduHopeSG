@@ -396,7 +396,7 @@ const TutorSignUp = ({ subjects }) => {
                 <FormErrorDisplay field="guidelines" formik={formik} />
                 <label htmlFor="guidelines">
                     I have read the{" "}
-                    <Link href="/guidelines/tutee" passHref className="link" rel="noopener noreferrer" target="_blank">Tutee Guidelines</Link>
+                    <Link href="/guidelines/tutor" passHref className="link" rel="noopener noreferrer" target="_blank">Tutor Guidelines</Link>
                 </label>
                 <input
                     id="guidelines"

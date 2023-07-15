@@ -137,6 +137,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                 levelOfEducation,
                 bio,
             })
+            setPersonalParticularsSaved(true)            
 
             console.log(response);
         } catch (err) {
@@ -176,6 +177,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
             setPreviouslySavedTutorSettings({
                 commitmentEnd
             })
+            setTutorSettingsSaved(true)
 
             console.log(response);
         } catch (err) {
@@ -276,7 +278,6 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                                 onClick={() => {
                                     if (!Object.keys(personalParticularsFormik.errors).length) {
                                         personalParticularsFormik.handleSubmit()
-                                        setPersonalParticularsSaved(true)
                                     } else {
                                         displayErrorDialog({
                                             name: "Missing/Invalid Field Value(s)".toUpperCase(),
@@ -325,7 +326,6 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                                 onClick={() => {
                                     if (!Object.keys(tutorSettingsFormik.errors).length) {
                                         tutorSettingsFormik.handleSubmit()
-                                        setTutorSettingsSaved(true)
                                     } else {
                                         displayErrorDialog({
                                             name: "Missing/Invalid Field Value(s)".toUpperCase(),

@@ -4,6 +4,7 @@ import Container from "../components/Container";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
+import Select from "react-select"
 
 import { dialogSettingsContext } from "../helpers/dialogContext";
 import useAxios from "../helpers/useAxios"
@@ -39,7 +40,13 @@ const EDUCATION_TYPES = [
     'UNI_GRADUATE'
 ]
 
-const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, error }) => {
+const COMMUNICATIONS = [
+    'Texting',
+    'Virtual Consultation',
+    'Face-to-Face'
+]
+
+const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, error, subjects }) => {
 
     const [user, { logout }] = useUser()
     const [loading, setLoading] = useState(false);
@@ -137,7 +144,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                 levelOfEducation,
                 bio,
             })
-            setPersonalParticularsSaved(true)            
+            setPersonalParticularsSaved(true)
 
             console.log(response);
         } catch (err) {
@@ -153,17 +160,57 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
     });
 
     const TutorSettingsSchema = Yup.object({
-        commitmentEnd: Yup.date()
+        commitmentEnd: Yup
+            .date()
+            .default(null)
+            .min(new Date(Date.now() + 2.592e+9), "We require a minimum of 1 month commitment from our tutors")
+            .required("Required"),
+        tuteeLimit: Yup
+            .number()
+            .default(null)
+            .min(1)
+            .max(5)
+            .required("Required"),
+        subjects: Yup
+            .array()
+            .of(
+                Yup.object()
+            )
+            .default([])
+            .min(1, "Required")
+            .required("Required"),
+        preferredCommunications: Yup
+            .array()
+            .of(
+                Yup.object()
+            )
+            .default([])
+            .min(1, "Required")
+            .required("Required"),
+        averageResponseTime: Yup
+            .string()
+            .default("")
+            .min(0)
+            .max(50, "Maximum of 50 characters")
+            .optional(),
     })
     async function handleTutorSettingsSave({
-        commitmentEnd
+        commitmentEnd,
+        tuteeLimit,
+        averageResponseTime,
+        preferredCommunications,
+        subjects
     }) {
         if (loading) return;
         setLoading(true);
 
         try {
             const data = {
-                commitment_end: commitmentEnd
+                commitment_end: commitmentEnd,
+                tutee_limit: tuteeLimit,
+                average_response_time: averageResponseTime,
+                preferred_communications: preferredCommunications.map(obj => obj.value),
+                subjects: subjects.map(obj => obj.value)
             }
 
             const response = await request({
@@ -175,7 +222,11 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
             // This will reset the formik's initialValues, allowing the resetForm method to function as a "cancel" method that
             // revert's the form's fields to their previously saved values. 
             setPreviouslySavedTutorSettings({
-                commitmentEnd
+                commitmentEnd,
+                tuteeLimit,
+                averageResponseTime,
+                preferredCommunications,
+                subjects
             })
             setTutorSettingsSaved(true)
 
@@ -309,6 +360,51 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                     <label htmlFor="commitmentEnd">When can you volunteer until?</label>
                     <input type="date" id="commitmentEnd" {...tutorSettingsFormik.getFieldProps("commitmentEnd")} disabled={tutorSettingsSaved} />
                 </div>
+                <div className="w-full max-w-sm px-4 py-2">
+                    <FormErrorDisplay field="tuteeLimit" formik={tutorSettingsFormik} />
+                    <label htmlFor="tuteeLimit">{"What's the maximum number of tutees you can manage?"}</label>
+                    <input type="number" id="tuteeLimit" {...tutorSettingsFormik.getFieldProps("tuteeLimit")} disabled={tutorSettingsSaved} />
+                </div>
+                <div className="w-full max-w-sm px-4 py-2">
+                    <FormErrorDisplay field="averageResponseTime" formik={tutorSettingsFormik} />
+                    <label htmlFor="averageResponseTime">{"What's your average response time?"}</label>
+                    <input id="averageResponseTime" name="averageResponseTime" {...tutorSettingsFormik.getFieldProps("averageResponseTime")} disabled={tutorSettingsSaved}/>
+                </div>
+                <div className="w-full max-w-sm px-4 py-2">
+                    <FormErrorDisplay field="preferredCommunications" formik={tutorSettingsFormik} />
+                    <label htmlFor="preferredCommunications">{"What are your preferred mode(s) of consultation?"}</label>
+                    <Select isSearchable isMulti isDisabled={tutorSettingsSaved}
+                        id="preferredCommunications"
+                        name="preferredCommunications"
+                        options={
+                            COMMUNICATIONS.map(mode => ({ value: mode, label: mode }))
+                        }
+                        onChange={selectedOptions => {
+                            tutorSettingsFormik.setFieldValue("preferredCommunications", selectedOptions)
+                        }
+                        }
+                        value={tutorSettingsFormik.values.preferredCommunications}
+                        onBlur={() => tutorSettingsFormik.setFieldTouched("preferredCommunications", true)}
+                    />
+                </div>
+                <div className="w-full max-w-sm px-4 py-2">
+                    <FormErrorDisplay field="subjects" formik={tutorSettingsFormik} />
+                    <label htmlFor="subjects">{"What subject(s) are you willing to tutor?"}</label>
+                    <Select isSearchable isMulti isDisabled={tutorSettingsSaved}
+                        id="subjects"
+                        name="subjects"
+                        options={
+                            subjects.map(subject => ({ value: subject.id, label: subject.name }))
+                        }
+                        onChange={selectedOptions => {
+                            tutorSettingsFormik.setFieldValue("subjects", selectedOptions);
+                            console.log(tutorSettingsFormik)
+                        }
+                        }
+                        value={tutorSettingsFormik.values.subjects}
+                        onBlur={() => tutorSettingsFormik.setFieldTouched("subjects", true)}
+                    />
+                </div>
                 <div className="flex flex-row gap-2">
                     {tutorSettingsSaved ?
                         <>
@@ -384,6 +480,15 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
     const request = useAxios()
 
     try {
+        const subjectResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subjects/all`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include"
+        });
+        const { subjects } = await subjectResponse.json()        
+    
         const response = await request({
             method: "get",
             path: "/user/profile",
@@ -406,7 +511,8 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
             return {
                 props: {
                     initPersonalParticulars,
-                    is_tutor: false
+                    is_tutor: false,
+                    subjects
                 }
             }
         }
@@ -415,14 +521,22 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
             let correctedDate = new Date(response.tutorData.commitment_end.split("T")[0])
             correctedDate.setDate(correctedDate.getDate() + 1)
             correctedDate = correctedDate.toISOString().split("T")[0]
+
+            const subjectsMapping = Object.fromEntries(subjects.map(obj => [obj.id, obj.name]))
+
             const initTutorSettings = {
-                commitmentEnd: correctedDate
+                commitmentEnd: correctedDate,
+                tuteeLimit: response.tutorData.tutee_limit,
+                averageResponseTime: response.tutorData.average_response_time,
+                preferredCommunications: response.tutorData.preferred_communications.map(mode => ({value: mode, label: mode})),
+                subjects: response.tutorData.subjects.map(sub_id => ({value: sub_id, label: subjectsMapping[sub_id]}))
             }
             return {
                 props: {
                     initPersonalParticulars,
                     initTutorSettings,
-                    is_tutor: true
+                    is_tutor: true,
+                    subjects
                 }
             }
         }

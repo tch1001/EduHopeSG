@@ -687,7 +687,6 @@ export async function registerTutor(attributes) {
     try {
         // check if the user already exists
         const isExistingUser = await getByEmail(validator.normalizeEmail(attributes.email))
-        console.log(isExistingUser)
 
         if (isExistingUser) {
             // If so, update eduhope_user
@@ -697,8 +696,8 @@ export async function registerTutor(attributes) {
             WHERE id = $10`;
 
             const values1 = [
-                attributes.given_name, attributes.family_name, encryptedEmail, hashedPass, attributes.school,
-                attributes.level_of_education, attributes.telegram, attributes.bio, attributes.referral,
+                attributes.given_name, attributes.family_name, attributes.school,
+                attributes.level_of_education, attributes.telegram, encryptedEmail, hashedPass, attributes.bio, attributes.referral,
                 isExistingUser.id
             ];
 
@@ -720,7 +719,6 @@ export async function registerTutor(attributes) {
             user_id = rows[0].id
         }
 
-        console.log(user_id)
         // add a new row to tutor table
         const text2 = `
         INSERT INTO tutor (user_id, subjects, tutee_limit, commitment_end,

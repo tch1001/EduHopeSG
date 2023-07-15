@@ -11,6 +11,12 @@ router.get("/", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 });
 
+router.get("/all", (req, res) => {
+    subjectService.getSubjects()
+        .then((response) => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+});
+
 router.get("/:course", (req, res) => {
     const { course } = req.params;
 

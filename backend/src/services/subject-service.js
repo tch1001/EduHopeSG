@@ -38,7 +38,7 @@ import { query } from "../utils/database.js";
  * @param {number[]} subjects List of subject IDs
  * @returns {Promise<Subject[]>} Array of subject(s) information
  */
-export async function getSubjects(subjects = []) {
+export async function getSubjectsByIDs(subjects = []) {
     const queryText = `
         SELECT S.id, S.level || ' ' || S.name AS name, C.name AS course
         FROM subject as S
@@ -84,7 +84,7 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
     `
     const { rows: tutors } = await query(queryText, [courseName, subjectName]);
     tutors.forEach(tutor => {
-        tutor.preferred_communications = tutor.preferred_communications.slice(1,-1).split(",") // Converts postgres array to js array
+        tutor.preferred_communications = tutor.preferred_communications.slice(1, -1).split(",") // Converts postgres array to js array
                                                                         .map(type=>type.replace(/"/g, ''))
     });
 
@@ -99,6 +99,22 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
         subject
     }
 }
+
+/**
+ * Get courses with the number of subjects available from tutors (tutor_count)
+ * @returns {Promise<{success: boolean, message: string, subjects: Subject[]}>}
+ */
+export async function getSubjects() {
+    const queryText = `
+        SELECT s.id, s.level || ' ' || s.name AS name, c.name AS course
+        FROM subject AS s
+        LEFT JOIN course AS c
+        ON c.id = s.course
+    `
+    const {rows: subjects} = await query(queryText)
+    return {subjects}
+}
+
 
 /**
  * Get courses with the number of subjects available from tutors (tutor_count)

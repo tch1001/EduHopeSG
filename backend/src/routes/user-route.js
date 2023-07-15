@@ -58,6 +58,8 @@ router.get("/profile", async (req, res) => {
         userData.email = userService.decrypt(userData.email)
 
         const tutorData = await tutorService.getByID(user.payload.id, TUTOR_FIELDS)
+        tutorData.preferred_communications = tutorData.preferred_communications.slice(1, -1).split(",") // Converts postgres array to js array
+            .map(type => type.replace(/"/g, ''))        
 
         res.status(200).send({ userData, tutorData })
 
@@ -98,15 +100,7 @@ router.patch("/password", (req, res) => {
 })
 
 router.post("/tutor", (req, res) => {
-    const user = userService.verifyAuthentication(req.cookies.user);
-
-    if (!user) {
-        return standardRouteErrorCallback(
-            res, req, new RouteError("user-unauthenticated", req.originalUrl)
-        );
-    }
-
-    userService.registerTutor(user.payload.id, req.body)
+    userService.registerTutor(req.body)
         .then(response => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })

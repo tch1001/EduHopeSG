@@ -5,7 +5,7 @@ import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
 import ServiceError from "../classes/ServiceError.js";
 import { notifyPasswordChange, sendEmailUpdateConfirmation, sendEmailUpdateNotification } from "./email-service.js";
-import { getSubjectNamesFromIDs } from "./subject-service.js";
+import { getSubjectsByIDs } from "./subject-service.js";
 import * as tutorService from "./tutor-service.js";
 
 const EDUCATION_TYPES = [
@@ -43,8 +43,11 @@ const REFERRAL = [
     "Online search"
 ]
 
-const STREAMS = ['N', 'O', 'A', 'P', 'B', 'I']; // n', o', a'lvl, pri, BI, IP
-const COMMUNICATIONS = ['TEXTING', 'VIRTUAL_CONSULTATION', 'FACE_TO_FACE']
+const COMMUNICATIONS = [
+    'Texting',
+    'Virtual Consultation',
+    'Face-to-Face'
+]
 
 const JWT_OPTIONS = {
     expiresIn: "14d",
@@ -249,7 +252,7 @@ export function verifyAuthentication(cookie) {
  * @param {[key: string]: boolean} validate
  * @returns {true} True only if validate, not valid throws errors
  */
-function validateUserObject(user, validate = {
+export function validateUserObject(user, validate = {
     given_name: true,
     family_name: true,
     email: true,
@@ -259,11 +262,12 @@ function validateUserObject(user, validate = {
     telegram: true,
     bio: true,
     referral: true,
-    tutoring: false,
     subjects: false,
     tutee_limit: false,
     commitment_end: false,
-    preferred_communications: false
+    preferred_communications: false,
+    description: false,
+    average_response_time: false
 }) {
     // validate user input
     if (validate.given_name) {
@@ -303,8 +307,13 @@ function validateUserObject(user, validate = {
     if (validate.telegram) {
         if (!user.telegram) throw new ServiceError("user-no-telegram");
 
-        if (!validator.isLength(user.telegram || "", { min: 5, max: 32 })) {
-            throw new ServiceError("user-no-telegram")
+        if (!validator.isLength(user.telegram, { min: 5, max: 32 }) || 
+            !validator.isAlphanumeric(user.telegram, undefined, {ignore: "_"})) {
+            throw new ServiceError("user-invalid-telegram")
+        }
+
+        if (!user.telegram == user.telegram.toLowerCase()) {
+            throw new Error("Telegram handle must be in lowercase")
         }
     }
 
@@ -322,19 +331,6 @@ function validateUserObject(user, validate = {
     }
 
     // Tutor object validation
-    if (validate.tutoring) {
-        const invalid = !user?.tutoring?.length ||
-            user?.tutoring?.some((stream) => !STREAMS.includes(stream.toUpperCase()));
-
-        if (invalid) {
-            const error = new ServiceError("user-invalid-tutoring");
-            error.details += STREAMS.join(", ");
-
-
-            throw error;
-        }
-    }
-
     if (validate.tutee_limit) {
         if (!user?.tutee_limit || !(user?.tutee_limit >= 1 && user?.tutee_limit <= 5)) {
             throw new ServiceError("user-invalid-tutee-limit");
@@ -368,6 +364,13 @@ function validateUserObject(user, validate = {
         }
     }
 
+    if (validate.description && !validator.isLength(user.description || "", { min: 0, max: 500 })) {
+        throw new ServiceError("user-invalid-bio")
+    }
+
+    if (validate.average_response_time) {
+        //
+    }
     return true;
 }
 
@@ -382,7 +385,8 @@ export async function create(user) {
         user[property] = validator.trim(user[property]);
     }
 
-    user.telegram = validator.whitelist(user?.telegram || "", "abcdefghijklmnopqrstuvwxyz0123456789_");
+    //user.telegram = validator.whitelist(user?.telegram || "", "abcdefghijklmnopqrstuvwxyz0123456789_");
+    user.telegram = user.telegram.toLowerCase()
 
     // validate user input
     const valid = validateUserObject(user);
@@ -479,11 +483,15 @@ export async function update(userID, attributes = {}) {
         throw new ServiceError("user-invalid")
     }
 
+
     if (attributes.telegram) {
+        attributes.telegram = attributes.telegram.toLowerCase()
+        /*
         attributes.telegram = validator.whitelist(
             attributes.telegram || "",
             "abcdefghijklmnopqrstuvwxyz0123456789_"
         );
+        */
     }
 
     const valid = validateUserObject(attributes, attributes);
@@ -496,7 +504,7 @@ export async function update(userID, attributes = {}) {
 
         if (attributes.family_name) {
             await query("UPDATE eduhope_user SET family_name = $1 WHERE id = $2", [attributes.family_name, userID]);
-        }        
+        }
 
         if (attributes.school) {
             // TODO: validate schools
@@ -511,7 +519,14 @@ export async function update(userID, attributes = {}) {
         }
 
         if (attributes.telegram) {
+            const {rows: users} = await query("SELECT id FROM eduhope_user WHERE telegram = $1", [attributes.telegram])
+
+            if (users[0].id != userID) throw new ServiceError("telegram-update-unique")
             await query("UPDATE eduhope_user SET telegram = $1 WHERE id = $2", [attributes.telegram, userID]);
+        }
+
+        if (attributes.email) {
+            await emailChange(userID, attributes.email)
         }
 
         if (attributes.bio) {
@@ -522,6 +537,26 @@ export async function update(userID, attributes = {}) {
             await query("UPDATE eduhope_user SET commitment_end = $1 WHERE id = $2", [attributes.commitment_end, userID])
         }
 
+        if (attributes.preferred_communications) {
+            await query("UPDATE eduhope_user SET preferred_communications = $1 WHERE id = $2", [attributes.preferred_communications, userID])
+        }
+
+        if (attributes.tutee_limit) {
+            await query("UPDATE eduhope_user SET tutee_limit = $1 WHERE id = $2", [attributes.tutee_limit, userID])
+        }
+
+        if (attributes.subjects) {
+            await query("UPDATE eduhope_user SET subjects = $1 WHERE id = $2", [attributes.subjects, userID])
+        }
+
+        if (attributes.average_response_time) {
+            await query("UPDATE eduhope_user SET average_response_time = $1 WHERE id = $2", [attributes.average_response_time, userID])
+        }
+
+        if (attributes.description) {
+            await query("UPDATE eduhope_user SET description = $1 WHERE id = $2", [attributes.description, userID])
+        }
+
         await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
 
         return {
@@ -529,6 +564,8 @@ export async function update(userID, attributes = {}) {
             message: `Updated the following attributes: ${Object.keys(attributes)}`
         }
     } catch (err) {
+        // If the error has a mapping, propagate it upwards. Otherwise, throw the generic error        
+        if (err.details) throw err
         throw new ServiceError("user-update");
     }
 }
@@ -576,80 +613,42 @@ export async function updatePassword(userID, currentPassword, newPassword) {
 /**
  * Changes user email
  * @param {User.id} userID 
- * @param {User.password} password Password to verify
  * @param {User.email} newEmail New email address to update
  * @returns {{success: true, message: string}} Success message
  */
-export async function requestEmailChange(userID, password, newEmail) {
-    if (!userID || !password || newEmail)
-        throw new ServiceError("user-change-password-missing");
+export async function emailChange(userID, newEmail) {
+    newEmail = validator.normalizeEmail(validator.trim(newEmail));
 
-    password = validator.trim(password);
-    newEmail = validator.trim(newEmail);
-
-    const user = await getByID(userID, "password email");
-    if (!user) throw new ServiceError("user-login-failed");
-
-    // verify password
-    const correct = await verifyPassword(password, user.password);
-    if (!correct) throw new ServiceError("user-login-failed");
+    const user = await getByID(userID, "email");
 
     // check if email is already registered and if its the same email as current
     const currentEmail = decrypt(user.email);
     const userExists = await getByEmail(newEmail);
 
-    if (newEmail === currentEmail) throw new ServiceError("user-same-email");
-    if (userExists) throw new ServiceError("user-create-unique");
+    if (newEmail === currentEmail) return;
+    if (userExists) throw new ServiceError("email-update-unique");
 
-    const token = jwt.sign(
-        {
-            userID,
-            email: currentEmail,
-            newEmail
-        },
-        process.env.JWT_KEY,
-        {
-            ...JWT_OPTIONS,
-            subject: "CHANGE_EMAIL"
-        }
-    )
+    // update the email
+    const updatedEmail = encrypt(newEmail);
+    await query("UPDATE eduhope_user SET email = $1, updated_on = now() WHERE id = $2", [updatedEmail, userID]);
 
-    // email to requesting address to confirm changes
-    await sendEmailUpdateConfirmation(newEmail, token);
-
-    return {
-        success: true,
-        message: "Sent email confirmation"
-    }
+    // email to notify
+    //await sendEmailUpdateNotification(currentEmail);
+    //await sendEmailUpdateNotification(newEmail);
 }
+
 
 /**
+ * @typedef {Object} Tutor
+ * @property {string[]} subjects subject IDs corresponding from EduHope
+ * @property {number} tutee_limit Maximum number of tutees to be taken on
+ * @property {Date} commitment_end Expected date when tutor stops volunteering with Eduhope
+ * @property {string[]} preferred_communications Array of preferred communication [Texting, Zoom, etc.] 
+ * @property {string} description
+ * @property {string} average_response_time Expected and usual time to reply a tutee's inquiry
  * 
- * @param {string?} token Token to change user's email
+ * @typedef {BasicUser & Tutor} User
  */
-export async function functionChangeEmail(code) {
-    if (!code) throw new ServiceError("user-change-email-no-token");
-
-    try {
-        const { userID, email, newEmail } = jwt.verify(code, process.env.JWT_KEY, {
-            ...JWT_OPTIONS,
-            subject: "CHANGE_EMAIL"
-        });
-
-
-        // change email
-        const updatedEmail = encrypt(validator.normalizeEmail(newEmail));
-        await query("UPDATE eduhope_user SET email = $1 WHERE id = $2", [updatedEmail, userID]);
-        await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
-
-        // email to notify
-        await sendEmailUpdateNotification(email);
-        await sendEmailUpdateNotification(newEmail);
-    } catch (err) {
-        throw new ServiceError("user-change-email-no-token")
-    }
-}
-
 
 /**
  * Converts a normal account to a Tutor status account
@@ -657,47 +656,93 @@ export async function functionChangeEmail(code) {
  * @param {Tutor} attributes Tutor attributes
  * @returns {{success: true, message: string}} Success message
  */
-export async function registerTutor(userID, attributes) {
-    if (!userID || !attributes || !Object.keys(attributes).length) {
+export async function registerTutor(attributes) {
+    if (!attributes || !Object.keys(attributes).length) {
         throw new ServiceError("user-invalid")
     }
 
-    const valid = validateUserObject(attributes, {
-        tutoring: true,
-        subjects: true,
-        tutee_limit: true,
-        commitment_end: true,
-        preferred_communications: true
-    });
+    // reformat user input
+    for (const property in attributes) {
+        if (typeof property == Array) {
+            attributes[property] = attributes[property].map(str => validator.trim(str))            
+        } else if (typeof property == String) {
+            attributes[property] = validator.trim(attributes[property]);            
+        }
+    }
 
+    attributes.telegram = attributes.telegram.toLowerCase()
+
+    const valid = validateUserObject(attributes, attributes);
     if (!valid) throw new ServiceError("user-invalid");
 
+    const hashedPass = await hashPassword(attributes.password);
+    const encryptedEmail = encrypt(validator.normalizeEmail(attributes.email));
+
     // filter out valid subjects
-    const subjects = await getSubjectNamesFromIDs(attributes.subjects);
+    const subjects = await getSubjectsByIDs(attributes.subjects);
     attributes.subjects = subjects.map(({ id }) => id);
 
+    var user_id; // Depends on whether the user already exists
+
     try {
-        const text = `
-            UPDATE eduhope_user SET is_tutor = TRUE, tutor_terms = 'yes', 
-            tutoring = $1, subjects = $2, tutee_limit = $3, commitment_end = $4,
-            preferred_communications = $5, avg_response_time = $6
+        // check if the user already exists
+        const isExistingUser = await getByEmail(validator.normalizeEmail(attributes.email))
+        console.log(isExistingUser)
 
-            WHERE id = $7
-        `;
+        if (isExistingUser) {
+            // If so, update eduhope_user
+            const text1 = `
+            UPDATE eduhope_user SET given_name = $1, family_name = $2, school = $3, level_of_education = $4,
+            telegram = $5, email = $6, password = $7, bio = $8, referral = $9
+            WHERE id = $10`;
 
-        const values = [
-            attributes.tutoring, attributes.subjects, attributes.tutee_limit,
+            const values1 = [
+                attributes.given_name, attributes.family_name, encryptedEmail, hashedPass, attributes.school,
+                attributes.level_of_education, attributes.telegram, attributes.bio, attributes.referral,
+                isExistingUser.id
+            ];
+
+            await query(text1, values1);
+            user_id = isExistingUser.id
+
+        } else {
+            // Otherwise, add a new row to eduhope_user
+            const text1 = `
+            INSERT INTO eduhope_user(given_name, family_name, email, password, school, level_of_education, telegram, bio, referral)
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *
+            `
+            const values1 = [
+                attributes.given_name, attributes.family_name, encryptedEmail, hashedPass, attributes.school,
+                attributes.level_of_education, attributes.telegram, attributes.bio, attributes.referral
+            ]
+
+            const {rows} = await query(text1, values1);
+            user_id = rows[0].id
+        }
+
+        console.log(user_id)
+        // add a new row to tutor table
+        const text2 = `
+        INSERT INTO tutor (user_id, subjects, tutee_limit, commitment_end,
+        preferred_communications, average_response_time, description)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+
+        const values2 = [
+            user_id,
+            attributes.subjects, attributes.tutee_limit,
             attributes.commitment_end, attributes.preferred_communications,
-            attributes.avg_response_time, userID
+            attributes.average_response_time, attributes.description
         ];
 
-        await query(text, values);
+        await query(text2, values2);
+
+
 
         return {
             success: true,
             message: "User is now Tutor status"
         }
     } catch (err) {
-        throw new ServiceError("user-update");
+        throw new ServiceError("user-create");
     }
 }

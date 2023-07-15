@@ -124,7 +124,7 @@ export async function acceptTutee(relationshipID, tutorID) {
         AND filtered_tutor_id.num_tutees >= t.tutee_limit`
     , [tutorID])
 
-    if (limitHit) throw new ServiceError("tutor-hit-tutee-limit2")
+    if (!!limitHit.length) throw new ServiceError("tutor-hit-tutee-limit2")
 
     const { rows } =
         await query(

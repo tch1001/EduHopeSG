@@ -21,7 +21,7 @@ const ManageTutees = ({ initPendingTutees, initAcceptedTutees, error }) => {
             )}
             {pendingTutees.map((tutee, index) => (
                 <PendingTuteeCard
-                    key={index}
+                    key={tutee.relationship_id}
                     tutee={tutee}
                     index={index}
                     pendingTutees={pendingTutees}
@@ -36,7 +36,7 @@ const ManageTutees = ({ initPendingTutees, initAcceptedTutees, error }) => {
             )}
             {acceptedTutees.map((tutee, index) => (
                 <AcceptedTuteeCard
-                    key={index}
+                    key={tutee.relationship_id}
                     tutee={tutee}
                     index={index}
                     pendingTutees={pendingTutees}

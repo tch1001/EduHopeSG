@@ -21,7 +21,7 @@ const ManageTutors = ({ initPendingTutors, initAcceptedTutors, error }) => {
             )}
             {pendingTutors.map((tutor, index) => (
                 <PendingTutorCard
-                    key={index}
+                    key={tutor.relationship_id}
                     tutor={tutor}
                     index={index}
                     pendingTutors={pendingTutors}
@@ -36,7 +36,7 @@ const ManageTutors = ({ initPendingTutors, initAcceptedTutors, error }) => {
             )}
             {acceptedTutors.map((tutor, index) => (
                 <AcceptedTutorCard
-                    key={index}
+                    key={tutor.relationship_id}
                     tutor={tutor}
                     index={index}
                     pendingTutors={pendingTutors}

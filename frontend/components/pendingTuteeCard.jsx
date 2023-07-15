@@ -89,7 +89,7 @@ export const PendingTuteeCard = ({tutee, pendingTutees, setPendingTutees, accept
     }
 
     return (
-        <Card className="flex flex-col gap-3 py-4 px-6 max-w-full" key={tutee.relationship_id}>
+        <Card className="flex flex-col gap-3 py-4 px-6 max-w-full">
             <div>
                 <h1 className="text-xl font-bold">{tutee.subject}</h1>
             </div>

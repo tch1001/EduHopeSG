@@ -43,7 +43,7 @@ export const PendingTutorCard = ({ tutor, pendingTutors, setPendingTutors, index
 
         setDialogSettings({
             title: "Confirmation",
-            message: `Please confirm that you want to cancel your tutoring request with ${given_name} ${family_name} for ${subject}`,
+            message: `Please confirm that you want to cancel your tutoring request with ${given_name} ${family_name} for ${subject}.`,
             buttons: [
                 { text: "Cancel", bg: "bg-aqua", callback: closeDialog },
                 { text: "Confirm", bg: "bg-sky-blue", callback: executeRemove }
@@ -53,7 +53,7 @@ export const PendingTutorCard = ({ tutor, pendingTutors, setPendingTutors, index
     }
 
     return (
-        <Card className="flex flex-col gap-3 py-4 px-6 max-w-full" key={tutor.relationship_id}>
+        <Card className="flex flex-col gap-3 py-4 px-6 max-w-full">
             <div>
                 <h1 className="text-xl font-bold">{tutor.subject}</h1>
             </div>
@@ -66,7 +66,7 @@ export const PendingTutorCard = ({ tutor, pendingTutors, setPendingTutors, index
                     <p className="text-black italic">{tutor.level_of_education}</p>
                     <p className="mt-2 mb-2">{tutor.description}</p>
                 </div>
-                <div className>
+                <div className="flex flex-col gap-2">
                     <strong className="mr-2">Preferred Consultation Mode(s):</strong>
                     <div className="inline-flex flex-row gap-1">
                         {

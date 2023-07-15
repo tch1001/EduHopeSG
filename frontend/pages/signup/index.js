@@ -51,14 +51,14 @@ const REFERRALS = [
 
 const SignUp = () => {
     const [loading, setLoading] = useState(false);
-    const [schools, setSchools] = useState([]);    
-    
+    const [schools, setSchools] = useState([]);
+
     const [user, { login }] = useUser();
     const request = useAxios();
-    
+
     const router = useRouter();
     const originalURL = router.query?.originalURL || "/"
-    
+
     if (user.id) router.push(originalURL);
 
     const { dialogSettings, setDialogSettings, closeDialog, displayErrorDialog } = useContext(dialogSettingsContext);
@@ -109,7 +109,7 @@ const SignUp = () => {
             .string()
             .default("")
             .required("Required")
-            .test("requirement-check", "Required", (value) =>value !== "--Current education level of education--"),
+            .test("requirement-check", "Required", (value) => value !== "--Current education level of education--"),
         bio: Yup.string()
             .default("")
             .max(500, "Maximum of 500 characters")
@@ -187,7 +187,7 @@ const SignUp = () => {
         <>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="firstName" formik={formik} />
-                
+
                 <input placeholder="Given name" {...formik.getFieldProps("firstName")} />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
@@ -359,7 +359,7 @@ const SignUp = () => {
                 </form>
             </Card>
             <p className="p-2">
-                Already have an account with us?{" "}
+                Already have a tutee account with us?{" "}
                 <Link href={`/login?originalURL=${originalURL}`} className="link" passHref>Login in here</Link>
             </p>
             <p className="p-1">

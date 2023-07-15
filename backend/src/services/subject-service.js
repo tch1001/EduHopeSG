@@ -66,6 +66,17 @@ export async function getSubjectsByIDs(subjects = []) {
  * @returns {Promise<{success: boolean, message: string, tutors: Tutor[], course: Course, subject: Subject}>}
  */
 export async function getTutorsByCourseAndSubjectName(courseName, subjectName, userID) {
+    /*
+    Step 1: Calculate the number of accepted tutees each tutor has
+    Step 2: RIGHT JOIN with tutor table so each tutor has a num_tutee that is either an integer or null
+    Step 3: INNER JOIN the tutors with subjects & courses tables
+            (to eliminate all the tutors which do not teach the subject & course)    
+    Step 4: LEFT JOIN with tutor_tutee_relationships which pertain to the desired subject and user
+            (Left join is used to preserve tutors even if they do not have any existing r/s with the user regarding this subject)
+    Step 5: Filter out tutors who have hit the tutor limit or whose commitment has ended
+    Step 6: Order by num tutees in ascending order 
+            (COALESCE is needed to convert null to 0 as null is considered infinity by postgres)
+    */    
     const queryText = `
     SELECT u.id, u.given_name, u.family_name, u.school, u.level_of_education, u.bio AS description,
     t.commitment_end, t.preferred_communications, t.average_response_time,
@@ -75,24 +86,26 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName, u
         FROM tutee_tutor_relationship AS ttr 
         WHERE ttr.status = 'ACCEPTED'
         GROUP BY ttr.tutor   
-    ) AS filtered_tutor_ids
-    RIGHT JOIN tutor AS t on t.user_id = filtered_tutor_ids.tutor_id 
-        AND filtered_tutor_ids.num_tutees < t.tutee_limit
-        AND t.commitment_end >= now()   
-    INNER JOIN subject AS s ON s.id = ANY(t.subjects) AND similarity(s.level || ' ' || s.name, $2) >= 0.7
-    INNER JOIN course AS c ON c.id = s.course AND c.name = $1
+    ) AS tutors_with_tutees
+    RIGHT JOIN tutor AS t ON tutors_with_tutees.tutor_id  = t.user_id
+    INNER JOIN subject AS s ON s.id = ANY(t.subjects) 
+        AND similarity(s.level || ' ' || s.name, $2) >= 0.7
+    INNER JOIN course AS c ON c.id = s.course 
+        AND c.name = $1
     INNER JOIN eduhope_user AS u ON u.id = t.user_id   
     LEFT JOIN tutee_tutor_relationship AS ttr ON ttr.tutor = t.user_id 
-    AND ttr.subject = s.id
-    AND ttr.tutee = $3 
-    ORDER BY num_tutees     
+        AND ttr.subject = s.id
+        AND ttr.tutee = $3 
+    WHERE (tutors_with_tutees.num_tutees < t.tutee_limit OR tutors_with_tutees.num_tutees IS NULL) 
+        AND t.commitment_end >= now()   
+    ORDER BY COALESCE(tutors_with_tutees.num_tutees, 0)     
     `
     const { rows: tutors } = await query(queryText, [courseName, subjectName, userID || ""]);
+
     tutors.forEach(tutor => {
         tutor.preferred_communications = tutor.preferred_communications.slice(1, -1).split(",") // Converts postgres array to js array
                                                                         .map(type=>type.replace(/"/g, ''))
     });
-    console.log(tutors)
     const course = await getCourseInfoByName(courseName);
     const subject = await getSubjectInfoByName(subjectName);
 
@@ -126,13 +139,36 @@ export async function getSubjects() {
  * @returns {Promise<{success: boolean, message: string, courses: Course[]}>}
  */
 export async function getCourses() {
+    /*
+    Step 1: Calculate the number of accepted tutees each tutor has
+    Step 2: RIGHT JOIN with tutor table so each tutor has a num_tutee that is either an integer or null
+    Step 3: Filter out tutors who have hit the tutor limit or whose commitment has ended
+    Step 4: RIGHT JOIN the remaining tutors with subjects & courses tables
+            (to preserve all subjects & courses even if they do not have any tutors)    
+    Step 5: Count the number of valid tutors associated with each course (group by)
+
+    Note: Filtering of invalid tutors must be done before joining with the subject and course tables. 
+          Otherwise, if a subject/course is only associated with an invalid tutor, it will be removed when the corresponding
+          invalid tutor is filtered out.
+    */    
     const queryText = `
         SELECT c.id AS course_id, c.name AS course_name,
             c.name AS short_name, 
-            COUNT(t.id)::integer AS tutor_count
-        FROM course c
-        LEFT JOIN subject s ON c.id = s.course
-        LEFT JOIN tutor t ON s.id = ANY(t.subjects)
+            COUNT(tutor_id)::integer AS tutor_count
+        FROM (
+            SELECT t.subjects AS subjects, t.user_id AS tutor_id
+            FROM (
+                SELECT ttr.tutor AS tutor_id, COUNT(ttr.tutor) AS num_tutees
+                FROM tutee_tutor_relationship AS ttr 
+                WHERE ttr.status = 'ACCEPTED'
+                GROUP BY ttr.tutor   
+            ) AS tutors_with_tutees
+            RIGHT JOIN tutor AS t ON t.user_id = tutors_with_tutees.tutor_id                    
+            WHERE (tutors_with_tutees.num_tutees < t.tutee_limit OR tutors_with_tutees.num_tutees IS NULL) 
+            AND t.commitment_end >= now() 
+        ) AS filtered_tutors
+        RIGHT JOIN subject s ON s.id = ANY(filtered_tutors.subjects)
+        RIGHT JOIN course c ON s.course = c.id   
         GROUP BY c.id, c.name
         ORDER BY c.id;
     `;
@@ -152,18 +188,43 @@ export async function getCourses() {
  * @returns {Promise<{ success: boolean, message: string, subjects: CourseSubject[], course: Course }>}
  */
 export async function getCourseSubjects(courseName) {
+    /*
+    Step 1: Calculate the number of accepted tutees each tutor has
+    Step 2: RIGHT JOIN with tutor table so each tutor has a num_tutee that is either an integer or null
+    Step 3: Filter out tutors who have hit the tutor limit or whose commitment has ended
+    Step 4: RIGHT JOIN the remaining tutors with subjects & courses tables 
+            (to preserve all subjects & courses even if they do not have any tutors)
+    Step 5: Filter for the desired course
+    Step 6: Count the number of valid tutors associated with each subject (group by)
+
+    Note: Filtering of invalid tutors must be done before joining with the subject and course tables. 
+          Otherwise, if a subject/course is only associated with an invalid tutor, it will be removed when the corresponding
+          invalid tutor is filtered out.    
+    */
     const queryText = `
-        SELECT s.id AS subject_id, s.level || ' ' || s.name AS name, COUNT(t.id)::integer AS tutor_count,
+        SELECT s.id AS subject_id, s.level || ' ' || s.name AS name, COUNT(tutor_id)::integer AS tutor_count,
             LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
-        FROM subject s
-        LEFT JOIN tutor t ON s.id = ANY(t.subjects)
-        LEFT JOIN course c ON s.course = c.id
-        WHERE c.name = $1
+        FROM (
+            SELECT t.subjects AS subjects, t.user_id AS tutor_id
+            FROM (
+                SELECT ttr.tutor AS tutor_id, COUNT(ttr.tutor) AS num_tutees
+                FROM tutee_tutor_relationship AS ttr 
+                WHERE ttr.status = 'ACCEPTED'
+                GROUP BY ttr.tutor   
+            ) AS tutors_with_tutees
+            RIGHT JOIN tutor AS t ON t.user_id = tutors_with_tutees.tutor_id                    
+            WHERE (tutors_with_tutees.num_tutees < t.tutee_limit OR tutors_with_tutees.num_tutees IS NULL) 
+            AND t.commitment_end >= now() 
+        ) AS filtered_tutors
+        RIGHT JOIN subject s ON s.id = ANY(filtered_tutors.subjects)
+        RIGHT JOIN course c ON s.course = c.id         
+        WHERE c.name = $1        
         GROUP BY s.id, c.id, s.name
         ORDER BY s.id;
     `;
 
     const { rows: subjects } = await query(queryText, [courseName]);
+
     const course = await getCourseInfoByName(courseName);
 
     return {

@@ -79,7 +79,7 @@ export const PendingTuteeCard = ({tutee, pendingTutees, setPendingTutees, accept
 
         setDialogSettings({
             title: "Confirmation",
-            message: `Please confirm that you want to decline ${given_name} ${family_name}'s request for ${subject} tutoring. This action is irreversible`,
+            message: `Please confirm that you want to decline ${given_name} ${family_name}'s request for ${subject} tutoring. This action is irreversible.`,
             buttons: [
                 { text: "Cancel", bg: "bg-aqua", callback: closeDialog },
                 { text: "Confirm", bg: "bg-sky-blue", callback: executeReject }

@@ -47,7 +47,7 @@ export const AcceptedTutorCard = ({ tutor, acceptedTutors, setAcceptedTutors, in
 
         setDialogSettings({
             title: "Confirmation",
-            message: `Please confirm that you want to end your ${subject} tutoring relationship with ${given_name} ${family_name}. This action is irreversible`,
+            message: `Please confirm that you want to end your ${subject} tutoring relationship with ${given_name} ${family_name}. This action is irreversible.`,
             buttons: [
                 { text: "Cancel", bg: "bg-aqua", callback: closeDialog },
                 { text: "Confirm", bg: "bg-sky-blue", callback: executeRemove }

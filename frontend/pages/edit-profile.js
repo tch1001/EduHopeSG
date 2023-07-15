@@ -305,7 +305,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
             <>
                 <div className="w-full max-w-sm px-4 py-2">
                     <FormErrorDisplay field="commitmentEnd" formik={tutorSettingsFormik} />
-                    <label htmlFor="commitmentEnd">Commitment End Date</label>
+                    <label htmlFor="commitmentEnd">When can you volunteer until?</label>
                     <input type="date" id="commitmentEnd" {...tutorSettingsFormik.getFieldProps("commitmentEnd")} disabled={tutorSettingsSaved} />
                 </div>
                 <div className="flex flex-row gap-2">
@@ -412,8 +412,11 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
         }
 
         else {
+            let correctedDate = new Date(response.tutorData.commitment_end.split("T")[0])
+            correctedDate.setDate(correctedDate.getDate() + 1)
+            correctedDate = correctedDate.toISOString().split("T")[0]
             const initTutorSettings = {
-                commitmentEnd: response.tutorData.commitment_end.split("T")[0]
+                commitmentEnd: correctedDate
             }
             return {
                 props: {

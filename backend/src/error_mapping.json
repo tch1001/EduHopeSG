@@ -47,6 +47,12 @@
         "message": "Invalid email address format provided",
         "details": "Provide a valid email address: name@example.com"
     },
+    "user-invalid-telegram": {
+        "status": 400,
+        "name": "Invalid Telegram handle",
+        "message": "Invalid Telegram handle format provided",
+        "details": "Provide a Telegram handle between 5 to 32 characters, and only contains alphanumeric characters and underscores (_)"
+    },    
     "user-weak-password": {
         "status": 400,
         "name": "Weak password",
@@ -110,9 +116,21 @@
     "user-create-unique": {
         "status": 409,
         "name": "Error creating user",
-        "message": "User with the same email address or Telegram username has already been registered",
-        "details": "Create a new account with a different email address or Telegram username"
+        "message": "User with the same email address or Telegram handle has already been registered",
+        "details": "Create a new account with a different email address or Telegram handle"
     },
+    "email-update-unique": {
+        "status": 409,
+        "name": "Error updating email",
+        "message": "This email is already linked to another account",
+        "details": "Please use another email"
+    },    
+    "telegram-update-unique": {
+        "status": 409,
+        "name": "Error updating Telegram handle",
+        "message": "This Telegram handle is already linked to another account",
+        "details": "Please use another Telegram handle"
+    },        
     "user-create": {
         "status": 400,
         "name": "Error creating user",

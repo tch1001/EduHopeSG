@@ -4,8 +4,6 @@ import { query } from "../utils/database.js";
 import { notifyTuteeAcceptance, notifyTuteeDeclination } from "./email-service.js";
 import * as userService from "../services/user-service.js";
 
-const COMMUNICATIONS = ['TEXTING', 'VIRTUAL_CONSULTATION', 'FACE_TO_FACE']
-
 /**
  * @typedef {Object} Tutor
  * @property {string[]} subjects subject IDs corresponding from EduHope
@@ -18,58 +16,6 @@ const COMMUNICATIONS = ['TEXTING', 'VIRTUAL_CONSULTATION', 'FACE_TO_FACE']
  * @typedef {BasicUser & Tutor} User
  */
 
-function validateTutorObject(user, validate = {
-    subjects: false,
-    tutee_limit: false,
-    commitment_end: false,
-    preferred_communications: false,
-    description: false,
-    average_response_time: false,
-}) {
-    // validate tutor object
-    if (validate.tutee_limit) {
-        if (!user?.tutee_limit || !(user?.tutee_limit >= 1 && user?.tutee_limit <= 5)) {
-            throw new ServiceError("user-invalid-tutee-limit");
-        }
-    }
-
-    if (validate.subjects) {
-        if (!user?.subjects?.length) throw new ServiceError("user-invalid-subjects");
-        // TODO: add validation for subjects from tickninja
-    }
-
-    if (validate.commitment_end) {
-        // at least roughly a month (here is 29 days due to > instead of >= in date comparison)
-        const minimumCommitment = new Date(Date.now() + 2.5056e+9).toString();
-        const validCommitment = validator.isAfter(user?.commitment_end?.toString() || "", minimumCommitment)
-
-        if (!validCommitment) throw new ServiceError("user-invalid-commitment");
-    }
-
-    if (validate.preferred_communications) {
-        const invalid = !user?.preferred_communications?.length ||
-            user.preferred_communications?.some((communication) => (
-                !COMMUNICATIONS.includes(communication
-                )));
-
-        if (invalid) {
-            const error = new ServiceError("user-invalid-communications");
-            error.details += COMMUNICATIONS.join(", ");
-
-            throw error;
-        }
-    }
-
-    if (validate.description) {
-        // 
-    }
-
-    if (validate.average_response_time) {
-        //
-    }
-
-    return true;
-}
 
 /**
  * Get a user object by their ID
@@ -98,17 +44,15 @@ export async function getByID(id, additionalFields = "") {
  * @returns {{success: true, message: string}} Success message
  */
 export async function update(tutorID, attributes = {}) {
-    console.log(attributes)
     if (!tutorID || !attributes || !Object.keys(attributes).length) {
         throw new ServiceError("user-invalid")
     }
 
-    const valid = validateTutorObject(attributes, attributes);
+    const valid = userService.validateUserObject(attributes, attributes);
     if (!valid) throw new ServiceError("user-invalid");
 
     try {
         if (attributes.commitment_end) {
-            console.log(tutorID)
             await query("UPDATE tutor SET commitment_end = $1 WHERE user_id = $2", [attributes.commitment_end, tutorID])
         }
 

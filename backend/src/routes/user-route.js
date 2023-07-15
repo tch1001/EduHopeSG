@@ -58,8 +58,10 @@ router.get("/profile", async (req, res) => {
         userData.email = userService.decrypt(userData.email)
 
         const tutorData = await tutorService.getByID(user.payload.id, TUTOR_FIELDS)
-        tutorData.preferred_communications = tutorData.preferred_communications.slice(1, -1).split(",") // Converts postgres array to js array
+        if (tutorData) {
+            tutorData.preferred_communications = tutorData.preferred_communications.slice(1, -1).split(",") // Converts postgres array to js array
             .map(type => type.replace(/"/g, ''))        
+        }
 
         res.status(200).send({ userData, tutorData })
 

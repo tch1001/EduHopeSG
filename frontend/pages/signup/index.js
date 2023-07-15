@@ -66,13 +66,13 @@ const SignUp = () => {
     const SignupSchema = Yup.object({
         firstName: Yup.string()
             .default("")
-            .min(3, "Given name has to be at least 3 characters")
+            .min(3, "Given name has to be at least 3 characters long")
             .max(35, "Given name is too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),
         lastName: Yup.string()
             .default("")
-            .min(1, "Family name has to be at least 1 characters")
+            .min(1, "Family name has to be at least 1 character long")
             .max(35, "Family name too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),
@@ -89,12 +89,12 @@ const SignUp = () => {
             .default("")
             .required("Required")
             .password()
-            .min(12, "Password has to be at least 12 characters"),
+            .min(12, "Password has to be at least 12 characters long"),
         confirmPassword: Yup.string()
             .default("")
             .required("Required")
             .password()
-            .min(12, "Password has to be at least 12 characters")
+            .min(12, "Password has to be at least 12 characters long")
             .test("test-match", "Passwords should match", (value, context) => {
                 const { password } = context.parent;
                 return password === value;
@@ -341,7 +341,19 @@ const SignUp = () => {
                             checkNextStep() ? (
                                 <Button
                                     type="submit"
-                                    onClick={formik.handleSubmit}
+                                    onClick={() => {
+                                        if (!Object.keys(formik.errors).length) {
+                                            formik.handleSubmit()
+                                        } else {
+                                            console.log(formik)
+                                            formik.setTouched(Object.fromEntries(Object.keys(formik.values).map(field => [field, true])))
+                                            displayErrorDialog({
+                                                name: "Missing/Invalid Field Value(s)".toUpperCase(),
+                                                message: "One or more fields have missing or invalid values",
+                                                details: "Please refer to the red error message above each field for more information"
+                                            })
+                                        }
+                                    }}
                                     loading={loading}
                                 >
                                     Sign up

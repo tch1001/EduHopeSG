@@ -9,8 +9,6 @@ const ManageTutors = ({ initPendingTutors, initAcceptedTutors, error }) => {
     const [pendingTutors, setPendingTutors] = useState(initPendingTutors)
     const [acceptedTutors, setAcceptedTutors] = useState(initAcceptedTutors)
 
-    console.log(pendingTutors)
-    console.log(acceptedTutors)
     if (error) {
         return <div>{error}</div>
     }

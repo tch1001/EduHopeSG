@@ -21,7 +21,7 @@ function DialogContext({ children }) {
 
     function displayErrorDialog(err){
         setDialogSettings({
-            title: err.name.toUpperCase(),
+            title: err.name.toUpperCase() || "ERROR",
             message: `${err.message}. ${err.details}.`,
             display: true,
             buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],

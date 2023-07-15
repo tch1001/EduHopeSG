@@ -7,7 +7,7 @@ import { dialogSettingsContext } from '../../../../helpers/dialogContext';
 import useAxios from '../../../../helpers/useAxios';
 import { useRouter } from 'next/router';
 
-const TutorCard = ({ tutor }) => {
+const TutorCard = ({ tutor, setTutors }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter()
 
@@ -15,7 +15,7 @@ const TutorCard = ({ tutor }) => {
     const request = useAxios();
 
     const handleRequest = async (tutorData) => {
-        const {id, subject, subject_id, given_name, family_name} = tutorData
+        const { id, subject, subject_id, given_name, family_name } = tutorData
 
         if (loading) return;
         setLoading(true);
@@ -24,15 +24,23 @@ const TutorCard = ({ tutor }) => {
             const response = await request({
                 method: "post",
                 path: `/tutee/relationship/${id}`,
-                data: {subjects: [subject_id]}
+                data: { subjects: [subject_id] }
             })
 
             setDialogSettings({
                 title: 'Request Submitted!',
-                message: `Please give ${given_name} ${family_name} a few days to consider your request for ${subject} tutoring. If you change your mind, you can cancel the request in the Manage Tutors.`,
+                message: `Please give ${given_name} ${family_name} a few days to consider your request for ${subject} tutoring. If you change your mind, you can cancel the request in the "My tutors" page.`,
                 display: true,
                 buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
             });
+
+            // Update status of relationship to disable the request button
+            setTutors(prevTutors => {
+                return prevTutors.map(tutor => {
+                    if (tutor.id == id) { tutor.status = "PENDING" }
+                    return tutor
+                })
+            })
 
         } catch (err) {
             // if error is user-unauthenticated, open a dialog that explains to the user that they need to log in first, 
@@ -43,9 +51,9 @@ const TutorCard = ({ tutor }) => {
                     message: `Please kindly login into your existing account or sign-up if you do not have an account yet. This way, we can facilitate communication between you and your tutor! `,
                     display: true,
                     buttons: [
-                        { text: "Login", bg: "bg-aqua", callback: () => {router.push(`/login?originalURL=${router.asPath}`); closeDialog()} },
-                        { text: "Sign-up", bg: "bg-sky-blue", callback: () => {router.push(`/signup?originalURL=${router.asPath}`); closeDialog()} }
-                    ],              
+                        { text: "Login", bg: "bg-aqua", callback: () => { router.push(`/login?originalURL=${router.asPath}`); closeDialog() } },
+                        { text: "Sign-up", bg: "bg-sky-blue", callback: () => { router.push(`/signup?originalURL=${router.asPath}`); closeDialog() } }
+                    ],
                 });
             } else {
                 displayErrorDialog(err)
@@ -83,15 +91,20 @@ const TutorCard = ({ tutor }) => {
                 <Button
                     onClick={() => handleRequest(tutor)}
                     loading={loading}
-                    disabled={tutor.requested}>
-                    {loading ? "" : tutor.requested ? "Requested" : "Request"}
+                    disabled={tutor.status}>
+                    {loading ? "" :
+                        tutor.status == "PENDING" ? "Requested" :
+                            tutor.status == "ACCEPTED" ? "Accepted" : "Request"}
                 </Button>
             </div>
         </Card>
     )
 }
 
-export const Subject = ({ subject, tutors }) => {
+export const Subject = ({ subject, initTutors }) => {
+    const [tutors, setTutors] = useState(initTutors)
+    console.log(tutors)
+
     return (
         <Container className="flex flex-col gap-6 p-6 max-w-5xl">
             <div>
@@ -111,7 +124,7 @@ export const Subject = ({ subject, tutors }) => {
             <main className="flex flex-col gap-4">
                 {
                     tutors.length ?
-                        tutors.map((tutor) => <TutorCard key={tutor.id} tutor={tutor} />)
+                        tutors.map((tutor) => <TutorCard key={tutor.id} tutor={tutor} setTutors={setTutors} />)
                         : <p>No tutors available for this subject :&#40;</p>
                 }
             </main>
@@ -119,18 +132,19 @@ export const Subject = ({ subject, tutors }) => {
     )
 }
 
-export const getServerSideProps = async ({ query }) => {
-    const URL = `${process.env.NEXT_PUBLIC_API_URL}/subjects/${query.course}/${query.subject}/tutors`;
-    const response = await fetch(URL, {
-        method: "GET",
+export const getServerSideProps = async ({ query, req }) => {
+    const request = useAxios()
+
+    const response = await request({
+        method: "get",
+        path: `/subjects/${query.course}/${query.subject}/tutors`,
         headers: {
-            "Content-Type": "application/json"
-        },
-        credentials: "include"
+            Cookie: req.headers.cookie
+        }
     });
 
-    const { tutors, subject, course } = await response.json();
-    console.log(tutors);
+    const { tutors, subject, course } = response;
+    console.log(response);
 
     return {
         props: {
@@ -138,7 +152,7 @@ export const getServerSideProps = async ({ query }) => {
                 course: course.course_name,
                 name: subject.name
             },
-            tutors: tutors
+            initTutors: tutors
         }
     }
 }

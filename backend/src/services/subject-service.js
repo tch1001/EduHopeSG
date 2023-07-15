@@ -62,12 +62,14 @@ export async function getSubjectsByIDs(subjects = []) {
  * 
  * @param {string} courseName Name of the course (e.g. 'a level')
  * @param {string} subjectName Name of the subject (e.g. 'chemistry')
+ * @param {string} userID ID of user, if they are logged in. Otherwise undefined* 
  * @returns {Promise<{success: boolean, message: string, tutors: Tutor[], course: Course, subject: Subject}>}
  */
-export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
+export async function getTutorsByCourseAndSubjectName(courseName, subjectName, userID) {
     const queryText = `
     SELECT u.id, u.given_name, u.family_name, u.school, u.level_of_education, u.bio AS description,
-    t.commitment_end, t.preferred_communications, t.average_response_time, s.id AS subject_id, s.level || ' ' || s.name AS subject
+    t.commitment_end, t.preferred_communications, t.average_response_time,
+    s.id AS subject_id, s.level || ' ' || s.name AS subject, ttr.status
     FROM (
         SELECT ttr.tutor AS tutor_id, COUNT(ttr.tutor) AS num_tutees
         FROM tutee_tutor_relationship AS ttr 
@@ -77,17 +79,20 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName) {
     RIGHT JOIN tutor AS t on t.user_id = filtered_tutor_ids.tutor_id 
         AND filtered_tutor_ids.num_tutees < t.tutee_limit
         AND t.commitment_end >= now()   
-    LEFT JOIN subject AS s ON s.id = ANY(t.subjects) AND similarity(s.level || ' ' || s.name, $2) >= 0.7
-    LEFT JOIN course AS c ON c.id = s.course AND c.name = $1
-    LEFT JOIN eduhope_user AS u ON u.id = t.user_id   
+    INNER JOIN subject AS s ON s.id = ANY(t.subjects) AND similarity(s.level || ' ' || s.name, $2) >= 0.7
+    INNER JOIN course AS c ON c.id = s.course AND c.name = $1
+    INNER JOIN eduhope_user AS u ON u.id = t.user_id   
+    LEFT JOIN tutee_tutor_relationship AS ttr ON ttr.tutor = t.user_id 
+    AND ttr.subject = s.id
+    AND ttr.tutee = $3 
     ORDER BY num_tutees     
     `
-    const { rows: tutors } = await query(queryText, [courseName, subjectName]);
+    const { rows: tutors } = await query(queryText, [courseName, subjectName, userID || ""]);
     tutors.forEach(tutor => {
         tutor.preferred_communications = tutor.preferred_communications.slice(1, -1).split(",") // Converts postgres array to js array
                                                                         .map(type=>type.replace(/"/g, ''))
     });
-
+    console.log(tutors)
     const course = await getCourseInfoByName(courseName);
     const subject = await getSubjectInfoByName(subjectName);
 

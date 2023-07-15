@@ -2,6 +2,7 @@ import { Router } from "express";
 import RouteError from "../classes/RouteError.js";
 import { standardRouteErrorCallback } from "../index.js";
 import * as subjectService from "../services/subject-service.js";
+import * as userService from "../services/user-service.js"
 
 const router = Router();
 
@@ -38,7 +39,9 @@ router.get("/:course/:subject/tutors", (req, res) => {
         return standardRouteErrorCallback(res, req, error);
     }
 
-    subjectService.getTutorsByCourseAndSubjectName(course, subject)
+    const user = userService.verifyAuthentication(req.cookies.user); // If logged in, get the user id
+
+    subjectService.getTutorsByCourseAndSubjectName(course, subject, user.payload?.id)
         .then((response) => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 });

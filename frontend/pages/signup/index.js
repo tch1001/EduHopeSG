@@ -66,7 +66,7 @@ const SignUp = () => {
     const SignupSchema = Yup.object({
         firstName: Yup.string()
             .default("")
-            .min(3, "Given name has to be at least 3 characters long")
+            .min(2, "Given name has to be at least 2 characters long")
             .max(35, "Given name is too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),
@@ -325,7 +325,7 @@ const SignUp = () => {
         <Container center className="p-6 max-w-5xl">
             <Card className="p-4 m-2 shadow-md shadow-slate-300 min-w-full xs:min-w-xs">
                 <div className="my-2">
-                    <span className="text-2xl font-bold block text-center">Sign Up</span>
+                    <span className="text-2xl font-bold block text-center">Sign Up (Tutee)</span>
                     <span className="text-base block text-center">Step {step + 1} of {steps.length}</span>
                 </div>
                 <form

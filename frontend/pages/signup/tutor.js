@@ -73,7 +73,7 @@ const TutorSignUp = ({ subjects }) => {
     const SignupSchema = Yup.object({
         firstName: Yup.string()
             .default("")
-            .min(3, "Given name has to be at least 3 characters long")
+            .min(2, "Given name has to be at least 2 characters long")
             .max(35, "Given name is too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),
@@ -211,8 +211,8 @@ const TutorSignUp = ({ subjects }) => {
                 commitment_end: commitmentEnd,
                 tutee_limit: tuteeLimit,
                 subjects: subjects.map(obj => obj.value),
-                preferred_communications: preferredCommunications.map(obj => obj.value),   
-                average_response_time: averageResponseTime,             
+                preferred_communications: preferredCommunications.map(obj => obj.value),
+                average_response_time: averageResponseTime,
                 bio,
                 referral
             }
@@ -322,11 +322,11 @@ const TutorSignUp = ({ subjects }) => {
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="averageResponseTime" formik={formik} />
-                <label htmlFor="averageResponseTime">{"What's your average response time?"}</label>                
+                <label htmlFor="averageResponseTime">{"What's your average response time?"}</label>
                 <input {...formik.getFieldProps("averageResponseTime")} />
-            </div>             
+            </div>
         </>,
-        <>       
+        <>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="preferredCommunications" formik={formik} />
                 <label htmlFor="preferredCommunications">{"What are your preferred mode(s) of consultation?"}</label>
@@ -343,7 +343,7 @@ const TutorSignUp = ({ subjects }) => {
                     value={formik.values.preferredCommunications}
                     onBlur={() => formik.setFieldTouched("preferredCommunications", true)}
                 />
-            </div>            
+            </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="subjects" formik={formik} />
                 <label htmlFor="subjects">{"What subject(s) are you willing to tutor?"}</label>
@@ -427,7 +427,7 @@ const TutorSignUp = ({ subjects }) => {
         <Container center className="p-6 max-w-5xl">
             <Card className="p-4 m-2 shadow-md shadow-slate-300 min-w-full xs:min-w-xs">
                 <div className="my-2">
-                    <span className="text-2xl font-bold block text-center">Sign Up</span>
+                    <span className="text-2xl font-bold block text-center">Sign Up (Tutor)</span>
                     <span className="text-base block text-center">Step {step + 1} of {steps.length}</span>
                 </div>
                 <form

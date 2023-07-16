@@ -35,12 +35,18 @@
         "message": "Invalid user",
         "details": "Provide a valid user with proper keys and values"
     },
-    "user-invalid-name": {
+    "user-invalid-first-name": {
         "status": 400,
-        "name": "Invalid name",
-        "message": "Name cannot be less than 3 or more than 32 in length",
-        "details": "Provide a name ranging from 3 to 32 characters in length"
+        "name": "Invalid first name",
+        "message": "First name cannot be less than 2 or more than 32 characters in length",
+        "details": "Provide a first name ranging from 2 to 32 characters in length"
     },
+    "user-invalid-last-name": {
+        "status": 400,
+        "name": "Invalid last name",
+        "message": "Last name cannot be less than 1 or more than 32 characters in length",
+        "details": "Provide a last name ranging from 1 to 32 characters in length"
+    },    
     "user-invalid-email": {
         "status": 400,
         "name": "Invalid email",
@@ -74,7 +80,7 @@
     "user-no-telegram": {
         "status": 400,
         "name": "Invalid Telegram handle",
-        "message": "No Telegram handle provided or invalid Telegram handle (a-z, 0-9 and underscores)",
+        "message": "No Telegram handle provided",
         "details": "Provide a valid Telegram handle without the '@' at the start"
     },
     "user-invalid-bio": {
@@ -109,9 +115,9 @@
     },
     "user-invalid-communications": {
         "status": 400,
-        "name": "Invalid communication(s)",
-        "message": "Invalid communication(s) provided",
-        "details": "We only accept the following modes of communication: "
+        "name": "Invalid preferred communication(s)",
+        "message": "Invalid preferred communication(s) provided",
+        "details": ""
     },
     "user-create-unique": {
         "status": 409,

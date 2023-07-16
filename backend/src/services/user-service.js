@@ -271,27 +271,15 @@ export function validateUserObject(user, validate = {
 }) {
     // validate user input
     if (validate.given_name) {
-        if (!validator.isLength(user.given_name || "", { min: 3, max: 32 })) {
-            throw new ServiceError("user-invalid-name");
+        if (!validator.isLength(user.given_name || "", { min: 2, max: 32 })) {
+            throw new ServiceError("user-invalid-first-name");
         }
     }
     if (validate.family_name) {
         if (!validator.isLength(user.family_name || "", { min: 1, max: 32 })) {
-            throw new ServiceError("user-invalid-name");
+            throw new ServiceError("user-invalid-last-name");
         }
     }
-    if (validate.email) {
-        if (!validator.isEmail(user.email || "")) {
-            throw new ServiceError("user-invalid-email");
-        }
-    }
-
-    if (validate.password) {
-        if (!isStrongPassword(user.password || "")) {
-            throw new ServiceError("user-weak-password");
-        }
-    }
-
     // TODO: Validate school in the future
     if (validate.school && !user.school) throw new ServiceError("user-no-school");
 
@@ -317,6 +305,18 @@ export function validateUserObject(user, validate = {
         }
     }
 
+    if (validate.email) {
+        if (!validator.isEmail(user.email || "")) {
+            throw new ServiceError("user-invalid-email");
+        }
+    }
+
+    if (validate.password) {
+        if (!isStrongPassword(user.password || "")) {
+            throw new ServiceError("user-weak-password");
+        }
+    }
+
     if (validate.bio && !validator.isLength(user.bio || "", { min: 0, max: 500 })) {
         throw new ServiceError("user-invalid-bio")
     }
@@ -330,7 +330,15 @@ export function validateUserObject(user, validate = {
         }
     }
 
-    // Tutor object validation
+    // Tutor object validation    
+    if (validate.commitment_end) {
+        // at least roughly a month (here is 29 days due to > instead of >= in date comparison)
+        const minimumCommitment = new Date(Date.now() + 2.5056e+9).toString();
+        const validCommitment = validator.isAfter(user?.commitment_end?.toString() || "", minimumCommitment)
+
+        if (!validCommitment) throw new ServiceError("user-invalid-commitment");
+    }
+
     if (validate.tutee_limit) {
         if (!user?.tutee_limit || !(user?.tutee_limit >= 1 && user?.tutee_limit <= 5)) {
             throw new ServiceError("user-invalid-tutee-limit");
@@ -340,14 +348,6 @@ export function validateUserObject(user, validate = {
     if (validate.subjects) {
         if (!user?.subjects?.length) throw new ServiceError("user-invalid-subjects");
         // TODO: add validation for subjects from tickninja
-    }
-
-    if (validate.commitment_end) {
-        // at least roughly a month (here is 29 days due to > instead of >= in date comparison)
-        const minimumCommitment = new Date(Date.now() + 2.5056e+9).toString();
-        const validCommitment = validator.isAfter(user?.commitment_end?.toString() || "", minimumCommitment)
-
-        if (!validCommitment) throw new ServiceError("user-invalid-commitment");
     }
 
     if (validate.preferred_communications) {
@@ -494,7 +494,7 @@ export async function update(userID, attributes = {}) {
         */
     }
 
-    const valid = validateUserObject(attributes, attributes);
+    const valid = validateUserObject(attributes, Object.fromEntries(Object.keys(attributes).map(field => [field, true])));
     if (!valid) throw new ServiceError("user-invalid");
 
     try {
@@ -672,7 +672,7 @@ export async function registerTutor(attributes) {
 
     attributes.telegram = attributes.telegram.toLowerCase()
 
-    const valid = validateUserObject(attributes, attributes);
+    const valid = validateUserObject(attributes, Object.fromEntries(Object.keys(attributes).map(field => [field, true])));
     if (!valid) throw new ServiceError("user-invalid");
 
     const hashedPass = await hashPassword(attributes.password);

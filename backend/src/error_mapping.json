@@ -35,18 +35,30 @@
         "message": "Invalid user",
         "details": "Provide a valid user with proper keys and values"
     },
-    "user-invalid-name": {
+    "user-invalid-first-name": {
         "status": 400,
-        "name": "Invalid name",
-        "message": "Name cannot be less than 3 or more than 32 in length",
-        "details": "Provide a name ranging from 3 to 32 characters in length"
+        "name": "Invalid first name",
+        "message": "First name cannot be less than 2 or more than 32 characters in length",
+        "details": "Provide a first name ranging from 2 to 32 characters in length"
     },
+    "user-invalid-last-name": {
+        "status": 400,
+        "name": "Invalid last name",
+        "message": "Last name cannot be less than 1 or more than 32 characters in length",
+        "details": "Provide a last name ranging from 1 to 32 characters in length"
+    },    
     "user-invalid-email": {
         "status": 400,
         "name": "Invalid email",
         "message": "Invalid email address format provided",
         "details": "Provide a valid email address: name@example.com"
     },
+    "user-invalid-telegram": {
+        "status": 400,
+        "name": "Invalid Telegram handle",
+        "message": "Invalid Telegram handle format provided",
+        "details": "Provide a Telegram handle between 5 to 32 characters, and only contains alphanumeric characters and underscores (_)"
+    },    
     "user-weak-password": {
         "status": 400,
         "name": "Weak password",
@@ -68,7 +80,7 @@
     "user-no-telegram": {
         "status": 400,
         "name": "Invalid Telegram handle",
-        "message": "No Telegram handle provided or invalid Telegram handle (a-z, 0-9 and underscores)",
+        "message": "No Telegram handle provided",
         "details": "Provide a valid Telegram handle without the '@' at the start"
     },
     "user-invalid-bio": {
@@ -103,16 +115,28 @@
     },
     "user-invalid-communications": {
         "status": 400,
-        "name": "Invalid communication(s)",
-        "message": "Invalid communication(s) provided",
-        "details": "We only accept the following modes of communication: "
+        "name": "Invalid preferred communication(s)",
+        "message": "Invalid preferred communication(s) provided",
+        "details": ""
     },
     "user-create-unique": {
         "status": 409,
         "name": "Error creating user",
-        "message": "User with the same email address or Telegram username has already been registered",
-        "details": "Create a new account with a different email address or Telegram username"
+        "message": "User with the same email address or Telegram handle has already been registered",
+        "details": "Create a new account with a different email address or Telegram handle"
     },
+    "email-update-unique": {
+        "status": 409,
+        "name": "Error updating email",
+        "message": "This email is already linked to another account",
+        "details": "Please use another email"
+    },    
+    "telegram-update-unique": {
+        "status": 409,
+        "name": "Error updating Telegram handle",
+        "message": "This Telegram handle is already linked to another account",
+        "details": "Please use another Telegram handle"
+    },        
     "user-create": {
         "status": 400,
         "name": "Error creating user",
@@ -159,7 +183,7 @@
         "status": 400,
         "name": "Invalid email or password",
         "message": "Either email or password are not provided or they are invalid",
-        "details": "Provide valid emails or password"
+        "details": "Provide a valid email and password"
     },
     "user-login-failed": {
         "status": 401,
@@ -235,10 +259,40 @@
     },
     "tutee-request-tutor-unique": {
         "status": 409,
-        "name": "Error modifying Tutor-Tutee agreement",
-        "message": "The current agreeable subjects and requested subjects are the same (no changes)",
-        "details": "To update the agreement, please choose a different subject combination"
+        "name": "Request already submitted",
+        "message": "You have already requested for this tutor for this subject",
+        "details": "Please visit the \"My tutors\" page to view your pending tutor requests"
     },
+    "tutor-hit-tutee-limit": {
+        "status": 409,
+        "name": "Tutor is unavailable",
+        "message": "This tutor is currently tutoring the maximum number of tutees they are able to tutor",
+        "details": "Please request for another tutor instead"
+    },
+    "tutor-hit-tutee-limit2": {
+        "status": 409,
+        "name": "Tutee limit hit",
+        "message": "You have hit the tutee limit that you set previously",
+        "details": "To accept this tutee's request, please increase your tutee limit via the \"Edit profile\" page"
+    },    
+    "tutee-hit-request-tutor-limit": {
+        "status": 409,
+        "name": "Maximum tutor requests reached",
+        "message": "You are only allowed to request for 1 tutor per subject at any time",
+        "details": "To request for this tutor, you must first visit the \"My tutors\" page to cancel your pending tutor request for this subject"
+    },     
+    "tutee-hit-accepted-tutor-limit": {
+        "status": 409,
+        "name": "Maximum tutors reached",
+        "message": "You are only allowed to have 1 tutor per subject at any time",
+        "details": "To request for this tutor, you must first visit the \"My tutors\" page to remove your current tutor for this subject"
+    },  
+    "tutee-hit-total-tutor-limit": {
+        "status": 409,
+        "name": "Maximum tutors reached",
+        "message": "You have hit the maximum number of total pending and accepted tutor requests",
+        "details": "To request for this tutor, you must first visit the \"My tutors\" page to remove either a pending request or existing tutor"
+    },               
     "invalid-tutee-tutor-relationship": {
         "status": 400,
         "name": "Invalid Tutor-Tutee relationship",
@@ -259,7 +313,7 @@
     },
     "rate-limited": {
         "status": 429,
-        "name": "Too many requests, please try again later.",
+        "name": "Too many requests, please try again later",
         "message": "Your connection is being rate limited due to too many requests being sent by your connection",
         "details": "Please try again later, and contact the site developers or site admins if the problem persists"
     }

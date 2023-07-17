@@ -1,31 +1,16 @@
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import { Button } from './Button';
 import { Icon } from "./Icon";
-
-const Links = () => {
-    return (
-        <>
-            <Link href="/subjects" passHref>
-                Find a tutor
-            </Link>
-            <Link href="/about" passHref>
-                About us
-            </Link>
-            <Link href="/faq" passHref>
-                FAQ
-            </Link>
-            <Link href="/get-involved" passHref>
-                Get involved
-            </Link>
-        </>
-    )
-}
-
+import useUser from '../helpers/useUser';
+import { DropdownMenu } from './Dropdown';
 
 export const Header = () => {
     const [navbar, setNavbar] = useState(false);
+    const [user, { logout }] = useUser();
+    const router = useRouter()
 
     useEffect(() => {
         window.addEventListener("resize", () => {
@@ -38,14 +23,80 @@ export const Header = () => {
         setNavbar(!navbar);
     }
 
-    const LoginButton = () => (
-        <Button secondary href="/login">
-            Login
-        </Button>
-    )
+    // TODO: Show "my tutors" if user has tutors or have tutor requests
+
+    const Links = () => {
+        return (
+            <>
+                <Link href="/subjects" passHref>
+                    Find a tutor
+                </Link>
+                <Link href="/about" passHref>
+                    About us
+                </Link>
+                {
+                    user.id ? (
+                        <>
+                            {user.is_tutor && <Link href="/manage-tutees" passHref>My tutees</Link>}
+                            <Link href="/manage-tutors" passHref>My tutors</Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link href="/faq" passHref>FAQ</Link>
+                            <Link href="/get-involved" passHref>Get involved</Link>
+                        </>
+                    )
+                }
+            </>
+        )
+    }
+
+    const UserSection = () => {
+        if (!user.id) {
+            return (
+                <Button secondary href={`/login?originalURL=${router.pathname}`}>
+                    Login
+                </Button>
+            )
+        }
+
+        const dropdownContent = (
+            <>
+
+                <Link href="/edit-profile" passHref>Edit profile</Link>
+                <div onClick={() => logout() && (window.location.href = "/")}>Logout</div>
+            </>
+        )
+
+        return (
+            <div>
+                <DropdownMenu dropdownContent={dropdownContent}>
+                    <div
+                        className="flex flex-row gap-1 items-center"
+                    >
+                        <Icon
+                            icon="user-circle"
+                            className="w-6 h-6"
+                            alt=""
+                            width={3}
+                            height={3}
+                        />
+                        <Icon
+                            icon="chevron-down"
+                            className="w-4 h-4"
+                            alt=""
+                            width={3}
+                            height={3}
+                        />
+                    </div>
+                </DropdownMenu>
+
+            </div>
+        )
+    }
 
     return (
-        <header className={`px-12 py-2 bg-blue text-sm font-medium ${navbar ? "rounded-b-md" : ""}`}>
+        <header className={`px-14 py-2 bg-blue text-sm font-medium ${navbar ? "rounded-b-md" : ""}`}>
             <div className="flex flex-row w-full justify-between">
                 <Link href="/" passHref>
                     <Image
@@ -61,7 +112,7 @@ export const Header = () => {
                     <div className="flex flex-row gap-x-5 my-auto">
                         <Links />
                     </div>
-                    <LoginButton />
+                    <UserSection />
                 </nav>
                 <Button
                     className="sm:hidden"
@@ -73,7 +124,7 @@ export const Header = () => {
             </div>
             <nav className={`flex flex-col items-center justify-center gap-y-3 py-2 text-base ${navbar ? "block" : "hidden"}`}>
                 <Links />
-                <LoginButton />
+                <UserSection />
             </nav>
         </header>
     );

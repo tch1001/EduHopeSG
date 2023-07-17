@@ -1,0 +1,2210 @@
+[
+    {
+        "name": "Admiralty Primary School",
+        "type": "primary_school",
+        "address": "11 Woodlands Circle",
+        "postal": 738907
+    },
+    {
+        "name": "Ahmad Ibrahim Primary School",
+        "type": "primary_school",
+        "address": "10 Yishun Street 11",
+        "postal": 768643
+    },
+    {
+        "name": "Ai Tong School",
+        "type": "primary_school",
+        "address": "100 Bright Hill Drive",
+        "postal": 579646
+    },
+    {
+        "name": "Alexandra Primary School",
+        "type": "primary_school",
+        "address": "2A Prince Charles Crescent",
+        "postal": 159016
+    },
+    {
+        "name": "Anchor Green Primary School",
+        "type": "primary_school",
+        "address": "31 Anchorvale Drive",
+        "postal": 544969
+    },
+    {
+        "name": "Anderson Primary School",
+        "type": "primary_school",
+        "address": "19 Ang Mo Kio Ave 9",
+        "postal": 569785
+    },
+    {
+        "name": "Ang Mo Kio Primary School",
+        "type": "primary_school",
+        "address": "20 Ang Mo Kio Avenue 3",
+        "postal": 569920
+    },
+    {
+        "name": "Anglo-Chinese School (Junior)",
+        "type": "primary_school",
+        "address": "16 Winstedt Road",
+        "postal": 227988
+    },
+    {
+        "name": "Anglo-Chinese School (Primary)",
+        "type": "primary_school",
+        "address": "50 Barker Road",
+        "postal": 309918
+    },
+    {
+        "name": "Angsana Primary School",
+        "type": "primary_school",
+        "address": "51 Tampines Street 61",
+        "postal": 528565
+    },
+    {
+        "name": "Beacon Primary School",
+        "type": "primary_school",
+        "address": "36 Bukit Panjang Ring Road",
+        "postal": 679944
+    },
+    {
+        "name": "Bedok Green Primary School",
+        "type": "primary_school",
+        "address": "1 Bedok South Ave 2",
+        "postal": 469317
+    },
+    {
+        "name": "Bendemeer Primary School",
+        "type": "primary_school",
+        "address": "91 Bendemeer Road",
+        "postal": 339948
+    },
+    {
+        "name": "Blangah Rise Primary School",
+        "type": "primary_school",
+        "address": "91 Telok Blangah Heights",
+        "postal": 109100
+    },
+    {
+        "name": "Boon Lay Garden Primary School",
+        "type": "primary_school",
+        "address": "20 Boon Lay Drive",
+        "postal": 649930
+    },
+    {
+        "name": "Bukit Panjang Primary School",
+        "type": "primary_school",
+        "address": "109 Cashew Road",
+        "postal": 679676
+    },
+    {
+        "name": "Bukit Timah Primary School",
+        "type": "primary_school",
+        "address": "111 Lorong Kismis",
+        "postal": 598112
+    },
+    {
+        "name": "Bukit View Primary School",
+        "type": "primary_school",
+        "address": "18 Bukit Batok Street 21",
+        "postal": 659634
+    },
+    {
+        "name": "Canberra Primary School",
+        "type": "primary_school",
+        "address": "21 Admiralty Drive",
+        "postal": 757714
+    },
+    {
+        "name": "Canossa Catholic Primary School",
+        "type": "primary_school",
+        "address": "1 Sallim Road",
+        "postal": 387621
+    },
+    {
+        "name": "Cantonment Primary School",
+        "type": "primary_school",
+        "address": "1 Cantonment Close",
+        "postal": 88256
+    },
+    {
+        "name": "Casuarina Primary School",
+        "type": "primary_school",
+        "address": "30 Pasir Ris St 41",
+        "postal": 518935
+    },
+    {
+        "name": "Catholic High School (Primary Section)",
+        "type": "primary_school",
+        "address": "9 Bishan Street 22",
+        "postal": 579767
+    },
+    {
+        "name": "Cedar Primary School",
+        "type": "primary_school",
+        "address": "15 Cedar Avenue",
+        "postal": 349700
+    },
+    {
+        "name": "Changkat Primary School",
+        "type": "primary_school",
+        "address": "11 Simei St 3",
+        "postal": 529896
+    },
+    {
+        "name": "CHIJ (Katong) Primary",
+        "type": "primary_school",
+        "address": "17 Martia Road",
+        "postal": 424821
+    },
+    {
+        "name": "CHIJ (Kellock)",
+        "type": "primary_school",
+        "address": "1 Bukit Teresa Road",
+        "postal": 99757
+    },
+    {
+        "name": "CHIJ Our Lady of Good Counsel",
+        "type": "primary_school",
+        "address": "2C Burghley Drive",
+        "postal": 558979
+    },
+    {
+        "name": "CHIJ Our Lady of the Nativity",
+        "type": "primary_school",
+        "address": "1257 Upper Serangoon Road",
+        "postal": 534793
+    },
+    {
+        "name": "CHIJ Our Lady Queen of Peace",
+        "type": "primary_school",
+        "address": "4 Chestnut Drive",
+        "postal": 679287
+    },
+    {
+        "name": "CHIJ Primary (Toa Payoh)",
+        "type": "primary_school",
+        "address": "628 Lorong 1 Toa Payoh",
+        "postal": 319765
+    },
+    {
+        "name": "CHIJ St. Nicholas Girls' School (Primary Section)",
+        "type": "primary_school",
+        "address": "501 Ang Mo Kio Street 13",
+        "postal": 569405
+    },
+    {
+        "name": "Chongfu School",
+        "type": "primary_school",
+        "address": "170 Yishun Avenue 6",
+        "postal": 768959
+    },
+    {
+        "name": "Chongzheng Primary School",
+        "type": "primary_school",
+        "address": "1 Tampines Street 21",
+        "postal": 529392
+    },
+    {
+        "name": "Chua Chu Kang Primary School",
+        "type": "primary_school",
+        "address": "20 Choa Chu Kang Avenue 2",
+        "postal": 689905
+    },
+    {
+        "name": "Clementi Primary School",
+        "type": "primary_school",
+        "address": "8 Clementi Ave 3",
+        "postal": 129903
+    },
+    {
+        "name": "Compassvale Primary School",
+        "type": "primary_school",
+        "address": "21 Compassvale St",
+        "postal": 545091
+    },
+    {
+        "name": "Concord Primary School",
+        "type": "primary_school",
+        "address": "3 Choa Chu Kang Ave 4",
+        "postal": 689814
+    },
+    {
+        "name": "Corporation Primary School",
+        "type": "primary_school",
+        "address": "31 Jurong West Street 24",
+        "postal": 648347
+    },
+    {
+        "name": "Damai Primary School",
+        "type": "primary_school",
+        "address": "52 Bedok Reservoir Crescent",
+        "postal": 479226
+    },
+    {
+        "name": "Dazhong Primary School",
+        "type": "primary_school",
+        "address": "35 Bukit Batok Street 31",
+        "postal": 659441
+    },
+    {
+        "name": "De La Salle School",
+        "type": "primary_school",
+        "address": "11 Choa Chu Kang St 52",
+        "postal": 689285
+    },
+    {
+        "name": "East Spring Primary School",
+        "type": "primary_school",
+        "address": "31 Tampines St 33",
+        "postal": 529258
+    },
+    {
+        "name": "Edgefield Primary School",
+        "type": "primary_school",
+        "address": "41 Edgefield Plains",
+        "postal": 828869
+    },
+    {
+        "name": "Elias Park Primary School",
+        "type": "primary_school",
+        "address": "11 Pasir Ris Street 52",
+        "postal": 518866
+    },
+    {
+        "name": "Endeavour Primary School",
+        "type": "primary_school",
+        "address": "10 Admiralty Link",
+        "postal": 757521
+    },
+    {
+        "name": "Evergreen Primary School",
+        "type": "primary_school",
+        "address": "31 Woodlands Circle",
+        "postal": 738908
+    },
+    {
+        "name": "Fairfield Methodist School (Primary)",
+        "type": "primary_school",
+        "address": "100 Dover Road",
+        "postal": 139648
+    },
+    {
+        "name": "Farrer Park Primary School",
+        "type": "primary_school",
+        "address": "2 Farrer Park Road",
+        "postal": 217567
+    },
+    {
+        "name": "Fengshan Primary School",
+        "type": "primary_school",
+        "address": "307 Bedok North Road",
+        "postal": 469680
+    },
+    {
+        "name": "Fern Green Primary School",
+        "type": "primary_school",
+        "address": "70 Fernvale Link",
+        "postal": 797538
+    },
+    {
+        "name": "Fernvale Primary School",
+        "type": "primary_school",
+        "address": "1 Fernvale Lane",
+        "postal": 797701
+    },
+    {
+        "name": "First Toa Payoh Primary School",
+        "type": "primary_school",
+        "address": "7 Lorong 8 Toa Payoh",
+        "postal": 319252
+    },
+    {
+        "name": "Frontier Primary School",
+        "type": "primary_school",
+        "address": "20 Jurong West Street 61",
+        "postal": 648200
+    },
+    {
+        "name": "Fuchun Primary School",
+        "type": "primary_school",
+        "address": "23 Woodlands Avenue 1",
+        "postal": 739063
+    },
+    {
+        "name": "Fuhua Primary School",
+        "type": "primary_school",
+        "address": "65 Jurong East Street 13",
+        "postal": 609647
+    },
+    {
+        "name": "Gan Eng Seng Primary School",
+        "type": "primary_school",
+        "address": "100 Redhill Close",
+        "postal": 158901
+    },
+    {
+        "name": "Geylang Methodist School (Primary)",
+        "type": "primary_school",
+        "address": "4 Geylang East Central",
+        "postal": 389706
+    },
+    {
+        "name": "Gongshang Primary School",
+        "type": "primary_school",
+        "address": "1 Tampines Street 42",
+        "postal": 529176
+    },
+    {
+        "name": "Greendale Primary School",
+        "type": "primary_school",
+        "address": "50 Edgedale Plains",
+        "postal": 828848
+    },
+    {
+        "name": "Greenridge Primary School",
+        "type": "primary_school",
+        "address": "11 Jelapang Road",
+        "postal": 677744
+    },
+    {
+        "name": "Greenwood Primary School",
+        "type": "primary_school",
+        "address": "11 Woodlands  Dr  62",
+        "postal": 737942
+    },
+    {
+        "name": "Haig Girls' School",
+        "type": "primary_school",
+        "address": "51 Koon Seng Road",
+        "postal": 427072
+    },
+    {
+        "name": "Henry Park Primary School",
+        "type": "primary_school",
+        "address": "1 Holland Grove Road",
+        "postal": 278790
+    },
+    {
+        "name": "Holy Innocents' Primary School",
+        "type": "primary_school",
+        "address": "5 Lorong Low Koon",
+        "postal": 536451
+    },
+    {
+        "name": "Hong Wen School",
+        "type": "primary_school",
+        "address": "30 Towner Road",
+        "postal": 327829
+    },
+    {
+        "name": "Horizon Primary School",
+        "type": "primary_school",
+        "address": "61 Edgedale Plains",
+        "postal": 828819
+    },
+    {
+        "name": "Hougang Primary School",
+        "type": "primary_school",
+        "address": "1 Hougang St 93",
+        "postal": 534238
+    },
+    {
+        "name": "Huamin Primary School",
+        "type": "primary_school",
+        "address": "21 Yishun Avenue 11",
+        "postal": 768857
+    },
+    {
+        "name": "Innova Primary School",
+        "type": "primary_school",
+        "address": "80 Woodlands Drive 17",
+        "postal": 737888
+    },
+    {
+        "name": "Jiemin Primary School",
+        "type": "primary_school",
+        "address": "2 Yishun Street 71",
+        "postal": 768515
+    },
+    {
+        "name": "Jing Shan Primary School",
+        "type": "primary_school",
+        "address": "5 Ang Mo Kio St 52",
+        "postal": 569228
+    },
+    {
+        "name": "Junyuan Primary School",
+        "type": "primary_school",
+        "address": "2 Tampines Street 91",
+        "postal": 528906
+    },
+    {
+        "name": "Jurong Primary School",
+        "type": "primary_school",
+        "address": "320 Jurong East Street 32",
+        "postal": 609476
+    },
+    {
+        "name": "Jurong West Primary School",
+        "type": "primary_school",
+        "address": "30 Jurong West St 61",
+        "postal": 648368
+    },
+    {
+        "name": "Keming Primary School",
+        "type": "primary_school",
+        "address": "90 Bukit Batok East Avenue 6",
+        "postal": 659762
+    },
+    {
+        "name": "Kheng Cheng School",
+        "type": "primary_school",
+        "address": "15 Lorong 3 Toa Payoh",
+        "postal": 319580
+    },
+    {
+        "name": "Kong Hwa School",
+        "type": "primary_school",
+        "address": "350 Guillemard Road",
+        "postal": 399772
+    },
+    {
+        "name": "Kranji Primary School",
+        "type": "primary_school",
+        "address": "11 Choa Chu Kang Street 54",
+        "postal": 689189
+    },
+    {
+        "name": "Kuo Chuan Presbyterian Primary School",
+        "type": "primary_school",
+        "address": "8 Bishan Street 13",
+        "postal": 579793
+    },
+    {
+        "name": "Lakeside Primary School",
+        "type": "primary_school",
+        "address": "161 Corporation Walk",
+        "postal": 618310
+    },
+    {
+        "name": "Lianhua Primary School",
+        "type": "primary_school",
+        "address": "2 Bukit Batok Street 52",
+        "postal": 659243
+    },
+    {
+        "name": "Maha Bodhi School",
+        "type": "primary_school",
+        "address": "10 Ubi Avenue 1",
+        "postal": 408931
+    },
+    {
+        "name": "Maris Stella High School (Primary Section)",
+        "type": "primary_school",
+        "address": "25 Mount Vernon Road",
+        "postal": 368051
+    },
+    {
+        "name": "Marsiling Primary School",
+        "type": "primary_school",
+        "address": "31 Woodlands Centre Road",
+        "postal": 738927
+    },
+    {
+        "name": "Marymount Convent School",
+        "type": "primary_school",
+        "address": "20 Marymount Road",
+        "postal": 297754
+    },
+    {
+        "name": "Mayflower Primary School",
+        "type": "primary_school",
+        "address": "200 Ang Mo Kio Avenue 5",
+        "postal": 569878
+    },
+    {
+        "name": "Mee Toh School",
+        "type": "primary_school",
+        "address": "21 Edgedale Plains",
+        "postal": 828867
+    },
+    {
+        "name": "Meridian Primary School",
+        "type": "primary_school",
+        "address": "20 Pasir Ris St 71",
+        "postal": 518798
+    },
+    {
+        "name": "Methodist Girls' School (Primary)",
+        "type": "primary_school",
+        "address": "11 Blackmore Drive",
+        "postal": 599986
+    },
+    {
+        "name": "Montfort Junior School",
+        "type": "primary_school",
+        "address": "52 Hougang Avenue 8",
+        "postal": 538786
+    },
+    {
+        "name": "Nan Chiau Primary School",
+        "type": "primary_school",
+        "address": "50 Anchorvale Link",
+        "postal": 545080
+    },
+    {
+        "name": "Nan Hua Primary School",
+        "type": "primary_school",
+        "address": "30 Jalan Lempeng",
+        "postal": 128806
+    },
+    {
+        "name": "Nanyang Primary School",
+        "type": "primary_school",
+        "address": "52 King's Road",
+        "postal": 268097
+    },
+    {
+        "name": "Naval Base Primary School",
+        "type": "primary_school",
+        "address": "7 Yishun Ave 4",
+        "postal": 769028
+    },
+    {
+        "name": "New Town Primary School",
+        "type": "primary_school",
+        "address": "300 Tanglin Halt Road",
+        "postal": 148812
+    },
+    {
+        "name": "Ngee Ann Primary School",
+        "type": "primary_school",
+        "address": "344 Marine Terrace",
+        "postal": 449149
+    },
+    {
+        "name": "North Spring Primary School",
+        "type": "primary_school",
+        "address": "1 Rivervale Street",
+        "postal": 545088
+    },
+    {
+        "name": "North View Primary School",
+        "type": "primary_school",
+        "address": "210 Yishun Avenue 6",
+        "postal": 768960
+    },
+    {
+        "name": "North Vista Primary School",
+        "type": "primary_school",
+        "address": "20 Compassvale Link",
+        "postal": 544974
+    },
+    {
+        "name": "Northland Primary School",
+        "type": "primary_school",
+        "address": "15 Yishun Avenue 4",
+        "postal": 769026
+    },
+    {
+        "name": "Northoaks Primary School",
+        "type": "primary_school",
+        "address": "61 Sembawang Drive",
+        "postal": 757622
+    },
+    {
+        "name": "Northshore Primary School",
+        "type": "primary_school",
+        "address": "30 Northshore Drive",
+        "postal": 828671
+    },
+    {
+        "name": "Oasis Primary School",
+        "type": "primary_school",
+        "address": "71 Edgefield Plains",
+        "postal": 828716
+    },
+    {
+        "name": "Opera Estate Primary School",
+        "type": "primary_school",
+        "address": "48 Fidelio Street",
+        "postal": 458436
+    },
+    {
+        "name": "Palm View Primary School",
+        "type": "primary_school",
+        "address": "150 Compassvale Bow",
+        "postal": 544822
+    },
+    {
+        "name": "Park View Primary School",
+        "type": "primary_school",
+        "address": "60 Pasir Ris Drive 1",
+        "postal": 519524
+    },
+    {
+        "name": "Pasir Ris Primary School",
+        "type": "primary_school",
+        "address": "5 Pasir Ris Street 21",
+        "postal": 518968
+    },
+    {
+        "name": "Paya Lebar Methodist Girls' School (Primary)",
+        "type": "primary_school",
+        "address": "298 Lorong Ah Soo",
+        "postal": 536741
+    },
+    {
+        "name": "Pei Chun Public School",
+        "type": "primary_school",
+        "address": "16 Lorong 7 Toa Payoh",
+        "postal": 319320
+    },
+    {
+        "name": "Pei Hwa Presbyterian Primary School",
+        "type": "primary_school",
+        "address": "7 Pei Wah Avenue",
+        "postal": 597610
+    },
+    {
+        "name": "Pei Tong Primary School",
+        "type": "primary_school",
+        "address": "15 Clementi Avenue 5",
+        "postal": 129857
+    },
+    {
+        "name": "Peiying Primary School",
+        "type": "primary_school",
+        "address": "651 Yishun Ring Road",
+        "postal": 768687
+    },
+    {
+        "name": "Pioneer Primary School",
+        "type": "primary_school",
+        "address": "31 Jurong West Street 91",
+        "postal": 649037
+    },
+    {
+        "name": "Poi Ching School",
+        "type": "primary_school",
+        "address": "21 Tampines Street 71",
+        "postal": 529067
+    },
+    {
+        "name": "Princess Elizabeth Primary School",
+        "type": "primary_school",
+        "address": "30 Bukit Batok West Avenue 3",
+        "postal": 659163
+    },
+    {
+        "name": "Punggol Cove Primary School",
+        "type": "primary_school",
+        "address": "52 Sumang Walk",
+        "postal": 828674
+    },
+    {
+        "name": "Punggol Green Primary School",
+        "type": "primary_school",
+        "address": "98 Punggol Walk",
+        "postal": 828772
+    },
+    {
+        "name": "Punggol Primary School",
+        "type": "primary_school",
+        "address": "61 Hougang Avenue 8",
+        "postal": 538787
+    },
+    {
+        "name": "Punggol View Primary School",
+        "type": "primary_school",
+        "address": "9 Punggol Place",
+        "postal": 828845
+    },
+    {
+        "name": "Qifa Primary School",
+        "type": "primary_school",
+        "address": "50 West Coast Avenue",
+        "postal": 128104
+    },
+    {
+        "name": "Qihua Primary School",
+        "type": "primary_school",
+        "address": "5 Woodlands Street 81",
+        "postal": 738525
+    },
+    {
+        "name": "Queenstown Primary School",
+        "type": "primary_school",
+        "address": "310 Margaret Dr",
+        "postal": 149303
+    },
+    {
+        "name": "Radin Mas Primary School",
+        "type": "primary_school",
+        "address": "1 Bukit Purmei Avenue",
+        "postal": 99840
+    },
+    {
+        "name": "Raffles Girls' Primary School",
+        "type": "primary_school",
+        "address": "21 Hillcrest Road",
+        "postal": 289072
+    },
+    {
+        "name": "Red Swastika School",
+        "type": "primary_school",
+        "address": "350 Bedok North Avenue 3",
+        "postal": 469719
+    },
+    {
+        "name": "River Valley Primary School",
+        "type": "primary_school",
+        "address": "2 River Valley Green",
+        "postal": 237993
+    },
+    {
+        "name": "Riverside Primary School",
+        "type": "primary_school",
+        "address": "110 Woodlands Crescent",
+        "postal": 737803
+    },
+    {
+        "name": "Rivervale Primary School",
+        "type": "primary_school",
+        "address": "80 Rivervale Drive",
+        "postal": 545092
+    },
+    {
+        "name": "Rosyth School",
+        "type": "primary_school",
+        "address": "21 Serangoon North Avenue 4",
+        "postal": 555855
+    },
+    {
+        "name": "Rulang Primary School",
+        "type": "primary_school",
+        "address": "6 Jurong West Street 52",
+        "postal": 649295
+    },
+    {
+        "name": "Sembawang Primary School",
+        "type": "primary_school",
+        "address": "10 Sembawang Drive",
+        "postal": 757715
+    },
+    {
+        "name": "Seng Kang Primary School",
+        "type": "primary_school",
+        "address": "21 Compassvale Walk",
+        "postal": 545166
+    },
+    {
+        "name": "Sengkang Green Primary School",
+        "type": "primary_school",
+        "address": "15 Fernvale Road",
+        "postal": 797636
+    },
+    {
+        "name": "Shuqun Primary School",
+        "type": "primary_school",
+        "address": "8 Jurong West Street 51",
+        "postal": 649332
+    },
+    {
+        "name": "Si Ling Primary School",
+        "type": "primary_school",
+        "address": "61 Woodlands Avenue 1",
+        "postal": 739067
+    },
+    {
+        "name": "Singapore Chinese Girls' Primary School",
+        "type": "primary_school",
+        "address": "190 Dunearn Road",
+        "postal": 309437
+    },
+    {
+        "name": "South View Primary School",
+        "type": "primary_school",
+        "address": "6 Choa Chu Kang Central",
+        "postal": 689762
+    },
+    {
+        "name": "Springdale Primary School",
+        "type": "primary_school",
+        "address": "71 Anchorvale Link",
+        "postal": 544799
+    },
+    {
+        "name": "St. Andrew's Junior School",
+        "type": "primary_school",
+        "address": "2 Francis Thomas Drive",
+        "postal": 359337
+    },
+    {
+        "name": "St. Anthony's Canossian Primary School",
+        "type": "primary_school",
+        "address": "1602 Bedok North Ave 4",
+        "postal": 469701
+    },
+    {
+        "name": "St. Anthony's Primary School",
+        "type": "primary_school",
+        "address": "30 Bukit Batok St 32",
+        "postal": 659401
+    },
+    {
+        "name": "St. Gabriel's Primary School",
+        "type": "primary_school",
+        "address": "220 Lorong Chuan",
+        "postal": 556742
+    },
+    {
+        "name": "St. Hilda's Primary School",
+        "type": "primary_school",
+        "address": "2 Tampines Ave 3",
+        "postal": 529706
+    },
+    {
+        "name": "St. Joseph's Institution Junior",
+        "type": "primary_school",
+        "address": "3 Essex Road",
+        "postal": 309331
+    },
+    {
+        "name": "St. Margaret's School (Primary)",
+        "type": "primary_school",
+        "address": "99 Wilkie Road",
+        "postal": 228091
+    },
+    {
+        "name": "St. Stephen's School",
+        "type": "primary_school",
+        "address": "20 Siglap View",
+        "postal": 455789
+    },
+    {
+        "name": "Tampines North Primary School",
+        "type": "primary_school",
+        "address": "30 Tampines Avenue 9",
+        "postal": 529565
+    },
+    {
+        "name": "Tampines Primary School",
+        "type": "primary_school",
+        "address": "250 Tampines Street 12",
+        "postal": 529426
+    },
+    {
+        "name": "Tanjong Katong Primary School",
+        "type": "primary_school",
+        "address": "10 Seraya Road",
+        "postal": 437259
+    },
+    {
+        "name": "Tao Nan School",
+        "type": "primary_school",
+        "address": "49 Marine Crescent",
+        "postal": 449761
+    },
+    {
+        "name": "Teck Ghee Primary School",
+        "type": "primary_school",
+        "address": "1 Ang Mo Kio Street 32",
+        "postal": 569299
+    },
+    {
+        "name": "Teck Whye Primary School",
+        "type": "primary_school",
+        "address": "11 Teck Whye Walk",
+        "postal": 688261
+    },
+    {
+        "name": "Telok Kurau Primary School",
+        "type": "primary_school",
+        "address": "50 Bedok Reservoir Rd",
+        "postal": 479239
+    },
+    {
+        "name": "Temasek Primary School",
+        "type": "primary_school",
+        "address": "501 Bedok South Ave 3",
+        "postal": 469300
+    },
+    {
+        "name": "Townsville Primary School",
+        "type": "primary_school",
+        "address": "3 Ang Mo Kio Ave 10",
+        "postal": 569730
+    },
+    {
+        "name": "Unity Primary School",
+        "type": "primary_school",
+        "address": "21 Choa Chu Kang Crescent",
+        "postal": 688268
+    },
+    {
+        "name": "Valour Primary School",
+        "type": "primary_school",
+        "address": "49 Punggol Central",
+        "postal": 828728
+    },
+    {
+        "name": "Waterway Primary School",
+        "type": "primary_school",
+        "address": "70 Punggol Drive",
+        "postal": 828802
+    },
+    {
+        "name": "Wellington Primary School",
+        "type": "primary_school",
+        "address": "10 Wellington Circle",
+        "postal": 757702
+    },
+    {
+        "name": "West Grove Primary School",
+        "type": "primary_school",
+        "address": "1 Jurong West St 72",
+        "postal": 649223
+    },
+    {
+        "name": "West Spring Primary School",
+        "type": "primary_school",
+        "address": "60 Bukit Panjang Ring Road",
+        "postal": 679946
+    },
+    {
+        "name": "West View Primary School",
+        "type": "primary_school",
+        "address": "31 Senja Road",
+        "postal": 677742
+    },
+    {
+        "name": "Westwood Primary School",
+        "type": "primary_school",
+        "address": "1 Jurong West Street 73",
+        "postal": 649188
+    },
+    {
+        "name": "White Sands Primary School",
+        "type": "primary_school",
+        "address": "2 Pasir Ris St 11",
+        "postal": 519075
+    },
+    {
+        "name": "Woodgrove Primary School",
+        "type": "primary_school",
+        "address": "2 Woodlands Drive 14",
+        "postal": 738079
+    },
+    {
+        "name": "Woodlands Primary School",
+        "type": "primary_school",
+        "address": "10 Woodlands Drive 50",
+        "postal": 738853
+    },
+    {
+        "name": "Woodlands Ring Primary School",
+        "type": "primary_school",
+        "address": "11 Woodlands Ring Road",
+        "postal": 738240
+    },
+    {
+        "name": "Xinghua Primary School",
+        "type": "primary_school",
+        "address": "45 Hougang Avenue 1",
+        "postal": 538882
+    },
+    {
+        "name": "Xingnan Primary School",
+        "type": "primary_school",
+        "address": "5 Jurong West Street 91",
+        "postal": 649036
+    },
+    {
+        "name": "Xinmin Primary School",
+        "type": "primary_school",
+        "address": "9 Hougang Avenue 8",
+        "postal": 538784
+    },
+    {
+        "name": "Xishan Primary School",
+        "type": "primary_school",
+        "address": "8 Yishun Street 21",
+        "postal": 768611
+    },
+    {
+        "name": "Yangzheng Primary School",
+        "type": "primary_school",
+        "address": "15 Serangoon Avenue 3",
+        "postal": 556108
+    },
+    {
+        "name": "Yew Tee Primary School",
+        "type": "primary_school",
+        "address": "10 Choa Chu Kang St 64",
+        "postal": 689100
+    },
+    {
+        "name": "Yio Chu Kang Primary School",
+        "type": "primary_school",
+        "address": "1 Hougang Street 51",
+        "postal": 538720
+    },
+    {
+        "name": "Yishun Primary School",
+        "type": "primary_school",
+        "address": "500 Yishun Ring Road",
+        "postal": 768679
+    },
+    {
+        "name": "Yu Neng Primary School",
+        "type": "primary_school",
+        "address": "56 Bedok North St 3",
+        "postal": 469623
+    },
+    {
+        "name": "Yuhua Primary School",
+        "type": "primary_school",
+        "address": "158 Jurong East Street 24",
+        "postal": 609558
+    },
+    {
+        "name": "Yumin Primary School",
+        "type": "primary_school",
+        "address": "3 Tampines Street 21",
+        "postal": 529393
+    },
+    {
+        "name": "Zhangde Primary School",
+        "type": "primary_school",
+        "address": "51 Jalan Membina",
+        "postal": 169485
+    },
+    {
+        "name": "Zhenghua Primary School",
+        "type": "primary_school",
+        "address": "9 Fajar Road",
+        "postal": 679002
+    },
+    {
+        "name": "Zhonghua Primary School",
+        "type": "primary_school",
+        "address": "12 Serangoon Avenue 4",
+        "postal": 556095
+    },
+    {
+        "name": "Admiralty Secondary School",
+        "type": "secondary_school",
+        "address": "31 Woodlands Crescent",
+        "postal": 737916
+    },
+    {
+        "name": "Ahmad Ibrahim Secondary School",
+        "type": "secondary_school",
+        "address": "751 Yishun Avenue 7",
+        "postal": 768928
+    },
+    {
+        "name": "Anderson Secondary School",
+        "type": "secondary_school",
+        "address": "10 Ang Mo Kio Street 53",
+        "postal": 569206
+    },
+    {
+        "name": "Ang Mo Kio Secondary School",
+        "type": "secondary_school",
+        "address": "6 Ang Mo Kio Street 22",
+        "postal": 569362
+    },
+    {
+        "name": "Anglican High School",
+        "type": "secondary_school",
+        "address": "600 Upper Changi Road",
+        "postal": 487012
+    },
+    {
+        "name": "Anglo-Chinese School (Barker Road)",
+        "type": "secondary_school",
+        "address": "60 Barker Road",
+        "postal": 309919
+    },
+    {
+        "name": "Anglo-Chinese School (Independent) (Secondary)",
+        "type": "secondary_school",
+        "address": "121 Dover Road",
+        "postal": 139650
+    },
+    {
+        "name": "Assumption English School",
+        "type": "secondary_school",
+        "address": "622 Upper Bukit Timah Road",
+        "postal": 678117
+    },
+    {
+        "name": "Assumption Pathway School",
+        "type": "secondary_school",
+        "address": "30 Cashew Road",
+        "postal": 679697
+    },
+    {
+        "name": "Bartley Secondary School",
+        "type": "secondary_school",
+        "address": "10 Jalan Bunga Rampai",
+        "postal": 538403
+    },
+    {
+        "name": "Beatty Secondary School",
+        "type": "secondary_school",
+        "address": "1 Toa Payoh North",
+        "postal": 318990
+    },
+    {
+        "name": "Bedok Green Secondary School",
+        "type": "secondary_school",
+        "address": "360 Bedok North Ave 3",
+        "postal": 469722
+    },
+    {
+        "name": "Bedok South Secondary School",
+        "type": "secondary_school",
+        "address": "1 Jalan Langgar Bedok",
+        "postal": 468585
+    },
+    {
+        "name": "Bedok View Secondary School",
+        "type": "secondary_school",
+        "address": "6 Bedok South Avenue 3",
+        "postal": 469293
+    },
+    {
+        "name": "Bendemeer Secondary School",
+        "type": "secondary_school",
+        "address": "1 St Wilfred Road",
+        "postal": 327919
+    },
+    {
+        "name": "Boon Lay Secondary School",
+        "type": "secondary_school",
+        "address": "11 Jurong West Street 65",
+        "postal": 648354
+    },
+    {
+        "name": "Bowen Secondary School",
+        "type": "secondary_school",
+        "address": "2 Lorong Napiri",
+        "postal": 547529
+    },
+    {
+        "name": "Broadrick Secondary School",
+        "type": "secondary_school",
+        "address": "61 Dakota Crescent",
+        "postal": 399935
+    },
+    {
+        "name": "Bukit Batok Secondary School",
+        "type": "secondary_school",
+        "address": "50 Bukit Batok West Ave 8",
+        "postal": 658962
+    },
+    {
+        "name": "Bukit Merah Secondary School",
+        "type": "secondary_school",
+        "address": "10 Lengkok Bahru",
+        "postal": 159050
+    },
+    {
+        "name": "Bukit Panjang Govt. High School",
+        "type": "secondary_school",
+        "address": "7 Choa Chu Kang Ave 4",
+        "postal": 689809
+    },
+    {
+        "name": "Bukit View Secondary School",
+        "type": "secondary_school",
+        "address": "16 Bukit Batok Street 21",
+        "postal": 659633
+    },
+    {
+        "name": "Canberra Secondary School",
+        "type": "secondary_school",
+        "address": "51 Sembawang Drive",
+        "postal": 757699
+    },
+    {
+        "name": "Catholic High School (Secondary)",
+        "type": "secondary_school",
+        "address": "9 Bishan Street 22",
+        "postal": 579767
+    },
+    {
+        "name": "Cedar Girls' Secondary School",
+        "type": "secondary_school",
+        "address": "1 Cedar Avenue",
+        "postal": 349692
+    },
+    {
+        "name": "Changkat Changi Secondary School",
+        "type": "secondary_school",
+        "address": "23 Simei St 3",
+        "postal": 529894
+    },
+    {
+        "name": "CHIJ Katong Convent",
+        "type": "secondary_school",
+        "address": "346 Marine Terrace",
+        "postal": 449150
+    },
+    {
+        "name": "CHIJ Secondary (Toa Payoh)",
+        "type": "secondary_school",
+        "address": "626 Lorong 1 Toa Payoh",
+        "postal": 319764
+    },
+    {
+        "name": "CHIJ St. Joseph's Convent",
+        "type": "secondary_school",
+        "address": "62 Sengkang East Way",
+        "postal": 548595
+    },
+    {
+        "name": "CHIJ St. Nicholas Girls' School (Secondary)",
+        "type": "secondary_school",
+        "address": "501 Ang Mo Kio Street 13",
+        "postal": 569405
+    },
+    {
+        "name": "CHIJ St. Theresa's Convent",
+        "type": "secondary_school",
+        "address": "160 Lower Delta Road",
+        "postal": 99138
+    },
+    {
+        "name": "Christ Church Secondary School",
+        "type": "secondary_school",
+        "address": "20 Woodlands Drive 17",
+        "postal": 737924
+    },
+    {
+        "name": "Chua Chu Kang Secondary School",
+        "type": "secondary_school",
+        "address": "31 Teck Whye Crescent",
+        "postal": 688848
+    },
+    {
+        "name": "Chung Cheng High School (Main)",
+        "type": "secondary_school",
+        "address": "50 Goodman Road",
+        "postal": 439012
+    },
+    {
+        "name": "Chung Cheng High School (Yishun)",
+        "type": "secondary_school",
+        "address": "11 Yishun Street 61",
+        "postal": 768547
+    },
+    {
+        "name": "Clementi Town Secondary School",
+        "type": "secondary_school",
+        "address": "10 Clementi Ave 3",
+        "postal": 129904
+    },
+    {
+        "name": "Commonwealth Secondary School",
+        "type": "secondary_school",
+        "address": "698 West Coast Road",
+        "postal": 608784
+    },
+    {
+        "name": "Compassvale Secondary School",
+        "type": "secondary_school",
+        "address": "51 Compassvale Crescent",
+        "postal": 545083
+    },
+    {
+        "name": "Crescent Girls' School",
+        "type": "secondary_school",
+        "address": "357 Tanglin Road",
+        "postal": 247961
+    },
+    {
+        "name": "Crest Secondary School",
+        "type": "secondary_school",
+        "address": "561 Jurong East Street 24",
+        "postal": 609561
+    },
+    {
+        "name": "Damai Secondary School",
+        "type": "secondary_school",
+        "address": "4800 Bedok Reservoir Road",
+        "postal": 479229
+    },
+    {
+        "name": "Deyi Secondary School",
+        "type": "secondary_school",
+        "address": "1 Ang Mo Kio Street 42",
+        "postal": 569277
+    },
+    {
+        "name": "Dunearn Secondary School",
+        "type": "secondary_school",
+        "address": "21 Bukit Batok West Avenue 2",
+        "postal": 659204
+    },
+    {
+        "name": "Dunman High School (Secondary)",
+        "type": "secondary_school",
+        "address": "10 Tanjong Rhu Road",
+        "postal": 436895
+    },
+    {
+        "name": "Dunman Secondary School",
+        "type": "secondary_school",
+        "address": "21 Tampines Street 45",
+        "postal": 529093
+    },
+    {
+        "name": "East Spring Secondary School",
+        "type": "secondary_school",
+        "address": "30 Tampines Street 34",
+        "postal": 529231
+    },
+    {
+        "name": "Edgefield Secondary School",
+        "type": "secondary_school",
+        "address": "36 Punggol Field",
+        "postal": 828814
+    },
+    {
+        "name": "Evergreen Secondary School",
+        "type": "secondary_school",
+        "address": "11 Woodlands Street 83",
+        "postal": 738489
+    },
+    {
+        "name": "Fairfield Methodist School (Secondary)",
+        "type": "secondary_school",
+        "address": "102 Dover Road",
+        "postal": 139649
+    },
+    {
+        "name": "Fuchun Secondary School",
+        "type": "secondary_school",
+        "address": "21 Woodlands Avenue 1",
+        "postal": 739062
+    },
+    {
+        "name": "Fuhua Secondary School",
+        "type": "secondary_school",
+        "address": "5 Jurong West Street 41",
+        "postal": 649410
+    },
+    {
+        "name": "Gan Eng Seng School",
+        "type": "secondary_school",
+        "address": "1 Henderson Road",
+        "postal": 159561
+    },
+    {
+        "name": "Geylang Methodist School (Secondary)",
+        "type": "secondary_school",
+        "address": "2 Geylang East Central",
+        "postal": 389705
+    },
+    {
+        "name": "Greendale Secondary School",
+        "type": "secondary_school",
+        "address": "51 Edgedale Plains",
+        "postal": 828866
+    },
+    {
+        "name": "Greenridge Secondary School",
+        "type": "secondary_school",
+        "address": "31 Gangsa Road",
+        "postal": 678972
+    },
+    {
+        "name": "Guangyang Secondary School",
+        "type": "secondary_school",
+        "address": "8 Bishan Street 12",
+        "postal": 579807
+    },
+    {
+        "name": "Hai Sing Catholic School",
+        "type": "secondary_school",
+        "address": "9 Pasir Ris Drive 6",
+        "postal": 519421
+    },
+    {
+        "name": "Hillgrove Secondary School",
+        "type": "secondary_school",
+        "address": "10 Bukit Batok Street 52",
+        "postal": 659250
+    },
+    {
+        "name": "Holy Innocents' High School",
+        "type": "secondary_school",
+        "address": "1191 Upper Serangoon Road",
+        "postal": 534786
+    },
+    {
+        "name": "Hougang Secondary School",
+        "type": "secondary_school",
+        "address": "2 Hougang Street 93",
+        "postal": 534256
+    },
+    {
+        "name": "Hua Yi Secondary School",
+        "type": "secondary_school",
+        "address": "60 Jurong West St 42",
+        "postal": 649371
+    },
+    {
+        "name": "Hwa Chong Institution (Secondary)",
+        "type": "secondary_school",
+        "address": "661 Bukit Timah Road",
+        "postal": 269734
+    },
+    {
+        "name": "Junyuan Secondary School",
+        "type": "secondary_school",
+        "address": "11 Tampines Street 84",
+        "postal": 528933
+    },
+    {
+        "name": "Jurong Secondary School",
+        "type": "secondary_school",
+        "address": "31 Yuan Ching Road",
+        "postal": 618652
+    },
+    {
+        "name": "Jurong West Secondary School",
+        "type": "secondary_school",
+        "address": "61 Jurong West Street 65",
+        "postal": 648348
+    },
+    {
+        "name": "Jurongville Secondary School",
+        "type": "secondary_school",
+        "address": "202 Jurong East Avenue 1",
+        "postal": 609790
+    },
+    {
+        "name": "Juying Secondary School",
+        "type": "secondary_school",
+        "address": "33 Jurong West Street 91",
+        "postal": 649038
+    },
+    {
+        "name": "Kent Ridge Secondary School",
+        "type": "secondary_school",
+        "address": "147 West Coast Road",
+        "postal": 127368
+    },
+    {
+        "name": "Kranji Secondary School",
+        "type": "secondary_school",
+        "address": "61 Choa Chu Kang Street 51",
+        "postal": 689333
+    },
+    {
+        "name": "Kuo Chuan Presbyterian Secondary School",
+        "type": "secondary_school",
+        "address": "10 Bishan Street 13",
+        "postal": 579795
+    },
+    {
+        "name": "Loyang View Secondary School",
+        "type": "secondary_school",
+        "address": "12 Pasir Ris Street 11",
+        "postal": 519073
+    },
+    {
+        "name": "Manjusri Secondary School",
+        "type": "secondary_school",
+        "address": "20 Ubi Avenue 1",
+        "postal": 408940
+    },
+    {
+        "name": "Maris Stella High School (Secondary)",
+        "type": "secondary_school",
+        "address": "25 Mount Vernon Road",
+        "postal": 368051
+    },
+    {
+        "name": "Marsiling Secondary School",
+        "type": "secondary_school",
+        "address": "12 Marsiling Road",
+        "postal": 739110
+    },
+    {
+        "name": "Mayflower Secondary School",
+        "type": "secondary_school",
+        "address": "2 Ang Mo Kio Street 21",
+        "postal": 569384
+    },
+    {
+        "name": "Meridian Secondary School",
+        "type": "secondary_school",
+        "address": "31 Pasir Ris Street 51",
+        "postal": 518901
+    },
+    {
+        "name": "Methodist Girls' School (Secondary)",
+        "type": "secondary_school",
+        "address": "11 Blackmore Drive",
+        "postal": 599986
+    },
+    {
+        "name": "Montfort Secondary School",
+        "type": "secondary_school",
+        "address": "50 Hougang Avenue 8",
+        "postal": 538785
+    },
+    {
+        "name": "Nan Chiau High School",
+        "type": "secondary_school",
+        "address": "20 Anchorvale Link",
+        "postal": 545079
+    },
+    {
+        "name": "Nan Hua High School",
+        "type": "secondary_school",
+        "address": "41 Clementi Avenue 1",
+        "postal": 129956
+    },
+    {
+        "name": "Nanyang Girls' High School",
+        "type": "secondary_school",
+        "address": "2 Linden Drive",
+        "postal": 288683
+    },
+    {
+        "name": "National Junior College (Secondary)",
+        "type": "secondary_school",
+        "address": "37 Hillcrest Road",
+        "postal": 288913
+    },
+    {
+        "name": "Naval Base Secondary School",
+        "type": "secondary_school",
+        "address": "901 Yishun Ring Road",
+        "postal": 768689
+    },
+    {
+        "name": "New Town Secondary School",
+        "type": "secondary_school",
+        "address": "1020 Dover Road",
+        "postal": 139657
+    },
+    {
+        "name": "Ngee Ann Secondary School",
+        "type": "secondary_school",
+        "address": "1 Tampines Street 32",
+        "postal": 529283
+    },
+    {
+        "name": "North Vista Secondary School",
+        "type": "secondary_school",
+        "address": "11 Rivervale Link",
+        "postal": 545081
+    },
+    {
+        "name": "Northbrooks Secondary School",
+        "type": "secondary_school",
+        "address": "585 Yishun Ring Road",
+        "postal": 768692
+    },
+    {
+        "name": "Northland Secondary School",
+        "type": "secondary_school",
+        "address": "3 Yishun Street 22",
+        "postal": 768578
+    },
+    {
+        "name": "Northlight School",
+        "type": "secondary_school",
+        "address": "151 Towner Road",
+        "postal": 327830
+    },
+    {
+        "name": "NUS High School of Mathematics and Science",
+        "type": "secondary_school",
+        "address": "20 Clementi Avenue 1",
+        "postal": 129957
+    },
+    {
+        "name": "Orchid Park Secondary School",
+        "type": "secondary_school",
+        "address": "10 Yishun Street 81",
+        "postal": 768454
+    },
+    {
+        "name": "Outram Secondary School",
+        "type": "secondary_school",
+        "address": "3 York Hill",
+        "postal": 168622
+    },
+    {
+        "name": "Pasir Ris Crest Secondary School",
+        "type": "secondary_school",
+        "address": "11 Pasir Ris Street 41",
+        "postal": 518934
+    },
+    {
+        "name": "Pasir Ris Secondary School",
+        "type": "secondary_school",
+        "address": "390 Tampines Street 21",
+        "postal": 529400
+    },
+    {
+        "name": "Paya Lebar Methodist Girls' School (Secondary)",
+        "type": "secondary_school",
+        "address": "296 Lor Ah Soo",
+        "postal": 536742
+    },
+    {
+        "name": "Pei Hwa Secondary School",
+        "type": "secondary_school",
+        "address": "21 Fernvale Link",
+        "postal": 797702
+    },
+    {
+        "name": "Peicai Secondary School",
+        "type": "secondary_school",
+        "address": "10 Serangoon Avenue 4",
+        "postal": 556094
+    },
+    {
+        "name": "Peirce Secondary School",
+        "type": "secondary_school",
+        "address": "10 Sin Ming Walk",
+        "postal": 575566
+    },
+    {
+        "name": "Presbyterian High School",
+        "type": "secondary_school",
+        "address": "5209 Ang Mo Kio Avenue 6",
+        "postal": 569845
+    },
+    {
+        "name": "Punggol Secondary School",
+        "type": "secondary_school",
+        "address": "51 Edgefield Plains",
+        "postal": 828870
+    },
+    {
+        "name": "Queenstown Secondary School",
+        "type": "secondary_school",
+        "address": "1 Strathmore Road",
+        "postal": 148800
+    },
+    {
+        "name": "Queensway Secondary School",
+        "type": "secondary_school",
+        "address": "2A Margaret Drive",
+        "postal": 149295
+    },
+    {
+        "name": "Raffles Girls' School (Secondary)",
+        "type": "secondary_school",
+        "address": "2 Braddell Rise",
+        "postal": 318871
+    },
+    {
+        "name": "Raffles Institution (Secondary)",
+        "type": "secondary_school",
+        "address": "1 Raffles Institution Lane",
+        "postal": 575954
+    },
+    {
+        "name": "Regent Secondary School",
+        "type": "secondary_school",
+        "address": "50 Choa Chu Kang North 5",
+        "postal": 689621
+    },
+    {
+        "name": "River Valley High School (Secondary)",
+        "type": "secondary_school",
+        "address": "6 Boon Lay Avenue",
+        "postal": 649961
+    },
+    {
+        "name": "Riverside Secondary School",
+        "type": "secondary_school",
+        "address": "3 Woodlands Street 81",
+        "postal": 738524
+    },
+    {
+        "name": "School of Science and Technology, Singapore",
+        "type": "secondary_school",
+        "address": "1 Technology Drive",
+        "postal": 138572
+    },
+    {
+        "name": "School of the Arts, Singapore",
+        "type": "secondary_school",
+        "address": "1 Zubir Said Drive",
+        "postal": 227968
+    },
+    {
+        "name": "Sembawang Secondary School",
+        "type": "secondary_school",
+        "address": "30 Sembawang Crescent",
+        "postal": 757704
+    },
+    {
+        "name": "Seng Kang Secondary School",
+        "type": "secondary_school",
+        "address": "10 Compassvale Lane",
+        "postal": 545090
+    },
+    {
+        "name": "Serangoon Garden Secondary School",
+        "type": "secondary_school",
+        "address": "21 Serangoon North Avenue 1",
+        "postal": 555889
+    },
+    {
+        "name": "Serangoon Secondary School",
+        "type": "secondary_school",
+        "address": "11 Upper Serangoon View",
+        "postal": 534237
+    },
+    {
+        "name": "Singapore Chinese Girls' School",
+        "type": "secondary_school",
+        "address": "190 Dunearn Road",
+        "postal": 309437
+    },
+    {
+        "name": "Singapore Sports School",
+        "type": "secondary_school",
+        "address": "1 Champions Way",
+        "postal": 737913
+    },
+    {
+        "name": "Spectra Secondary School",
+        "type": "secondary_school",
+        "address": "1 Woodlands Drive 64",
+        "postal": 737758
+    },
+    {
+        "name": "Springfield Secondary School",
+        "type": "secondary_school",
+        "address": "30 Tampines Avenue 8",
+        "postal": 529593
+    },
+    {
+        "name": "St. Andrew's Secondary School",
+        "type": "secondary_school",
+        "address": "15 Francis Thomas Drive",
+        "postal": 359342
+    },
+    {
+        "name": "St. Anthony's Canossian Secondary School",
+        "type": "secondary_school",
+        "address": "1600 Bedok North Avenue 4",
+        "postal": 469700
+    },
+    {
+        "name": "St. Gabriel's Secondary School",
+        "type": "secondary_school",
+        "address": "24 Serangoon Avenue 1",
+        "postal": 556140
+    },
+    {
+        "name": "St. Hilda's Secondary School",
+        "type": "secondary_school",
+        "address": "2 Tampines Street 82",
+        "postal": 528986
+    },
+    {
+        "name": "St. Joseph's Institution (Secondary)",
+        "type": "secondary_school",
+        "address": "38 Malcolm Road",
+        "postal": 308274
+    },
+    {
+        "name": "St. Margaret's School (Secondary)",
+        "type": "secondary_school",
+        "address": "111 Farrer Road",
+        "postal": 259240
+    },
+    {
+        "name": "St. Patrick's School",
+        "type": "secondary_school",
+        "address": "490 East Coast Road",
+        "postal": 429058
+    },
+    {
+        "name": "Swiss Cottage Secondary School",
+        "type": "secondary_school",
+        "address": "3 Bukit Batok Street 34",
+        "postal": 659322
+    },
+    {
+        "name": "Tampines Secondary School",
+        "type": "secondary_school",
+        "address": "252 Tampines St 12",
+        "postal": 529427
+    },
+    {
+        "name": "Tanjong Katong Girls' School",
+        "type": "secondary_school",
+        "address": "20 Dunman Lane",
+        "postal": 439272
+    },
+    {
+        "name": "Tanjong Katong Secondary School",
+        "type": "secondary_school",
+        "address": "130 Haig Road",
+        "postal": 438796
+    },
+    {
+        "name": "Temasek Junior College (Secondary)",
+        "type": "secondary_school",
+        "address": "22 Bedok South Road",
+        "postal": 469278
+    },
+    {
+        "name": "Temasek Secondary School",
+        "type": "secondary_school",
+        "address": "600 Upper East Coast Road",
+        "postal": 465561
+    },
+    {
+        "name": "Unity Secondary School",
+        "type": "secondary_school",
+        "address": "20 Choa Chu Kang Street 62",
+        "postal": 689143
+    },
+    {
+        "name": "Victoria School",
+        "type": "secondary_school",
+        "address": "2 Siglap Link",
+        "postal": 448880
+    },
+    {
+        "name": "West Spring Secondary School",
+        "type": "secondary_school",
+        "address": "61 Senja  Road",
+        "postal": 677737
+    },
+    {
+        "name": "Westwood Secondary School",
+        "type": "secondary_school",
+        "address": "11 Jurong West Street 25",
+        "postal": 648350
+    },
+    {
+        "name": "Whitley Secondary School",
+        "type": "secondary_school",
+        "address": "30 Bishan Street 24",
+        "postal": 579747
+    },
+    {
+        "name": "Woodgrove Secondary School",
+        "type": "secondary_school",
+        "address": "3 Woodlands Avenue 6",
+        "postal": 738990
+    },
+    {
+        "name": "Woodlands Ring Secondary School",
+        "type": "secondary_school",
+        "address": "10 Woodlands Ring Road",
+        "postal": 738239
+    },
+    {
+        "name": "Woodlands Secondary School",
+        "type": "secondary_school",
+        "address": "11 Marsiling Road",
+        "postal": 739111
+    },
+    {
+        "name": "Xinmin Secondary School",
+        "type": "secondary_school",
+        "address": "11 Hougang Avenue 8",
+        "postal": 538789
+    },
+    {
+        "name": "Yio Chu Kang Secondary School",
+        "type": "secondary_school",
+        "address": "3063 Ang Mo Kio Avenue 5",
+        "postal": 569868
+    },
+    {
+        "name": "Yishun Secondary School",
+        "type": "secondary_school",
+        "address": "4 Yishun Street 71",
+        "postal": 768516
+    },
+    {
+        "name": "Yishun Town Secondary School",
+        "type": "secondary_school",
+        "address": "6 Yishun Street 21",
+        "postal": 768610
+    },
+    {
+        "name": "Yuan Ching Secondary School",
+        "type": "secondary_school",
+        "address": "103 Yuan Ching Road",
+        "postal": 618654
+    },
+    {
+        "name": "Yuhua Secondary School",
+        "type": "secondary_school",
+        "address": "35 Jurong West Street 41",
+        "postal": 649406
+    },
+    {
+        "name": "Yusof Ishak Secondary School",
+        "type": "secondary_school",
+        "address": "8 Sumang Walk",
+        "postal": 828676
+    },
+    {
+        "name": "Yuying Secondary School",
+        "type": "secondary_school",
+        "address": "47 Hougang Avenue 1",
+        "postal": 538884
+    },
+    {
+        "name": "Zhenghua Secondary School",
+        "type": "secondary_school",
+        "address": "62 Bukit Panjang Ring Road",
+        "postal": 679962
+    },
+    {
+        "name": "Zhonghua Secondary School",
+        "type": "secondary_school",
+        "address": "13 Serangoon Avenue 3",
+        "postal": 556123
+    },
+    {
+        "name": "Anderson Serangoon Junior College",
+        "type": "post_sec_sch",
+        "address": "4500 Ang Mo Kio Avenue 6",
+        "postal": 569843
+    },
+    {
+        "name": "Anglo-Chinese Junior College",
+        "type": "post_sec_sch",
+        "address": "25 Dover Close East",
+        "postal": 139745
+    },
+    {
+        "name": "Anglo-Chinese School (Independent) (Junior College)",
+        "type": "post_sec_sch",
+        "address": "121 Dover Road",
+        "postal": 139650
+    },
+    {
+        "name": "Catholic Junior College",
+        "type": "post_sec_sch",
+        "address": "129 Whitley Road",
+        "postal": 297822
+    },
+    {
+        "name": "Dunman High School (Junior College)",
+        "type": "post_sec_sch",
+        "address": "10 Tanjong Rhu Road",
+        "postal": 436895
+    },
+    {
+        "name": "Eunoia Junior College",
+        "type": "post_sec_sch",
+        "address": "2 Sin Ming Place",
+        "postal": 573838
+    },
+    {
+        "name": "Hwa Chong Institution (Junior College)",
+        "type": "post_sec_sch",
+        "address": "661 Bukit Timah Road",
+        "postal": 269734
+    },
+    {
+        "name": "Jurong Pioneer Junior College",
+        "type": "post_sec_sch",
+        "address": "21 Teck Whye Walk",
+        "postal": 688258
+    },
+    {
+        "name": "Millennia Institute",
+        "type": "post_sec_sch",
+        "address": "60 Bukit Batok West Avenue 8",
+        "postal": 658965
+    },
+    {
+        "name": "Nanyang Junior College",
+        "type": "post_sec_sch",
+        "address": "128 Serangoon Avenue 3",
+        "postal": 556111
+    },
+    {
+        "name": "National Junior College",
+        "type": "post_sec_sch",
+        "address": "37 Hillcrest Road",
+        "postal": 288913
+    },
+    {
+        "name": "NUS High School of Mathematics and Science",
+        "type": "post_sec_sch",
+        "address": "20 Clementi Avenue 1",
+        "postal": 129957
+    },
+    {
+        "name": "Raffles Institution (Junior College)",
+        "type": "post_sec_sch",
+        "address": "1 Raffles Institution Lane",
+        "postal": 575954
+    },
+    {
+        "name": "River Valley High School (Junior College)",
+        "type": "post_sec_sch",
+        "address": "6 Boon Lay Avenue",
+        "postal": 649961
+    },
+    {
+        "name": "School of the Arts, Singapore",
+        "type": "post_sec_sch",
+        "address": "1 Zubir Said Drive",
+        "postal": 227968
+    },
+    {
+        "name": "Singapore Sports School",
+        "type": "post_sec_sch",
+        "address": "1 Champions Way",
+        "postal": 737913
+    },
+    {
+        "name": "St. Andrew's Junior College",
+        "type": "post_sec_sch",
+        "address": "5 Sorby Adams Drive",
+        "postal": 357691
+    },
+    {
+        "name": "St. Joseph's Institution (Junior College)",
+        "type": "post_sec_sch",
+        "address": "38 Malcolm Road",
+        "postal": 308274
+    },
+    {
+        "name": "Tampines Meridian Junior College",
+        "type": "post_sec_sch",
+        "address": "21 Pasir Ris Street 71",
+        "postal": 518799
+    },
+    {
+        "name": "Temasek Junior College",
+        "type": "post_sec_sch",
+        "address": "22 Bedok South Road",
+        "postal": 469278
+    },
+    {
+        "name": "Victoria Junior College",
+        "type": "post_sec_sch",
+        "address": "20 Marine Vista",
+        "postal": 449035
+    },
+    {
+        "name": "Yishun Innova Junior College",
+        "type": "post_sec_sch",
+        "address": "3 Yishun Ring Road",
+        "postal": 768675
+    },
+    {
+        "name": "Institute of Technical Education - College Central",
+        "type": "post_sec_poly_ite",
+        "address": "2 Ang Mo Kio Drive",
+        "postal": 567720
+    },
+    {
+        "name": "Institute of Technical Education - College East",
+        "type": "post_sec_poly_ite",
+        "address": "10 Simei Avenue",
+        "postal": 486047
+    },
+    {
+        "name": "Institute of Technical Education - College West",
+        "type": "post_sec_poly_ite",
+        "address": "1 Choa Chu Kang Grove",
+        "postal": 688236
+    },
+    {
+        "name": "Nanyang Polytechnic",
+        "type": "post_sec_poly_ite",
+        "address": "180 Ang Mo Kio Avenue 8",
+        "postal": 569830
+    },
+    {
+        "name": "Ngee Ann Polytechnic",
+        "type": "post_sec_poly_ite",
+        "address": "535 Clementi Road",
+        "postal": 599489
+    },
+    {
+        "name": "Republic Polytechnic",
+        "type": "post_sec_poly_ite",
+        "address": "9 Woodlands Ave 9",
+        "postal": 738964
+    },
+    {
+        "name": "Singapore Polytechnic",
+        "type": "post_sec_poly_ite",
+        "address": "500 Dover Road",
+        "postal": 139651
+    },
+    {
+        "name": "Temasek Polytechnic",
+        "type": "post_sec_poly_ite",
+        "address": "21 Tampines Ave 1",
+        "postal": 529757
+    },
+    {
+        "name": "National University of Singapore",
+        "type": "university",
+        "address": "21 Lower Kent Ridge Rd",
+        "postal": 119077
+    },
+    {
+        "name": "Nanyang Technological University",
+        "type": "university",
+        "address": "50 Nanyang Avenue",
+        "postal": 639798
+    },
+    {
+        "name": "Singapore Management University",
+        "type": "university",
+        "address": "81 Victoria St",
+        "postal": 188065
+    },
+    {
+        "name": "Singapore University of Technology and Design",
+        "type": "university",
+        "address": "8 Somapah Rd",
+        "postal": 487372
+    },
+    {
+        "name": "Singapore Institute of Technology",
+        "type": "university",
+        "address": "10 Dover Dr",
+        "postal": 138683
+    },
+    {
+        "name": "Singapore University of Social Sciences",
+        "type": "university",
+        "address": "463 Clementi Rd",
+        "postal": 599494
+    },
+    {
+        "name": "Nanyang Academy of Fine Arts",
+        "type": "university",
+        "address": "38 Bencoolen St",
+        "postal": 189654
+    },
+    {
+        "name": "LASALLE College of the Arts",
+        "type": "university",
+        "address": "1 McNally St",
+        "postal": 187940
+    }
+]

@@ -2,23 +2,23 @@ import { Router } from "express";
 import RouteError from "../classes/RouteError.js";
 import { standardRouteErrorCallback } from "../index.js";
 import * as subjectService from "../services/subject-service.js";
+import * as userService from "../services/user-service.js"
 
 const router = Router();
 
-router.post("/", (req, res) => {
-    const { subjects } = req.body;
-
-    if (!subjects || !subjects.length) {
-        const error = new RouteError("missing-arguments", req.originalUrl);
-        return standardRouteErrorCallback(res, req, error);
-    }
-
-    subjectService.getSubjectsByID(subjects)
+router.get("/", (req, res) => {
+    subjectService.getCourses()
         .then((response) => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 });
 
-router.get("/course/:course", (req, res) => {
+router.get("/all", (req, res) => {
+    subjectService.getSubjects()
+        .then((response) => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+});
+
+router.get("/:course", (req, res) => {
     const { course } = req.params;
 
     if (!course) {
@@ -26,20 +26,22 @@ router.get("/course/:course", (req, res) => {
         return standardRouteErrorCallback(res, req, error);
     }
 
-    subjectService.getSubjectsByCourse(course)
+    subjectService.getCourseSubjects(course)
         .then((response) => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 });
 
-router.get("/tutors/:subject", (req, res) => {
-    const { subject } = req.params;
+router.get("/:course/:subject/tutors", (req, res) => {
+    const { course, subject } = req.params;
 
-    if (!subject) {
+    if (!course || !subject) {
         const error = new RouteError("missing-arguments", req.originalUrl);
         return standardRouteErrorCallback(res, req, error);
     }
 
-    subjectService.getTutorsBySubject(subject)
+    const user = userService.verifyAuthentication(req.cookies.user); // If logged in, get the user id
+
+    subjectService.getTutorsByCourseAndSubjectName(course, subject, user.payload?.id)
         .then((response) => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 });

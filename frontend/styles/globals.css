@@ -9,6 +9,12 @@ body {
   color: #2c2c2c;
 }
 
+div.content {
+  min-height: calc(100vh - 19.46rem);
+  display: flex;
+  flex-direction: column;
+}
+
 ::-webkit-scrollbar {
   @apply w-1.5;
 }

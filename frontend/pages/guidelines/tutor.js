@@ -65,7 +65,7 @@ const FAQ = () => {
                     </ul>
                 </div>
                 <p className="py-2">
-                    Lastly, to ensure that this platform is efficient for others,
+                    Last but not least, to ensure that this platform is efficient for others,
                     if you no longer wish to volunteer as a tutor,
                     inform EduHope and{" "}
                     <Link href="/" className="link" passHref>withdraw</Link>{" "}

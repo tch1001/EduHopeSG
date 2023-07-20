@@ -89,7 +89,7 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName, u
     ) AS tutors_with_tutees
     RIGHT JOIN tutor AS t ON tutors_with_tutees.tutor_id  = t.user_id
     INNER JOIN subject AS s ON s.id = ANY(t.subjects) 
-        AND similarity(s.level || ' ' || s.name, $2) >= 0.7
+        AND s.level || ' ' || s.name = $2
     INNER JOIN course AS c ON c.id = s.course 
         AND c.name = $1
     INNER JOIN eduhope_user AS u ON u.id = t.user_id   
@@ -100,7 +100,7 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName, u
         AND t.commitment_end >= now()   
     ORDER BY COALESCE(tutors_with_tutees.num_tutees, 0)     
     `
-    const { rows: tutors } = await query(queryText, [courseName, subjectName, userID || ""]);
+    const { rows: tutors } = await query(queryText, [courseName, subjectName, userID || null]);
 
     tutors.forEach(tutor => {
         tutor.preferred_communications = tutor.preferred_communications.slice(1, -1).split(",") // Converts postgres array to js array
@@ -262,7 +262,7 @@ async function getSubjectInfoByName(subjectName) {
         SELECT s.level || ' ' || s.name AS name, s.id,
             LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
         FROM subject s
-        WHERE similarity(s.level || ' ' || s.name, $1) >= 0.7;
+        WHERE s.level || ' ' || s.name = $1
     `;
 
     const { rows: subjects } = await query(queryText, [subjectName]);

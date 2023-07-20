@@ -473,11 +473,11 @@ const TutorSignUp = ({ subjects }) => {
             </Card>
             <p className="p-2">
                 Already have a tutor account with us?{" "}
-                <Link href="/login" className="link" passHref>Login in here</Link>
+                <Link href={`/login?originalURL=${originalURL}`} className="link" passHref>Login in here</Link>
             </p>
             <p className="p-1">
                 Sign up as a tutee instead?{" "}
-                <Link href="/signup" className="link" passHref>Register as a tutee</Link>
+                <Link href={`/signup?originalURL=${originalURL}`} className="link" passHref>Register as a tutee</Link>
             </p>
         </Container>
     );

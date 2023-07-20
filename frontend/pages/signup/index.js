@@ -375,7 +375,7 @@ const SignUp = () => {
             </p>
             <p className="p-1">
                 Sign up as a tutor?{" "}
-                <Link href="/signup/tutor" className="link" passHref>Become a tutor</Link>
+                <Link href={`/signup/tutor?originalURL=${originalURL}`} className="link" passHref>Become a tutor</Link>
             </p>
         </Container>
     );

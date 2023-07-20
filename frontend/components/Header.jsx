@@ -54,7 +54,7 @@ export const Header = () => {
     const UserSection = () => {
         if (!user.id) {
             return (
-                <Button secondary href={`/login?originalURL=${router.pathname}`}>
+                <Button secondary href={`/login?originalURL=${router.asPath}`}>
                     Login
                 </Button>
             )

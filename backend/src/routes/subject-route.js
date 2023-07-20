@@ -41,7 +41,7 @@ router.get("/:course/:subject/tutors", (req, res) => {
 
     const user = userService.verifyAuthentication(req.cookies.user); // If logged in, get the user id
 
-    subjectService.getTutorsByCourseAndSubjectName(course, subject, user.payload?.id)
+    subjectService.getTutorsByCourseAndSubjectName(course, subject, user?.payload?.id || "")
         .then((response) => res.status(200).send(response))
         .catch((err) => standardRouteErrorCallback(res, req, err));
 });

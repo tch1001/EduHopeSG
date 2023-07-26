@@ -50,6 +50,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
 
     const [user, { logout }] = useUser()
     const [loading, setLoading] = useState(false);
+    const [passwordLoading, setPasswordLoading] = useState(false);
     const [schools, setSchools] = useState([]);
     const [selection, setSelection] = useState("Personal Particulars")
 
@@ -243,6 +244,64 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
         initialValues: initTutorSettings
     })
 
+    const resetPasswordSchema = Yup.object({
+        currentPassword: Yup.string()
+            .default("")
+            .required("Required"),
+        newPassword: Yup.string()
+            .default("")
+            .required("Required")
+            .password()
+            .min(12, "Password has to be at least 12 characters long"),
+        confirmNewPassword: Yup.string()
+            .default("")
+            .required("Required")
+            .password()
+            .min(12, "Password has to be at least 12 characters long")
+            .test("test-match", "Passwords should match", (value, context) => {
+                const { newPassword } = context.parent;
+                return newPassword === value;
+            }),
+    })
+    async function handleResetPasswordSave({
+        currentPassword,
+        newPassword
+    }) {
+        if (loading) return;
+        setPasswordLoading(true);
+
+        try {
+            const data = {
+                password: currentPassword,
+                new_password: newPassword
+            }
+
+            const response = await request({
+                method: "patch",
+                path: "/user/password",
+                data
+            });
+
+            setDialogSettings({
+                title: 'Password Updated!',
+                message: `Make sure to use this new password from now onwards!`,
+                display: true,
+                buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
+            });
+
+            resetPasswordFormik.resetForm()
+        
+        } catch (err) {
+            displayErrorDialog(err);
+        } finally {
+            setPasswordLoading(false);
+        }
+    }
+    const resetPasswordFormik = useFormik({
+        validationSchema: resetPasswordSchema,
+        onSubmit: handleResetPasswordSave,
+        initialValues: resetPasswordSchema.default()
+    })
 
     const profileFields = {
         "Personal Particulars":
@@ -368,7 +427,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                 <div className="w-full max-w-sm px-4 py-2">
                     <FormErrorDisplay field="averageResponseTime" formik={tutorSettingsFormik} />
                     <label htmlFor="averageResponseTime">{"What's your average response time?"}</label>
-                    <input id="averageResponseTime" name="averageResponseTime" {...tutorSettingsFormik.getFieldProps("averageResponseTime")} disabled={tutorSettingsSaved}/>
+                    <input id="averageResponseTime" name="averageResponseTime" {...tutorSettingsFormik.getFieldProps("averageResponseTime")} disabled={tutorSettingsSaved} />
                 </div>
                 <div className="w-full max-w-sm px-4 py-2">
                     <FormErrorDisplay field="preferredCommunications" formik={tutorSettingsFormik} />
@@ -469,6 +528,66 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                     {profileFields[selection]}
                 </form>
             </Card>
+            <Card className="p-4 m-2 shadow-md shadow-slate-300 sm:min-w-xs">
+                <form
+                    className={styles.form}
+                    onSubmit={(e) => e.preventDefault()}
+                    noValidate
+                >
+                    <h2 className="font-bold text-xl">Reset Password</h2>
+                    <div className="w-full max-w-sm px-4 py-2">
+                        <FormErrorDisplay field="currentPassword" formik={resetPasswordFormik} />
+                        <input
+                            id="currentPassword"
+                            type="password"
+                            autoComplete="currentPassword"
+                            placeholder="Current Password"
+                            className={styles.input}
+                            {...resetPasswordFormik.getFieldProps("currentPassword")}
+                        />
+                    </div>
+                    <div className="w-full max-w-sm px-4 py-2">
+                        <FormErrorDisplay field="newPassword" formik={resetPasswordFormik} />
+                        <input
+                            id="newPassword"
+                            type="password"
+                            autoComplete="newPassword"
+                            placeholder="New password"
+                            className={styles.input}
+                            {...resetPasswordFormik.getFieldProps("newPassword")}
+                        />
+                    </div>
+                    <div className="w-full max-w-sm px-4 py-2">
+                        <FormErrorDisplay field="confirmNewPassword" formik={resetPasswordFormik} />
+                        <input
+                            id="confirmNewPassword"
+                            type="password"
+                            autoComplete="new-password"
+                            placeholder="Confirm new password"
+                            className={styles.input}
+                            {...resetPasswordFormik.getFieldProps("confirmNewPassword")}
+                        />
+                    </div>
+                    <Button
+                        type="submit"
+                        onClick={() => {
+                            if (!Object.keys(resetPasswordFormik.errors).length) {
+                                resetPasswordFormik.handleSubmit()
+                            } else {
+                                resetPasswordFormik.setTouched(Object.fromEntries(Object.keys(resetPasswordFormik.values).map(field => [field, true])))                                
+                                displayErrorDialog({
+                                    name: "Missing/Invalid Field Value(s)".toUpperCase(),
+                                    message: "One or more fields have missing or invalid values",
+                                    details: "Please refer to the red error message above each field for more information"
+                                })
+                            }
+                        }}
+                        loading={passwordLoading}
+                    >
+                        Reset
+                    </Button>
+                </form>
+            </Card>
         </Container>
     )
 }
@@ -487,8 +606,8 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
             },
             credentials: "include"
         });
-        const { subjects } = await subjectResponse.json()        
-    
+        const { subjects } = await subjectResponse.json()
+
         const response = await request({
             method: "get",
             path: "/user/profile",
@@ -528,8 +647,8 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
                 commitmentEnd: correctedDate,
                 tuteeLimit: response.tutorData.tutee_limit,
                 averageResponseTime: response.tutorData.average_response_time,
-                preferredCommunications: response.tutorData.preferred_communications.map(mode => ({value: mode, label: mode})),
-                subjects: response.tutorData.subjects.map(sub_id => ({value: sub_id, label: subjectsMapping[sub_id]}))
+                preferredCommunications: response.tutorData.preferred_communications.map(mode => ({ value: mode, label: mode })),
+                subjects: response.tutorData.subjects.map(sub_id => ({ value: sub_id, label: subjectsMapping[sub_id] }))
             }
             return {
                 props: {

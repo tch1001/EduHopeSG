@@ -1,6 +1,6 @@
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
-import { sendTuitionRequest, notifyTuitionSubjectChange } from "./email-service.js";
+import { sendTuitionRequest, notifyTutorRequestCancellation, notifyTutorRemoval} from "./email-service.js";
 import * as userService from "../services/user-service.js";
 import * as tutorService from "../services/tutor-service.js";
 

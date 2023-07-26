@@ -135,8 +135,8 @@ export async function acceptTutee(relationshipID, tutorID) {
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
     const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
 
-    const tutee = getByID(tuteeID, "email")
-    const tutor = getByID(tutorID, "email")
+    const tutee = userService.getByID(tuteeID, "email")
+    const tutor = userService.getByID(tutorID, "email")
 
     // notify tutee of acceptance
     await notifyTuteeAcceptance(tutee, tutor, subjectID);
@@ -161,8 +161,8 @@ export async function rejectTutee(relationshipID, reason) {
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
     const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
 
-    const tutee = getByID(tuteeID, "email")
-    const tutor = getByID(tutorID, "email")
+    const tutee = userService.getByID(tuteeID, "email")
+    const tutor = userService.getByID(tutorID, "email")
 
     // notify tutee of rejection
     await query(`DELETE ${queryText}`, [relationshipID]);
@@ -190,8 +190,8 @@ export async function removeTutee(relationshipID, reason) {
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
     const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
 
-    const tutee = getByID(tuteeID, "email")
-    const tutor = getByID(tutorID, "email")
+    const tutee = userService.getByID(tuteeID, "email")
+    const tutor = userService.getByID(tutorID, "email")
 
     // notify tutee of removal
     await query(`DELETE ${queryText}`, [relationshipID]);

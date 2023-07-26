@@ -191,6 +191,12 @@
         "message": "Incorrect email or password",
         "details": "Provide the correct email and password combination"
     },
+    "user-invalid-password": {
+        "status": 401,
+        "name": "Incorrect current password",
+        "message": "Incorrect current password provided",
+        "details": "Provide the correct current password"
+    },    
     "user-unauthenticated": {
         "status": 401,
         "name": "Not unauthenticated: cannot proceed",

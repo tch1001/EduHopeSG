@@ -594,7 +594,7 @@ export async function updatePassword(userID, currentPassword, newPassword) {
 
     // verify password
     const correct = await verifyPassword(currentPassword, user.password);
-    if (!correct) throw new ServiceError("user-login-failed");
+    if (!correct) throw new ServiceError("user-invalid-password");
 
     // change password
     const updatedPassword = await hashPassword(newPassword);

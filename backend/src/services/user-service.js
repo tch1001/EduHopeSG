@@ -295,8 +295,8 @@ export function validateUserObject(user, validate = {
     if (validate.telegram) {
         if (!user.telegram) throw new ServiceError("user-no-telegram");
 
-        if (!validator.isLength(user.telegram, { min: 5, max: 32 }) || 
-            !validator.isAlphanumeric(user.telegram, undefined, {ignore: "_"})) {
+        if (!validator.isLength(user.telegram, { min: 5, max: 32 }) ||
+            !validator.isAlphanumeric(user.telegram, undefined, { ignore: "_" })) {
             throw new ServiceError("user-invalid-telegram")
         }
 
@@ -519,7 +519,7 @@ export async function update(userID, attributes = {}) {
         }
 
         if (attributes.telegram) {
-            const {rows: users} = await query("SELECT id FROM eduhope_user WHERE telegram = $1", [attributes.telegram])
+            const { rows: users } = await query("SELECT id FROM eduhope_user WHERE telegram = $1", [attributes.telegram])
 
             if (users[0].id != userID) throw new ServiceError("telegram-update-unique")
             await query("UPDATE eduhope_user SET telegram = $1 WHERE id = $2", [attributes.telegram, userID]);
@@ -602,7 +602,7 @@ export async function updatePassword(userID, currentPassword, newPassword) {
     await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
 
     // email notify the user
-    await notifyPasswordChange(user);
+    //await notifyPasswordChange(user);
 
     return {
         success: true,
@@ -633,8 +633,8 @@ export async function emailChange(userID, newEmail) {
     await query("UPDATE eduhope_user SET email = $1, updated_on = now() WHERE id = $2", [updatedEmail, userID]);
 
     // email to notify
-    //await sendEmailUpdateNotification(currentEmail);
-    //await sendEmailUpdateNotification(newEmail);
+    await sendEmailUpdateNotification(currentEmail);
+    await sendEmailUpdateNotification(newEmail);
 }
 
 
@@ -664,9 +664,9 @@ export async function registerTutor(attributes) {
     // reformat user input
     for (const property in attributes) {
         if (typeof property == Array) {
-            attributes[property] = attributes[property].map(str => validator.trim(str))            
+            attributes[property] = attributes[property].map(str => validator.trim(str))
         } else if (typeof property == String) {
-            attributes[property] = validator.trim(attributes[property]);            
+            attributes[property] = validator.trim(attributes[property]);
         }
     }
 
@@ -715,7 +715,7 @@ export async function registerTutor(attributes) {
                 attributes.level_of_education, attributes.telegram, attributes.bio, attributes.referral
             ]
 
-            const {rows} = await query(text1, values1);
+            const { rows } = await query(text1, values1);
             user_id = rows[0].id
         }
 

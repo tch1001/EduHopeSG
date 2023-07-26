@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Container from '../../../components/Container';
 import Card from '../../../components/Card';
 import Icon from "../../../components/Icon";
+import useAxios from "../../../helpers/useAxios";
 
 export const CourseSubjects = ({ course, subjects }) => {
     const router = useRouter();
@@ -42,17 +43,18 @@ export const CourseSubjects = ({ course, subjects }) => {
     )
 }
 
-export const getServerSideProps = async ({ params }) => {
+export const getServerSideProps = async ({ query, req }) => {
+    const request = useAxios()
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subjects/${params.course}`, {
-        method: "GET",
+    const response = await request({
+        method: "get",
+        path: `/subjects/${query.course}`,
         headers: {
-            "Content-Type": "application/json"
-        },
-        credentials: "include"
-    });
+            Cookie: req.headers.cookie
+        }
+    });    
 
-    const { subjects, course } = await response.json();
+    const { subjects, course } = await response;
 
     return {
         props: {

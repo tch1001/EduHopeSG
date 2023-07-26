@@ -1,7 +1,7 @@
 import validator from "validator";
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
-import { notifyTuteeAcceptance, notifyTuteeDeclination } from "./email-service.js";
+import { notifyTuteeAcceptance, notifyTuteeDeclination, notifyTuteeRemoval } from "./email-service.js";
 import * as userService from "../services/user-service.js";
 
 /**
@@ -133,10 +133,13 @@ export async function acceptTutee(relationshipID, tutorID) {
         );
 
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
-    const { tutee, tutor, subject } = rows[0];
+    const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
+
+    const tutee = getByID(tuteeID, "email")
+    const tutor = getByID(tutorID, "email")
 
     // notify tutee of acceptance
-    await notifyTuteeAcceptance(tutee, tutor, subject);
+    await notifyTuteeAcceptance(tutee, tutor, subjectID);
 
     return {
         success: true,
@@ -156,11 +159,14 @@ export async function rejectTutee(relationshipID, reason) {
     const { rows } = await query(`SELECT * ${queryText}`, [relationshipID]);
 
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
-    const { tutee, tutor, subject } = rows[0];
+    const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
+
+    const tutee = getByID(tuteeID, "email")
+    const tutor = getByID(tutorID, "email")
 
     // notify tutee of rejection
     await query(`DELETE ${queryText}`, [relationshipID]);
-    await notifyTuteeDeclination(tutee, tutor, subject, reason);
+    await notifyTuteeDeclination(tutee, tutor, subjectID, reason);
 
     return {
         success: true,
@@ -182,11 +188,14 @@ export async function removeTutee(relationshipID, reason) {
     const { rows } = await query(`SELECT * ${queryText}`, [relationshipID]);
 
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
-    const { tutee, tutor, subjects } = rows[0];
+    const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
+
+    const tutee = getByID(tuteeID, "email")
+    const tutor = getByID(tutorID, "email")
 
     // notify tutee of removal
     await query(`DELETE ${queryText}`, [relationshipID]);
-    await notifyTuteeDeclination(tutee, tutor, subjects, reason);
+    await notifyTuteeRemoval(tutee, tutor, subjectID, reason);
 
     return {
         success: true,

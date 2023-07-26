@@ -121,8 +121,8 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
     `
 
     const queryValues = [tuteeID, tutorID, subjects[0], 'PENDING'];
-    await query(queryText, queryValues)
-    await sendTuitionRequest(user, tutor, subjects);
+    const {rows} = await query(queryText, queryValues)
+    await sendTuitionRequest(user, tutor, subjects[0], rows[0].id);
 
     return {
         success: true,
@@ -143,6 +143,17 @@ export async function withdrawTutor(relationshipID) {
         await query("DELETE FROM tutee_tutor_relationship WHERE id = $1 RETURNING *", [relationshipID]);
 
     if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
+
+    const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rowCount[0];
+
+    const tutee = getByID(tuteeID, "email")
+    const tutor = getByID(tutorID, "email")
+
+    if (rowCount[0].status == "PENDING"){
+        await notifyTutorRequestCancellation(tutee, tutor, subjectID)
+    } else if (rowCount[0].status == "ACCEPTED") {
+        await notifyTutorRemoval(tutee, tutor, subjectID)
+    }
 
     return {
         success: true,

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
 import ServiceError from "../classes/ServiceError.js";
-import { notifyPasswordChange, sendEmailUpdateConfirmation, sendEmailUpdateNotification } from "./email-service.js";
+import { notifyPasswordChange, sendEmailUpdateNotification } from "./email-service.js";
 import { getSubjectsByIDs } from "./subject-service.js";
 import * as tutorService from "./tutor-service.js";
 
@@ -602,7 +602,7 @@ export async function updatePassword(userID, currentPassword, newPassword) {
     await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
 
     // email notify the user
-    //await notifyPasswordChange(user);
+    await notifyPasswordChange(user);
 
     return {
         success: true,
@@ -633,8 +633,8 @@ export async function emailChange(userID, newEmail) {
     await query("UPDATE eduhope_user SET email = $1, updated_on = now() WHERE id = $2", [updatedEmail, userID]);
 
     // email to notify
-    await sendEmailUpdateNotification(currentEmail);
-    await sendEmailUpdateNotification(newEmail);
+    await sendEmailUpdateNotification(currentEmail, newEmail);
+    await sendEmailUpdateNotification(newEmail, newEmail);
 }
 
 

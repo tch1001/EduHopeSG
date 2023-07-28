@@ -345,15 +345,15 @@ export async function notifyPasswordChange(user) {
  * @param {string} newEmail To email
  * @returns {EmailResponse}
  */
-export async function sendEmailUpdateNotification(email) {
+export async function sendEmailUpdateNotification(email, newEmail) {
     if (!email) throw new ServiceError("missing-arguments");
 
     const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, "Account email changed")
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            "This email is to notify you that your account email have",
-            "been changed. If this is an unauthorised change and you were not",
+            "This email is to notify you that your account email has",
+            `been changed to ${newEmail}. If this is an unauthorised change and you were not`,
             `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`,
             "and contact our support team"
         ].join(" "));

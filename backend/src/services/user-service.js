@@ -574,7 +574,7 @@ export async function update(userID, attributes = {}) {
  * Changes user password
  * @param {User.id} userID 
  * @param {User.password} currentPassword Old password to verify
- * @param {User.password} newPassword New password
+ * @param {User.newPassword} newPassword New password
  * @returns {{success: true, message: string}} Success message
  */
 export async function updatePassword(userID, currentPassword, newPassword) {
@@ -609,6 +609,36 @@ export async function updatePassword(userID, currentPassword, newPassword) {
         message: "Updated user password"
     }
 }
+
+/**
+ * Changes user password using reset password token sent to a person's email
+ * @param {User.id} userID 
+ * @param {User.newPassword} newPassword New password
+ * @returns {{success: true, message: string}} Success message
+ */
+export async function updatePasswordUsingToken(userID, newPassword) {
+    if (!userID || !newPassword)
+        throw new ServiceError("user-change-password-missing");
+
+    newPassword = validator.trim(newPassword);
+
+    const user = await getByID(userID, "password email");
+    if (!user) throw new ServiceError("user-login-failed");
+
+    // change password
+    const updatedPassword = await hashPassword(newPassword);
+    await query("UPDATE eduhope_user SET password = $1 WHERE id = $2", [updatedPassword, userID]);
+    await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);
+
+    // email notify the user
+    await notifyPasswordChange(user);
+
+    return {
+        success: true,
+        message: "Updated user password"
+    }
+}
+
 
 /**
  * Changes user email

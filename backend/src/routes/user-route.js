@@ -60,7 +60,7 @@ router.get("/profile", async (req, res) => {
         const tutorData = await tutorService.getByID(user.payload.id, TUTOR_FIELDS)
         if (tutorData) {
             tutorData.preferred_communications = tutorData.preferred_communications.slice(1, -1).split(",") // Converts postgres array to js array
-            .map(type => type.replace(/"/g, ''))        
+                .map(type => type.replace(/"/g, ''))
         }
 
         res.status(200).send({ userData, tutorData })
@@ -86,19 +86,35 @@ router.patch("/", (req, res) => {
 })
 
 router.patch("/password", (req, res) => {
-    const user = userService.verifyAuthentication(req.cookies.user);
+    const { password, new_password, passwordResetToken } = req.body;
 
-    if (!user) {
+    if (password) {
+        // If password is reset via edit profile page
+        var user = userService.verifyAuthentication(req.cookies.user);
+
+        if (!user) {
+            return standardRouteErrorCallback(
+                res, req, new RouteError("user-unauthenticated", req.originalUrl)
+            );
+        }
+
+        userService.updatePassword(user.payload.id, password, new_password)
+            .then(response => res.status(200).send(response))
+            .catch((err) => standardRouteErrorCallback(res, req, err));
+
+    } else if (passwordResetToken) {
+        // If password is reset via the password reset link sent to a person's email
+        const user = userService.verifyPasswordResetToken(passwordResetToken)
+
+        userService.updatePasswordUsingToken(user.payload.id, new_password)
+            .then(response => res.status(200).send(response))
+            .catch((err) => standardRouteErrorCallback(res, req, err));
+
+    } else {
         return standardRouteErrorCallback(
-            res, req, new RouteError("user-unauthenticated", req.originalUrl)
+            res, req, new RouteError("error", req.originalUrl)
         );
     }
-
-    const { password, new_password } = req.body;
-
-    userService.updatePassword(user.payload.id, password, new_password)
-        .then(response => res.status(200).send(response))
-        .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
 router.post("/tutor", (req, res) => {

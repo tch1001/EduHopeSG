@@ -139,12 +139,12 @@ export async function requestTutor(tuteeID, tutorID, subjects = []) {
 export async function withdrawTutor(relationshipID) {
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
 
-    const { rowCount } =
+    const { rowCount, rows } =
         await query("DELETE FROM tutee_tutor_relationship WHERE id = $1 RETURNING *", [relationshipID]);
 
     if (!rowCount) throw new ServiceError("invalid-tutee-tutor-relationship");
 
-    const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rowCount[0];
+    const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
 
     const tutee = userService.getByID(tuteeID, "email")
     const tutor = userService.getByID(tutorID, "email")

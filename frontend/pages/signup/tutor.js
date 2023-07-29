@@ -224,7 +224,7 @@ const TutorSignUp = ({ subjects }) => {
             });
 
             await login({ email, password });
-            window.location.href = originalURL;
+            window.location.href = "/manage-tutees" ;
         } catch (err) {
             displayErrorDialog(err);
         } finally {

@@ -175,7 +175,7 @@ const SignUp = () => {
             });
 
             await login({ email, password });
-            window.location.href = originalURL;
+            window.location.href = originalURL || "/";
         } catch (err) {
             displayErrorDialog(err);
         } finally {

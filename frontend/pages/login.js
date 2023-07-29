@@ -45,8 +45,14 @@ function Login() {
         setLoading(true);
 
         try {
-            await login(values);
-            window.location.href = originalURL;
+            const user = await login(values);
+
+            if (user.is_tutor) {
+                window.location.href = "/manage-tutees";
+            } else {
+                window.location.href = originalURL;
+            }
+
         } catch (err) {
             displayErrorDialog(err);
         } finally {

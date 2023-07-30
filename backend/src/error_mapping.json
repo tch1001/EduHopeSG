@@ -199,9 +199,15 @@
     },    
     "user-unauthenticated": {
         "status": 401,
-        "name": "Not unauthenticated: cannot proceed",
+        "name": "Not authenticated: cannot proceed",
         "message": "Missing 'Authorization' header or 'user' cookie",
         "details": "Try logging in again at POST /login"
+    },
+    "invalid-password-reset-token" : {
+        "status": 401,
+        "name": "Invalid password reset link",
+        "message": "Your password reset link is either invalid or has expired",
+        "details": "Please request for another password reset link via the \"Reset Password\" button in the Login page"
     },
     "user-unauthorized": {
         "status": 403,

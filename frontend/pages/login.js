@@ -92,8 +92,12 @@ function Login() {
             </Card>
             <p className="p-2">
                 New to EduHope?{" "}
-                <Link href={`/signup?originalURL=${originalURL}`} className="link" passHref>Join us Now</Link>
+                <Link href={`/signup?originalURL=${originalURL}`} className="link" passHref>Create an account!</Link>
             </p>
+            <p className="p-2">
+                Forgot your password?{" "}
+                <Link href={`/forgot-password?originalURL=${originalURL}`} className="link" passHref>Reset password</Link>
+            </p>            
         </Container>
     );
 }

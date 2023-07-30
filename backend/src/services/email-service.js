@@ -34,7 +34,7 @@ const TemplateNotification = fs.readFileSync(resolve(__dirname, "../assets/notif
 
 // TODO: User reporting and "Manage notifications" page, and email verification
 
-const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
+const reportLink = `mailto:eduhopesg@gmail.com`;
 const unsubLink = `${process.env.WEBSITE_URL}/settings/notifications`;
 
 /**
@@ -105,7 +105,7 @@ export async function sendTuitionRequest(tutee, tutor, subjectID, relationshipID
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message} from <strong>${tutee.given_name} ${tutee.family_name}</strong> for <strong>${subjectArray[0].name}</strong>.<br/><br/>`,
             "Please consider the following for the above tuition request:",
-            "<ul><li>You have enough bandwidth to take on another tutee</li>",
+            "<ul><li>You have enough bandwidth to take on another tutee (if you currently have any)</li>",
             `<li>Who needs help with <strong>${subjectArray[0].name}</strong> subjects</li>`,
             "<li>You will reply their questions within a reasonable time frame</li>",
             "<li>Enjoy teaching the subjects and helping out a fellow student :)</li></ul>",
@@ -114,7 +114,7 @@ export async function sendTuitionRequest(tutee, tutor, subjectID, relationshipID
             "<br/><br/>Thank you for volunteering your time and effort,"
         ].join(" "));
     console.log(relationshipID)
-    print(hydratedHTML)
+    console.log(hydratedHTML)
     /*
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
@@ -147,7 +147,7 @@ export async function notifyTutorRequestCancellation(tutee, tutor, subjectID) {
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message}.`
         ].join(" "));
-    print(hydratedHTML)
+    console.log(hydratedHTML)
     /*
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
@@ -185,7 +185,7 @@ export async function notifyTutorRemoval(tutee, tutor, subjectID) {
             "<br/><br/>Thank you for your contributions!,"
         ].join(" "));
 
-    print(hydratedHTML)
+    console.log(hydratedHTML)
     /*
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
@@ -220,7 +220,7 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectID) {
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
             "<br/><br/>Thank you for using our platform,"
         ].join(" "));
-    print(hydratedHTML)
+    console.log(hydratedHTML)
     /*
     return await sendEmail(
         UserService.decrypt(tutee.email.trim().toString()),
@@ -261,7 +261,7 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectID, reason) {
             "<br/>Wishing you the best in finding your next tutor.",
             "<br/><br/>Thank you for using our platform,"
         ].join(" "));
-    print(hydratedHTML)
+    console.log(hydratedHTML)
     /*
     return await sendEmail(
         UserService.decrypt(tutee.email.trim().toString()),
@@ -303,7 +303,7 @@ export async function notifyTuteeRemoval(tutee, tutor, subjectID, reason) {
             "<br/><br/>Thank you for using our platform,"
         ].join(" "));
 
-    print(hydratedHTML)
+    console.log(hydratedHTML)
     /*
     return await sendEmail(
         UserService.decrypt(tutee.email.trim().toString()),
@@ -329,7 +329,7 @@ export async function notifyPasswordChange(user) {
             `Dear ${user.given_name},`,
             "This email is to notify you that your account password have",
             "been changed. If this is an unauthorised change and you were not",
-            `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`
+            `aware of this, please contact our support team via <a href=${reportLink}>eduhopesg@gmail.com</a>`
         ].join(" "));
 
     return await sendEmail(
@@ -354,13 +354,38 @@ export async function sendEmailUpdateNotification(email, newEmail) {
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             "This email is to notify you that your account email has",
             `been changed to ${newEmail}. If this is an unauthorised change and you were not`,
-            `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`,
-            "and contact our support team"
+            `aware of this, please contact our support team via <a href=${reportLink}>eduhopesg@gmail.com</a>`
         ].join(" "));
 
     return await sendEmail(
         email,
         `EduhopeSG: Account email has been updated`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+
+/**
+ * Email user about email address changes
+ * @param {string} newEmail To email
+ * @returns {EmailResponse}
+ */
+export async function sendEmailResetPasswordLink(email, passwordResetToken) {
+    if (!email) throw new ServiceError("missing-arguments");
+
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, "Account password reset requested")
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `You have requested to reset your password`,
+            `Here is the <a href="${process.env.WEBSITE_URL}/reset-password?token=${passwordResetToken}">password reset link</a>`,
+            "Do note that it expires in 10 minutes! Upon expiry, you will have to request for another password reset link"
+        ].join(" "));
+
+    return await sendEmail(
+        email,
+        `EduhopeSG: Account password reset requested"`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );

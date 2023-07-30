@@ -1,10 +1,10 @@
 import { useFormik } from "formik";
 import { useState, useEffect, useContext } from "react";
+import { useRouter } from "next/router";
 import Container from "../components/Container";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import FormErrorDisplay from "../components/FormErrorDisplay";
-import Select from "react-select"
 
 import { dialogSettingsContext } from "../helpers/dialogContext";
 import useAxios from "../helpers/useAxios"
@@ -13,12 +13,17 @@ import Yup from "../helpers/Yup";
 
 import styles from "../styles/forms.module.css";
 
-const resetPassword = ({passwordResetToken}) => {
+const resetPassword = () => {
     const [user, { login }] = useUser()
     const [passwordLoading, setPasswordLoading] = useState(false);
 
     const {setDialogSettings, closeDialog, displayErrorDialog} = useContext(dialogSettingsContext)
 
+    const request = useAxios();
+
+    const router = useRouter()
+    const originalURL = router.query?.originalURL || "/"
+    const passwordResetToken = router.query?.token    
 
     const resetPasswordSchema = Yup.object({
         newPassword: Yup.string()
@@ -37,10 +42,9 @@ const resetPassword = ({passwordResetToken}) => {
             }),
     })
     async function handleResetPasswordSave({
-        passwordResetToken,
         newPassword
     }) {
-        if (loading) return;
+        if (passwordLoading) return;
         setPasswordLoading(true);
 
         try {
@@ -63,6 +67,8 @@ const resetPassword = ({passwordResetToken}) => {
             });
 
             resetPasswordFormik.resetForm()
+
+            window.location.href = originalURL || "/";
 
         } catch (err) {
             displayErrorDialog(err);

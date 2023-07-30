@@ -85,6 +85,14 @@ router.patch("/", (req, res) => {
         .catch((err) => standardRouteErrorCallback(res, req, err));
 })
 
+router.get("/reset-password", (req, res) => {
+    const { email, originalURL } = req.query
+
+    userService.sendResetPasswordLink(email, originalURL)
+        .then(response => res.status(200).send(response))
+        .catch((err) => standardRouteErrorCallback(res, req, err));
+})
+
 router.patch("/password", (req, res) => {
     const { password, new_password, passwordResetToken } = req.body;
 
@@ -105,6 +113,12 @@ router.patch("/password", (req, res) => {
     } else if (passwordResetToken) {
         // If password is reset via the password reset link sent to a person's email
         const user = userService.verifyPasswordResetToken(passwordResetToken)
+
+        if (!user) {
+            return standardRouteErrorCallback(
+                res, req, new RouteError("invalid-password-reset-token", req.originalUrl)
+            );
+        }
 
         userService.updatePasswordUsingToken(user.payload.id, new_password)
             .then(response => res.status(200).send(response))

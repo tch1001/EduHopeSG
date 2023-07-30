@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
 import ServiceError from "../classes/ServiceError.js";
-import { notifyPasswordChange, sendEmailUpdateNotification } from "./email-service.js";
+import { notifyPasswordChange, sendEmailResetPasswordLink, sendEmailUpdateNotification } from "./email-service.js";
 import { getSubjectsByIDs } from "./subject-service.js";
 import * as tutorService from "./tutor-service.js";
 
@@ -55,6 +55,13 @@ const JWT_OPTIONS = {
     issuer: "EDUHOPE.SG",
     subject: "AUTHENTICATION"
 };
+
+const JWT_PASSWORD_RESET_OPTIONS = {
+    expiresIn: 10 * 60, // Expires in 10 minutes
+    audience: "ALL_USERS",
+    issuer: "EDUHOPE.SG",
+    subject: "AUTHENTICATION"
+}
 
 /**
  * Check if a password is string via preset requirements
@@ -245,6 +252,27 @@ export function verifyAuthentication(cookie) {
         return null;
     }
 }
+
+/**
+ * 
+ * @param {string} cookie JWT cookie token
+ * @returns {{
+*     header: jwt.JwtHeader,
+*     payload: jwt.JwtPayload & { id: string, email: string },
+*     signature: string
+* }?} JWT token object
+*/
+export function verifyPasswordResetToken(passwordResetToken) {
+   if (!passwordResetToken) return null;
+
+   try {
+       const token = jwt.verify(passwordResetToken, process.env.JWT_KEY, { complete: true, ...JWT_PASSWORD_RESET_OPTIONS });
+       return token;
+   } catch (err) {
+       return null;
+   }
+}
+
 
 /**
  * Validates a object
@@ -568,6 +596,32 @@ export async function update(userID, attributes = {}) {
         if (err.details) throw err
         throw new ServiceError("user-update");
     }
+}
+
+/**
+* Sends a reset password link (with a jwt token) to a user's email
+* @param {User.email} email
+* @returns {{success: true, message: string}} Success message
+*/
+export async function sendResetPasswordLink(email, originalURL) {
+    email = validator.normalizeEmail(validator.trim(email));
+
+    const user = await getByEmail(email)
+
+    const payload = {
+        email,
+        id: user?.id
+    }
+
+    const cookie = jwt.sign(
+        payload,
+        process.env.JWT_KEY,
+        JWT_PASSWORD_RESET_OPTIONS
+    )
+
+    //send the email
+    await sendEmailResetPasswordLink(email, cookie, originalURL)
+
 }
 
 /**

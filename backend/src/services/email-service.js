@@ -113,16 +113,14 @@ export async function sendTuitionRequest(tutee, tutor, subjectID, relationshipID
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
             "<br/><br/>Thank you for volunteering your time and effort,"
         ].join(" "));
-    console.log(relationshipID)
-    console.log(hydratedHTML)
-    /*
+
+    //console.log(hydratedHTML)
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
-    */
 }
 
 /**
@@ -147,15 +145,13 @@ export async function notifyTutorRequestCancellation(tutee, tutor, subjectID) {
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message}.`
         ].join(" "));
-    console.log(hydratedHTML)
-    /*
+    //console.log(hydratedHTML)
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
-    */
 }
 
 /**
@@ -185,15 +181,13 @@ export async function notifyTutorRemoval(tutee, tutor, subjectID) {
             "<br/><br/>Thank you for your contributions!,"
         ].join(" "));
 
-    console.log(hydratedHTML)
-    /*
+    //console.log(hydratedHTML)
     return await sendEmail(
         UserService.decrypt(tutor.email.trim().toString()),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
-    */
 }
 
 /**
@@ -220,15 +214,13 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectID) {
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
             "<br/><br/>Thank you for using our platform,"
         ].join(" "));
-    console.log(hydratedHTML)
-    /*
+    //console.log(hydratedHTML)
     return await sendEmail(
         UserService.decrypt(tutee.email.trim().toString()),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
-    */
 }
 
 /**
@@ -261,15 +253,13 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectID, reason) {
             "<br/>Wishing you the best in finding your next tutor.",
             "<br/><br/>Thank you for using our platform,"
         ].join(" "));
-    console.log(hydratedHTML)
-    /*
+    //console.log(hydratedHTML)
     return await sendEmail(
         UserService.decrypt(tutee.email.trim().toString()),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
-    */
 }
 
 /**
@@ -303,15 +293,13 @@ export async function notifyTuteeRemoval(tutee, tutor, subjectID, reason) {
             "<br/><br/>Thank you for using our platform,"
         ].join(" "));
 
-    console.log(hydratedHTML)
-    /*
+    //console.log(hydratedHTML)
     return await sendEmail(
         UserService.decrypt(tutee.email.trim().toString()),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
-    */
 }
 
 /**
@@ -371,18 +359,19 @@ export async function sendEmailUpdateNotification(email, newEmail) {
  * @param {string} newEmail To email
  * @returns {EmailResponse}
  */
-export async function sendEmailResetPasswordLink(email, passwordResetToken) {
+export async function sendEmailResetPasswordLink(email, passwordResetToken, originalURL) {
     if (!email) throw new ServiceError("missing-arguments");
 
     const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, "Account password reset requested")
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            `You have requested to reset your password`,
-            `Here is the <a href="${process.env.WEBSITE_URL}/reset-password?token=${passwordResetToken}">password reset link</a>`,
-            "Do note that it expires in 10 minutes! Upon expiry, you will have to request for another password reset link"
+            `You have requested to reset your password. <br/><br/>`,
+            `Here is the <a href="${process.env.WEBSITE_URL}/reset-password?token=${passwordResetToken}&originalURL=${originalURL}">password reset link</a><br/><br/>`,
+            "Do note that it expires in 10 minutes! Upon expiry, you will have to request for another password reset link."
         ].join(" "));
 
+    //console.log(hydratedHTML)
     return await sendEmail(
         email,
         `EduhopeSG: Account password reset requested"`,

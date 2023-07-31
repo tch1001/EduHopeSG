@@ -146,12 +146,12 @@ export async function withdrawTutor(relationshipID) {
 
     const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
 
-    const tutee = userService.getByID(tuteeID, "email")
-    const tutor = userService.getByID(tutorID, "email")
+    const tutee = await userService.getByID(tuteeID, "email")
+    const tutor = await userService.getByID(tutorID, "email")
 
-    if (rowCount[0].status == "PENDING"){
+    if (rows[0].status == "PENDING"){
         await notifyTutorRequestCancellation(tutee, tutor, subjectID)
-    } else if (rowCount[0].status == "ACCEPTED") {
+    } else if (rows[0].status == "ACCEPTED") {
         await notifyTutorRemoval(tutee, tutor, subjectID)
     }
 

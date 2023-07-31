@@ -57,7 +57,7 @@ const JWT_OPTIONS = {
 };
 
 const JWT_PASSWORD_RESET_OPTIONS = {
-    expiresIn: 10 * 60, // Expires in 10 minutes
+    expiresIn: 15 * 60, // Expires in 15 minutes
     audience: "ALL_USERS",
     issuer: "EDUHOPE.SG",
     subject: "AUTHENTICATION"

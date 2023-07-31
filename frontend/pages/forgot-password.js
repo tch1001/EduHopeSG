@@ -44,7 +44,7 @@ const ForgotPassword = () => {
 
             setDialogSettings({
                 title: 'Reset Password Link Sent!',
-                message: "An email with the reset password link has been sent to your email. It expires in 10 minutes.",
+                message: "An email with the reset password link has been sent to your email. It expires in 15 minutes.",
                 display: true,
                 buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
             });

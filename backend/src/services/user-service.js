@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { query } from "../utils/database.js";
 import log from "../utils/logging.js";
 import ServiceError from "../classes/ServiceError.js";
-import { notifyPasswordChange, sendEmailResetPasswordLink, sendEmailUpdateNotification } from "./email-service.js";
+import { notifyUserCreation, notifyPasswordChange, sendEmailResetPasswordLink, sendEmailUpdateNotification } from "./email-service.js";
 import { getSubjectsByIDs } from "./subject-service.js";
 import * as tutorService from "./tutor-service.js";
 
@@ -436,6 +436,8 @@ export async function create(user) {
 
         await query(queryText, values);
 
+        await notifyUserCreation(validator.normalizeEmail(user.email), false)
+
         return {
             success: true,
             message: "Created user"
@@ -447,7 +449,7 @@ export async function create(user) {
             // Solution: spoof/fake the success response
             throw new ServiceError("user-create-unique");
         }
-
+        console.log(err)
         throw new ServiceError("user-create");
     }
 }
@@ -818,6 +820,7 @@ export async function registerTutor(attributes) {
 
         await query(text2, values2);
 
+        await notifyUserCreation(validator.normalizeEmail(attributes.email), true)
 
 
         return {

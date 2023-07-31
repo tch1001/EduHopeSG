@@ -31,7 +31,7 @@ export const PendingTuteeCard = ({tutee, pendingTutees, setPendingTutees, accept
 
             setDialogSettings({
                 title: 'Thank You!',
-                message: `You can now view ${given_name} ${family_name}'s contact information under "Accepted Tutees".`,
+                message: `Please contact ${given_name} ${family_name} to arrange tutoring sessions with them! You can view their contact information under "Accepted Tutees"`,
                 display: true,
                 buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
             });

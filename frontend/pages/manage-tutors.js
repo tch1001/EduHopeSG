@@ -17,7 +17,10 @@ const ManageTutors = ({ initPendingTutors, initAcceptedTutors, error }) => {
         <Container className="flex flex-col gap-6 p-6 max-w-5xl">
             <h1 className="text-2xl font-bold">Tutor Requests {`(${pendingTutors.length})`}</h1>
             {pendingTutors.length == 0 && (
-                <p>You do not have any pending tutor requests.</p>
+                <div>
+                    <p>{"You do not have any pending tutor requests."}</p>
+                    <p> {'Visit the "Find a tutor" page to request for a tutor!'}</p>
+                </div>
             )}
             {pendingTutors.map((tutor, index) => (
                 <PendingTutorCard

@@ -10,6 +10,8 @@ import RouteError from "./classes/RouteError.js";
 import ServiceError from "./classes/ServiceError.js";
 import log from "./utils/logging.js";
 
+import { cronJobs } from "./cronJobs.js";
+
 /**
  * NOTE: Since "express-rate-limit" package stores the IP addresses
  * of requests in server heap memory, it would not be scalable compared
@@ -126,6 +128,9 @@ app.use((err, req, res, next) => {
     log.error({ error: err, request: req, response: res });
     next();
 })
+
+// Call cron job
+cronJobs()
 
 // Server and safe existing when process stops/when FATAL error occurs
 

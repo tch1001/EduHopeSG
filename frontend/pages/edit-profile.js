@@ -161,10 +161,12 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
     });
 
     const TutorSettingsSchema = Yup.object({
+        // Note: 
+        // The 1 month constraint on commitmentEnd is removed from the edit-profile page
+        // This way, tutors can end their tutoring prematurely by setting the value to now()
         commitmentEnd: Yup
             .date()
             .default(null)
-            .min(new Date(Date.now() + 2.592e+9), "We require a minimum of 1 month commitment from our tutors")
             .required("Required"),
         tuteeLimit: Yup
             .number()

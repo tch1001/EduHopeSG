@@ -114,13 +114,15 @@ export async function notifyUserCreation(email, is_tutor) {
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, message.join(" "));
 
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         email,
         `EduhopeSG: Welcome to EduhopeSG!"`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 /**
@@ -155,13 +157,15 @@ export async function sendTuitionRequest(tutee, tutor, subjectID, relationshipID
             "<br/><br/>Thank you for volunteering your time and effort!</p>"
         ].join(" "));
 
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         userService.decrypt(tutor.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 /**
@@ -186,13 +190,15 @@ export async function notifyTutorRequestCancellation(tutee, tutor, subjectID) {
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `${message}.<br/><br/>`
         ].join(" "));
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         userService.decrypt(tutor.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 /**
@@ -222,13 +228,15 @@ export async function notifyTutorRemoval(tutee, tutor, subjectID) {
             "<p><br/>Thank you for your contributions!</p>"
         ].join(" "));
 
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         userService.decrypt(tutor.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 /**
@@ -258,13 +266,15 @@ export async function remindTuteeAcceptance(tutee, tutor, subjectID) {
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
             "<br/><br/>Thank you for using our platform!</p>"
         ].join(" "));
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         userService.decrypt(tutor.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 /**
@@ -294,13 +304,15 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectID) {
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
             "<br/><br/>Thank you for using our platform!</p>"
         ].join(" "));
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         userService.decrypt(tutee.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 /**
@@ -332,13 +344,15 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectID, reason = "
             `<p><br/>We recommend that you <a href="${process.env.WEBSITE_URL}/subjects/${subjectArray[0].course}/${subjectArray[0].name}">request for another tutor!</a>`,
             "<br/><br/>Thank you for using our platform!</p>"
         ].join(" "));
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         userService.decrypt(tutee.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 /**
@@ -371,13 +385,15 @@ export async function notifyTuteeRemoval(tutee, tutor, subjectID, reason) {
             "<br/><br/>Thank you for using our platform!</p>"
         ].join(" "));
 
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         userService.decrypt(tutee.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 /**
@@ -398,13 +414,15 @@ export async function notifyPasswordChange(user) {
             `aware of this, please contact our support team via <a href=${reportLink}>eduhopesg@gmail.com</a>`
         ].join(" "));
 
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         userService.decrypt(user.email),
         `EduhopeSG: Account password has been updated`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 /**
@@ -424,13 +442,15 @@ export async function sendEmailUpdateNotification(email, newEmail) {
             `aware of this, please contact our support team via <a href=${reportLink}>eduhopesg@gmail.com</a>`
         ].join(" "));
 
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         email,
         `EduhopeSG: Account email has been updated`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
 
 
@@ -453,19 +473,52 @@ export async function sendEmailResetPasswordLink(email, passwordResetToken, orig
             "Do note that it expires in 15 minutes! Upon expiry, you will have to request for another password reset link."
         ].join(" "));
 
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         email,
         `EduhopeSG: Account password reset requested"`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }
-
 
 /**
  * Sends an email notification to Tutee about being declined by
  * the request tutor and subjects
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
+ * @returns {EmailResponse}
+ */
+export async function emailRemindTutorAcceptDecline(tutee, tutor, subjectID, timeToExpiry) {
+    if (!tutee || !tutor || !subjectID) throw new ServiceError("missing-arguments");
+
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `<strong>${tutee.given_name} ${tutee.family_name}</strong>'s request for <strong>${subjectArray[0].name}</strong> tutoring expires in <b>${timeToExpiry.days} days and ${timeToExpiry.hours} hours!</b>`;
+
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `${message}`,
+            `<br/><br/>Please visit the <a href="${process.env.WEBSITE_URL}/manage-tutees">My Tutees</a> page to <strong>Accept/Decline</strong> this request before it expires in <b>${timeToExpiry.days} days and ${timeToExpiry.hours} hours</b>!<br/><br/>`
+        ].join(" "));
+    console.log(hydratedHTML)
+    /*
+    return await sendEmail(
+        userService.decrypt(tutor.email),
+        `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+    */
+}
+
+/**
+ * Sends an email notification to Tutor about the tutee's request being auto-declined after 5 days
  * @param {userService.BasicUser} tutee Tutee object
  * @param {userService.User} tutor Tutor object
  * @param {number} subjectID subjects ID from
@@ -486,11 +539,13 @@ export async function notifyRequestExpiry(tutee, tutor, subjectID) {
             `<br/><br/>This request was automatically declined after 5 days so that the system will allow <strong>${tutee.given_name} ${tutee.family_name}</strong> to request for another tutor instead.`,
             "<br/><br/>Thank you for using our platform!<br/><br/>"
         ].join(" "));
-    //console.log(hydratedHTML)
+    console.log(hydratedHTML)
+    /*
     return await sendEmail(
         userService.decrypt(tutor.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
+    */
 }

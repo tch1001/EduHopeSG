@@ -1,4 +1,4 @@
-import { notifyTuteeDeclination, notifyRequestExpiry } from "./services/email-service.js"
+import { notifyTuteeDeclination, notifyRequestExpiry, emailRemindTutorAcceptDecline } from "./services/email-service.js"
 import { query } from "./utils/database.js"
 import * as userService from "./services/user-service.js"
 
@@ -43,12 +43,37 @@ const autoDeclineExpiredRequests = async () => {
     )
 }
 
-const remindTutorAcceptDecline = () => {
-    // Fetch all the ttr with 
-    // status = "PENDING", 
-    // today() - 1.5 < date created < today() - 2.5 OR today() - 3.5 < date created < today() - 4.5 (sargable queries)
-    // then INNER JOIN with user table ON ttr.tutor = user.id
+const remindTutorAcceptDecline = async() => {
+    const { rows: pendingRequests } = await query(`
+        SELECT 
+        tutor.given_name AS tutor_given_name, tutor.family_name AS tutor_family_name, tutor.email AS tutor_email,
+        tutee.given_name AS tutee_given_name, tutee.family_name AS tutee_family_name, tutee.email AS tutee_email,
+        ttr.subject,
+        AGE(ttr.created_on + INTERVAL '5.5 days', now()) AS time_to_expiry
+        FROM tutee_tutor_relationship AS ttr
+        INNER JOIN eduhope_user AS tutor ON tutor.id = ttr.tutor
+        INNER JOIN eduhope_user AS tutee ON tutee.id = ttr.tutee
+        WHERE ttr.status = 'PENDING'
+        AND ttr.created_on >= now() - INTERVAL '5.5 days'
+        `
+    )
 
+    console.log(pendingRequests)
+
+    pendingRequests.forEach(pendingRequest => {
+        const tutee = {
+            given_name: pendingRequest.tutee_given_name,
+            family_name: pendingRequest.tutee_family_name,
+            email: userService.decrypt(pendingRequest.tutee_email)
+        }
+        const tutor = {
+            given_name: pendingRequest.tutor_given_name,
+            family_name: pendingRequest.tutor_family_name,
+            email: userService.decrypt(pendingRequest.tutor_email)
+        }
+
+        emailRemindTutorAcceptDecline(tutee, tutor, pendingRequest.subject, pendingRequest.time_to_expiry)
+    })
 }
 
 const remindTutorCommitmentEnd = () => {
@@ -57,11 +82,11 @@ const remindTutorCommitmentEnd = () => {
 
 export const cronJobs = () => {
     // Runs at 12pm daily
-    const dailyCronJobs = CronJob.schedule("14 22 * * *", () => {
+    const dailyCronJobs = CronJob.schedule("0 12 * * *", () => {
         console.log("Cron started")
-        // Function that checks the days since creation of ttr. If 5 days, auto decline. (Require new email functions and templates)
+        // Function that checks the days since creation of ttr. If more than 5.5 days, auto decline. (Require new email functions and templates)
         autoDeclineExpiredRequests()
-        // Function that checks the days since creation of ttr. If 2 or 4 days AND ttr.status == "PENDING", send reminder to tutor. 
+        // Function that checks the days since creation of ttr. If <= 5.5 days AND ttr.status == "PENDING", send reminder to tutor. 
         remindTutorAcceptDecline()
         // Function that informs tutor they are no longer listed as commitment end has passed. If they wish to extend, must update thru edit profile.
         remindTutorCommitmentEnd()

@@ -48,12 +48,39 @@ export async function update(tutorID, attributes = {}) {
         throw new ServiceError("user-invalid")
     }
 
-    const valid = userService.validateUserObject(attributes, attributes);
+    const valid = userService.validateUserObject(
+        attributes,
+        Object.fromEntries(Object.keys(attributes).map(field => {
+            // Do not validate commitment end when it is being updated via the edit-profile page
+            if (field != "commitment_end") { return [field, true] }
+            else { return [field, false] }
+        }))
+    );
     if (!valid) throw new ServiceError("user-invalid");
 
     try {
         if (attributes.commitment_end) {
             await query("UPDATE tutor SET commitment_end = $1 WHERE user_id = $2", [attributes.commitment_end, tutorID])
+        }
+
+        if (attributes.preferred_communications) {
+            await query("UPDATE tutor SET preferred_communications = $1 WHERE user_id = $2", [attributes.preferred_communications, tutorID])
+        }
+
+        if (attributes.tutee_limit) {
+            await query("UPDATE tutor SET tutee_limit = $1 WHERE user_id = $2", [attributes.tutee_limit, tutorID])
+        }
+
+        if (attributes.subjects) {
+            await query("UPDATE tutor SET subjects = $1 WHERE user_id = $2", [attributes.subjects, tutorID])
+        }
+
+        if (attributes.average_response_time) {
+            await query("UPDATE tutor SET average_response_time = $1 WHERE user_id = $2", [attributes.average_response_time, tutorID])
+        }
+
+        if (attributes.description) {
+            await query("UPDATE tutor SET description = $1 WHERE user_id = $2", [attributes.description, tutorID])
         }
 
         await query("UPDATE tutor SET updated_on = now() WHERE user_id = $1", [tutorID]);
@@ -122,7 +149,7 @@ export async function acceptTutee(relationshipID, tutorID) {
         ) AS filtered_tutor_id
         INNER JOIN tutor AS t on t.user_id = filtered_tutor_id.tutor_id 
         AND filtered_tutor_id.num_tutees >= t.tutee_limit`
-    , [tutorID])
+        , [tutorID])
 
     if (!!limitHit.length) throw new ServiceError("tutor-hit-tutee-limit2")
 

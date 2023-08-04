@@ -438,8 +438,8 @@ export async function sendEmailUpdateNotification(email, newEmail) {
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             "This email is to notify you that your account email has",
-            `been changed to ${newEmail}. If this is an unauthorised change and you were not`,
-            `aware of this, please contact our support team via <a href=${reportLink}>eduhopesg@gmail.com</a>`
+            `been changed to <b>${newEmail}</b>. If this is an unauthorised change and you were not`,
+            `aware of this, please contact our support team via <a href=${reportLink}>eduhopesg@gmail.com</a><br/><br/>`
         ].join(" "));
 
     console.log(hydratedHTML)

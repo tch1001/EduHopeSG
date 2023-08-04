@@ -263,14 +263,14 @@ export function verifyAuthentication(cookie) {
 * }?} JWT token object
 */
 export function verifyPasswordResetToken(passwordResetToken) {
-   if (!passwordResetToken) return null;
+    if (!passwordResetToken) return null;
 
-   try {
-       const token = jwt.verify(passwordResetToken, process.env.JWT_KEY, { complete: true, ...JWT_PASSWORD_RESET_OPTIONS });
-       return token;
-   } catch (err) {
-       return null;
-   }
+    try {
+        const token = jwt.verify(passwordResetToken, process.env.JWT_KEY, { complete: true, ...JWT_PASSWORD_RESET_OPTIONS });
+        return token;
+    } catch (err) {
+        return null;
+    }
 }
 
 
@@ -516,12 +516,6 @@ export async function update(userID, attributes = {}) {
 
     if (attributes.telegram) {
         attributes.telegram = attributes.telegram.toLowerCase()
-        /*
-        attributes.telegram = validator.whitelist(
-            attributes.telegram || "",
-            "abcdefghijklmnopqrstuvwxyz0123456789_"
-        );
-        */
     }
 
     const valid = validateUserObject(attributes, Object.fromEntries(Object.keys(attributes).map(field => [field, true])));
@@ -561,30 +555,6 @@ export async function update(userID, attributes = {}) {
 
         if (attributes.bio) {
             await query("UPDATE eduhope_user SET bio = $1 WHERE id = $2", [attributes.bio, userID]);
-        }
-
-        if (attributes.commitment_end) {
-            await query("UPDATE eduhope_user SET commitment_end = $1 WHERE id = $2", [attributes.commitment_end, userID])
-        }
-
-        if (attributes.preferred_communications) {
-            await query("UPDATE eduhope_user SET preferred_communications = $1 WHERE id = $2", [attributes.preferred_communications, userID])
-        }
-
-        if (attributes.tutee_limit) {
-            await query("UPDATE eduhope_user SET tutee_limit = $1 WHERE id = $2", [attributes.tutee_limit, userID])
-        }
-
-        if (attributes.subjects) {
-            await query("UPDATE eduhope_user SET subjects = $1 WHERE id = $2", [attributes.subjects, userID])
-        }
-
-        if (attributes.average_response_time) {
-            await query("UPDATE eduhope_user SET average_response_time = $1 WHERE id = $2", [attributes.average_response_time, userID])
-        }
-
-        if (attributes.description) {
-            await query("UPDATE eduhope_user SET description = $1 WHERE id = $2", [attributes.description, userID])
         }
 
         await query("UPDATE eduhope_user SET updated_on = now() WHERE id = $1", [userID]);

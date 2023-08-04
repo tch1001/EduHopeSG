@@ -90,6 +90,8 @@ export async function notifyUserCreation(email, is_tutor) {
         var message = [
             `${title} <br/><br/>`,
             `Whenever a student requests for your tutoring services, you will receive an email notification from us! Subsequently, you can choose to either accept or decline the request.<br/><br/>`,
+            `Should you choose to accept the request, you will receive an email with your tutee's contact information, which you can use to arrange tutoring sessions with them! This contact information will also be available in the <a href="${process.env.WEBSITE_URL}/manage-tutees">My Tutees</a> page of our website.<br/><br/>`,
+            `<b>Important note:</b> Tutoring requests will be automatically declined if you do not accept/decline them within 5 days. As such, please respond to tutoring requests asap!<br/><br/>`,
             `Visit the <a href="${process.env.WEBSITE_URL}/manage-tutees">My Tutees</a> page to view the requests for your tutoring services and/or your current tutees.<br/><br/>`,
             `Visit the <a href="${process.env.WEBSITE_URL}/edit-profile">Edit Profile</a> page to update your Personal Particulars or Tutor Settings. <br/><br/>`,
             `If you have any queries, feel free to contact us via our <a href=${reportLink}>email</a>. Thank you for volunteering!<br/><br/>`
@@ -101,6 +103,7 @@ export async function notifyUserCreation(email, is_tutor) {
             `Visit the <a href="${process.env.WEBSITE_URL}/subjects">Find a Tutor</a> page to browse the available tutors and request for one that offers the subject you need help with!<br/><br/>`,
             `If your requested tutor accepts your request, you will receive an email notification from us! Subsequently, you can contact them via their contact information provided in the email!<br/><br/>`,
             `If your requested tutor is unavailable, we will let you know about it via email too!<br/><br/>`,
+            `<b>Important note:</b> At any one time, you can only request for 1 tutor per subject. If you want to request for another tutor of the same subject, you must cancel the existing request first via the <a href="${process.env.WEBSITE_URL}/manage-tutees">My Tutees</a> page!<br/><br/>`,
             `Visit the <a href="${process.env.WEBSITE_URL}/edit-profile">Edit Profile</a> page to update your Personal Particulars. <br/><br/>`,
             `If you have any queries, feel free to contact us via our <a href=${reportLink}>email</a>. Thank you for joining EduhopeSG!<br/><br/>`
         ]        
@@ -309,7 +312,7 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectID) {
  * @param {string} reason Tutor's reason for rejecting
  * @returns {EmailResponse}
  */
-export async function notifyTuteeDeclination(tutee, tutor, subjectID, reason) {
+export async function notifyTuteeDeclination(tutee, tutor, subjectID, reason = "Unavailable") {
     if (!tutee || !tutor || !subjectID || !reason) throw new ServiceError("missing-arguments");
 
     const subjectArray = await getSubjectsByIDs([subjectID]);
@@ -321,7 +324,7 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectID, reason) {
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `<p>${message}.`,
-            `<br/>Your tutor's reason: ${reason}`,
+            `<br/><br/>Your tutor's reason: ${reason}`,
             "<br/><br/>Please keep in mind that our tutors are volunteer tutors.",
             "They may have rejected your request for the following reasons:</p>",
             "<ul><li>They may not have enough bandwidth to take on another tutee at the moment</li>",
@@ -359,7 +362,7 @@ export async function notifyTuteeRemoval(tutee, tutor, subjectID, reason) {
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `<p>${message}.`,
-            `<br/>Your tutor's reason: ${reason}`,
+            `<br/><br/>Your tutor's reason: ${reason}`,
             "<br/><br/>Please keep in mind that our tutors are volunteer tutors.",
             "They may have stopped tutoring you for the following reasons:</p>",
             "<ul><li>They may want to focus on their own school work</li>",
@@ -454,6 +457,39 @@ export async function sendEmailResetPasswordLink(email, passwordResetToken, orig
     return await sendEmail(
         email,
         `EduhopeSG: Account password reset requested"`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+
+/**
+ * Sends an email notification to Tutee about being declined by
+ * the request tutor and subjects
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
+ * @returns {EmailResponse}
+ */
+export async function notifyRequestExpiry(tutee, tutor, subjectID) {
+    if (!tutee || !tutor || !subjectID) throw new ServiceError("missing-arguments");
+
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `Sorry, <strong>${tutee.given_name} ${tutee.family_name}</strong>'s request for <strong>${subjectArray[0].name}</strong> tutoring has expired`;
+
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `${message}.`,
+            `<br/><br/>This request was automatically declined after 5 days so that the system will allow <strong>${tutee.given_name} ${tutee.family_name}</strong> to request for another tutor instead.`,
+            "<br/><br/>Thank you for using our platform!<br/><br/>"
+        ].join(" "));
+    //console.log(hydratedHTML)
+    return await sendEmail(
+        userService.decrypt(tutor.email),
+        `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );

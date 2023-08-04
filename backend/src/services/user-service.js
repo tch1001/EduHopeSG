@@ -545,7 +545,8 @@ export async function update(userID, attributes = {}) {
         if (attributes.telegram) {
             const { rows: users } = await query("SELECT id FROM eduhope_user WHERE telegram = $1", [attributes.telegram])
 
-            if (users[0].id != userID) throw new ServiceError("telegram-update-unique")
+            // if users = null, the tele handle is unique. Otherwise, check if the id matches the user's id.
+            if (!users && users[0].id != userID) throw new ServiceError("telegram-update-unique") 
             await query("UPDATE eduhope_user SET telegram = $1 WHERE id = $2", [attributes.telegram, userID]);
         }
 
@@ -564,6 +565,7 @@ export async function update(userID, attributes = {}) {
             message: `Updated the following attributes: ${Object.keys(attributes)}`
         }
     } catch (err) {
+        console.log(err)
         // If the error has a mapping, propagate it upwards. Otherwise, throw the generic error        
         if (err.details) throw err
         throw new ServiceError("user-update");

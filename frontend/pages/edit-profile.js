@@ -90,7 +90,11 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
             .max(35, "Family name too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),
-        school: Yup.string().required("Required"),
+        school: Yup.object({
+                value: Yup.string(),
+                label: Yup.string()
+            })
+            .required("Required"),
         email: Yup.string()
             .email("Invalid email address")
             .required("Required")
@@ -124,7 +128,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                 level_of_education: levelOfEducation,
                 telegram,
                 email,
-                school,
+                school: school.value,
                 bio
             }
 
@@ -321,14 +325,22 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                 <div className="w-full max-w-sm px-4 py-2">
                     <FormErrorDisplay field="school" formik={personalParticularsFormik} />
                     <label htmlFor="school">School</label>
-                    <select id="school" {...personalParticularsFormik.getFieldProps("school")} disabled={personalParticularsSaved}>
-                        <option>--Select--</option>
-                        <option>Graduated</option>
-                        <option>In National Service</option>
-                        {schools.map((school, i) => (
-                            <option key={i}>{school}</option>
-                        ))}
-                    </select>
+                    <Select isSearchable isDisabled={personalParticularsSaved}
+                        instanceId="school"
+                        name="school"
+                        options={
+                            [{ value: "In National Service", label: "In National Service" },
+                            { value: "Graduated from JC", label: "Graduated from JC" },
+                            { value: "Graduated from Poly", label: "Graduated from Poly" },
+                            ...schools.map(school => ({ value: school, label: school }))]
+                        }
+                        onChange={selectedOptions => {
+                            personalParticularsFormik.setFieldValue("school", selectedOptions)
+                        }
+                        }
+                        value={personalParticularsFormik.values?.school}
+                        onBlur={() => personalParticularsFormik.setFieldTouched("school", true)}
+                    />
                 </div>
                 <div className="w-full max-w-sm px-4 py-2">
                     <FormErrorDisplay field="levelOfEducation" formik={personalParticularsFormik} />
@@ -576,7 +588,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                             if (!Object.keys(resetPasswordFormik.errors).length) {
                                 resetPasswordFormik.handleSubmit()
                             } else {
-                                resetPasswordFormik.setTouched(Object.fromEntries(Object.keys(resetPasswordFormik.values).map(field => [field, true])))                                
+                                resetPasswordFormik.setTouched(Object.fromEntries(Object.keys(resetPasswordFormik.values).map(field => [field, true])))
                                 displayErrorDialog({
                                     name: "Missing/Invalid Field Value(s)".toUpperCase(),
                                     message: "One or more fields have missing or invalid values",
@@ -621,7 +633,7 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
         const initPersonalParticulars = {
             firstName: response.userData.given_name,
             lastName: response.userData.family_name,
-            school: response.userData.school,
+            school: {value: response.userData.school, label: response.userData.school},
             email: response.userData.email,
             telegram: response.userData.telegram,
             levelOfEducation: response.userData.level_of_education,

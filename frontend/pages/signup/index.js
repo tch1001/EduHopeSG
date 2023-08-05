@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useRouter } from 'next/router'
 import { useFormik } from "formik";
+import Select from "react-select"
 import Link from "next/link";
 import Button from "../../components/Button";
 import Container from "../../components/Container";
@@ -76,10 +77,12 @@ const SignUp = () => {
             .max(35, "Family name too long")
             .matches(/^[A-Z][a-z]*$/, "Capitalise the first letter only")
             .required("Required"),
-        school: Yup.string()
-            .default("")
-            .required("Required")
-            .test("requirement-check", "Required", (value) => value !== "--Select your school--"),
+        school: Yup.object({
+            value: Yup.string(),
+            label: Yup.string()
+        })
+            .default(null)
+            .required("Required"),
         email: Yup.string()
             .default("")
             .email("Invalid email address")
@@ -163,7 +166,7 @@ const SignUp = () => {
                 telegram,
                 email,
                 password,
-                school,
+                school: school.value,
                 bio,
                 referral
             }
@@ -196,14 +199,23 @@ const SignUp = () => {
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="school" formik={formik} />
-                <select {...formik.getFieldProps("school")}>
-                    <option>--Select your school--</option>
-                    <option>Graduated</option>
-                    <option>In National Service</option>
-                    {schools.map((school, i) => (
-                        <option key={i}>{school}</option>
-                    ))}
-                </select>
+                <Select isSearchable
+                    instanceId="school"
+                    name="school"
+                    options={
+                        [{ value: "In National Service", label: "In National Service" },
+                        { value: "Graduated from JC", label: "Graduated from JC" },
+                        { value: "Graduated from Poly", label: "Graduated from Poly" },
+                        ...schools.map(school => ({ value: school, label: school }))]
+                    }
+                    onChange={selectedOptions => {
+                        formik.setFieldValue("school", selectedOptions)
+                        }
+                    }
+                    value={formik.values.school}
+                    onBlur={() => formik.setFieldTouched("school", true)}
+                    placeholder={"School"}
+                />
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="levelOfEducation" formik={formik} />

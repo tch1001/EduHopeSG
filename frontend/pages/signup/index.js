@@ -16,29 +16,22 @@ import styles from "../../styles/forms.module.css";
 import useUser from "../../helpers/useUser";
 
 const EDUCATION_TYPES = [
-    'SEC_1',
-    'SEC_2',
-    'SEC_3',
-    'SEC_4',
-    'SEC_5',
-    'JC_1',
-    'JC_2',
-    'PRIVATE_O_LEVEL',
-    'PRIVATE_A_LEVEL',
-    'IP_1',
-    'IP_2',
-    'IP_3',
-    'IP_4',
-    'IP_5',
-    'IP_6',
-    'IB_1',
-    'IB_2',
-    'POLYTECHNIC_0',
-    'POLYTECHNIC_1',
-    'POLYTECHNIC_2',
-    'POLYTECHNIC_3',
-    'UNI_UNDERGRADUATE',
-    'UNI_GRADUATE'
+    'Sec 1',
+    'Sec 2',
+    'Sec 3',
+    'Sec 4',
+    'Sec 5',
+    'JC 1',
+    'JC 2',
+    'JC Graduate',
+    'Polytechnic Year 1',
+    'Polytechnic Year 2',
+    'Polytechnic Year 3',
+    'Polytechnic Graduate',
+    "Private O'Level",
+    "Private A'Level",
+    'Uni Undergraduate',
+    'Uni Graduate'
 ]
 
 const REFERRALS = [
@@ -108,11 +101,12 @@ const SignUp = () => {
             .min(5, "Telegram handles must have at least 5 characters")
             .max(32, "Telegram handles can have at most 32 characters")
             .matches(/^[a-zA-Z0-9_]*$/, "Can only contain alphanumeric characters and underscores (_)"),
-        levelOfEducation: Yup
-            .string()
-            .default("")
-            .required("Required")
-            .test("requirement-check", "Required", (value) => value !== "--Current education level of education--"),
+        levelOfEducation: Yup.object({
+            value: Yup.string(),
+            label: Yup.string()
+        })
+            .default(null)
+            .required("Required"),
         bio: Yup.string()
             .default("")
             .max(500, "Maximum of 500 characters")
@@ -162,7 +156,7 @@ const SignUp = () => {
             const data = {
                 given_name: firstName,
                 family_name: lastName,
-                level_of_education: levelOfEducation,
+                level_of_education: levelOfEducation.value,
                 telegram,
                 email,
                 password,
@@ -204,9 +198,7 @@ const SignUp = () => {
                     name="school"
                     options={
                         [{ value: "In National Service", label: "In National Service" },
-                        { value: "Waiting for University to Begin", label: "Waiting for University to Begin" },                        
-                        { value: "Graduated from JC", label: "Graduated from JC" },
-                        { value: "Graduated from Poly", label: "Graduated from Poly" },
+                        { value: "Waiting for University to Begin", label: "Waiting for University to Begin" },
                         ...schools.map(school => ({ value: school, label: school }))]
                     }
                     onChange={selectedOptions => {
@@ -220,12 +212,18 @@ const SignUp = () => {
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="levelOfEducation" formik={formik} />
-                <select {...formik.getFieldProps("levelOfEducation")}>
-                    <option>--Current education level of education--</option>
-                    {EDUCATION_TYPES.map((level, i) => (
-                        <option key={i}>{level}</option>
-                    ))}
-                </select>
+                <Select isSearchable isDisabled={personalParticularsSaved}
+                    instanceId="levelOfEducation"
+                    name="levelOfEducation"
+                    options={EDUCATION_TYPES.map(level => ({ value: level, label: level }))}
+                    onChange={selectedOptions => {
+                        personalParticularsFormik.setFieldValue("levelOfEducation", selectedOptions)
+                    }
+                    }
+                    value={personalParticularsFormik.values?.levelOfEducation}
+                    onBlur={() => personalParticularsFormik.setFieldTouched("levelOfEducation", true)}
+                    placeholder={"Current Level of Education"}
+                />
             </div>
         </>,
         <>

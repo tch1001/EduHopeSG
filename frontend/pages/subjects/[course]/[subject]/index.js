@@ -29,7 +29,7 @@ const TutorCard = ({ tutor, setTutors }) => {
 
             setDialogSettings({
                 title: 'Request Submitted!',
-                message: `Please give ${given_name} ${family_name} a few days to consider your request for ${subject} tutoring. If you change your mind, you can cancel the request in the "My tutors" page.`,
+                message: <>Please give {given_name} {family_name} a few days to consider your request for {subject} tutoring.<br/> If you change your mind, you can cancel the request in the <a href="/manage-tutors" className="underline text-dark-blue hover:text-blue">My tutors</a> page.</>,
                 display: true,
                 buttons: [{ text: "Close", bg: "bg-aqua", callback: closeDialog }],
             });
@@ -66,7 +66,7 @@ const TutorCard = ({ tutor, setTutors }) => {
     }
 
     return (
-        <Card className="py-4 px-6 max-w-full" key={tutor.id}>
+        <Card className="py-4 px-6 max-w-full mx-0" key={tutor.id}>
             <div className="flex flex-col gap-4">
                 <div>
                     <p className="text-dark-blue font-bold">
@@ -77,9 +77,10 @@ const TutorCard = ({ tutor, setTutors }) => {
                     <p className="mt-2 mb-2">{tutor.description}</p>
                 </div>
                 <div>
-                    <strong className="mr-2">Available for tutoring until:</strong> {new Date(tutor.commitment_end).toLocaleDateString("en-GB", {year: 'numeric', month: 'long', day: 'numeric' })}
+                    <strong className="mr-2">Available for tutoring until: </strong> 
+                    <span className='whitespace-nowrap'>{new Date(tutor.commitment_end).toLocaleDateString("en-GB", {year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 </div>                
-                <div>
+                <div className='flex flex-row gap-y-2 flex-wrap'>
                     <strong className="mr-2">Preferred Consultation Mode(s):</strong>
                     <div className="inline-flex flex-row gap-1">
                         {
@@ -109,18 +110,18 @@ export const Subject = ({ subject, initTutors }) => {
 
     return (
         <Container className="flex flex-col gap-6 p-6 max-w-5xl">
-            <div>
-                <h1 className="text-3xl font-bold">
-                    <span className="text-dark-aqua">{subject.course}</span>{" "}
-                    <span className="underline text-dark-blue">{subject.name}</span>
+            <div className="flex flex-col items-center sm:items-start gap-3 sm:gap-0">
+                <h1 className="text-3xl font-bold text-center sm:text-left">
+                    <span className="text-dark-aqua whitespace-nowrap">{subject.course}</span>{" "}
+                    <span className="underline text-dark-blue whitespace-nowrap">{subject.name}</span>
                     {" "}tutors
                 </h1>
-                <p className="text-xl">
+                <p className="text-xl text-center sm:text-left">
                     Request help from{" "}
                     <span className="font-semibold">
                         {tutors.length} tutor{tutors.length !== 1 ? "s" : ""}
                     </span>{" "}
-                    that would best suit you
+                    that would best suit you!
                 </p>
             </div>
             <main className="flex flex-col gap-4">

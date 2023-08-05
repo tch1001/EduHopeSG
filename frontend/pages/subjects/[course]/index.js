@@ -11,19 +11,19 @@ export const CourseSubjects = ({ course, subjects }) => {
 
     return (
         <Container className="p-6 max-w-5xl">
-            <div>
-                <h1 className="text-3xl font-bold">
+            <div className="flex flex-col items-center sm:items-start gap-3 sm:gap-0">
+                <h1 className="text-3xl font-bold text-center sm:text-left">
                     Showing available{" "}
-                    <span className="underline text-dark-blue">{course.name}</span>
+                    <span className="underline text-dark-blue whitespace-nowrap">{course.name}</span>
                     {" "}subjects
                 </h1>
-                <p className="text-xl">Select the subject that you require help with</p>
+                <p className="text-xl text-center sm:text-left">Select the subject that you require help with!</p>
             </div>
             <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-8">
                 {
                     subjects.map((subject, key) => (
                         <Link key={key} href={`${currentPath}/${subject.name}`}>
-                            <Card className="max-w-xs text-center py-4">
+                            <Card className="max-w-xs text-center py-4 mx-auto">
                                 <div className="border rounded-full p-10 inline-block">
                                     <Icon icon="clipboard-document" className="inline" alt="" />
                                 </div>

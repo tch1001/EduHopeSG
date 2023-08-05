@@ -51,7 +51,16 @@ export const Header = () => {
         )
     }
 
-    const UserSection = () => {
+    const HiddenLinks = () => {
+        return (
+            <>
+                <Link href="/edit-profile" passHref>Edit profile</Link>
+                <div onClick={() => logout() && (window.location.href = "/")}>Logout</div>
+            </>
+        )
+    }
+
+    const HiddenSection = () => {
         if (!user.id) {
             return (
                 <Button secondary href={`/login?originalURL=${router.asPath}`}>
@@ -60,17 +69,9 @@ export const Header = () => {
             )
         }
 
-        const dropdownContent = (
-            <>
-
-                <Link href="/edit-profile" passHref>Edit profile</Link>
-                <div onClick={() => logout() && (window.location.href = "/")}>Logout</div>
-            </>
-        )
-
         return (
             <div>
-                <DropdownMenu dropdownContent={dropdownContent}>
+                <DropdownMenu dropdownContent={HiddenLinks()}>
                     <div
                         className="flex flex-row gap-1 items-center"
                     >
@@ -112,7 +113,7 @@ export const Header = () => {
                     <div className="flex flex-row gap-x-5 my-auto">
                         <Links />
                     </div>
-                    <UserSection />
+                    <HiddenSection />
                 </nav>
                 <Button
                     className="sm:hidden"
@@ -124,7 +125,7 @@ export const Header = () => {
             </div>
             <nav className={`flex flex-col items-center justify-center gap-y-3 py-2 text-base ${navbar ? "block" : "hidden"}`}>
                 <Links />
-                <UserSection />
+                <HiddenLinks />
             </nav>
         </header>
     );

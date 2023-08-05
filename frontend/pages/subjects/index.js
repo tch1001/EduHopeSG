@@ -10,15 +10,15 @@ export const Courses = ({ courses }) => {
 
     return (
         <Container className="p-6 max-w-5xl">
-            <div>
-                <h1 className="text-3xl font-bold">Available subjects</h1>
-                <p className="text-xl">Browse our tutors by your stream or course</p>
+            <div className="flex flex-col items-center sm:items-start gap-2 sm:gap-0"> 
+                <h1 className="text-3xl font-bold text-center sm:text-left">Available subjects</h1>
+                <p className="text-xl text-center sm:text-left">Browse our tutors by your stream or course!</p>
             </div>
             <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-8">
                 {
                     courses.map((course, key) => (
                         <Link key={key} href={`${currentPath}/${course.short_name}`} passHref>
-                            <Card className="max-w-xs text-center py-4">
+                            <Card className="max-w-xs text-center py-4 mx-auto">
                                 <div className="border rounded-full p-10 inline-block">
                                     <Icon icon="clipboard-document" className="inline" alt="" />
                                 </div>

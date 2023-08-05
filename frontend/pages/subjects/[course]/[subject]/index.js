@@ -77,6 +77,9 @@ const TutorCard = ({ tutor, setTutors }) => {
                     <p className="mt-2 mb-2">{tutor.description}</p>
                 </div>
                 <div>
+                    <strong className="mr-2">Available for tutoring until:</strong> {new Date(tutor.commitment_end).toLocaleDateString("en-GB", {year: 'numeric', month: 'long', day: 'numeric' })}
+                </div>                
+                <div>
                     <strong className="mr-2">Preferred Consultation Mode(s):</strong>
                     <div className="inline-flex flex-row gap-1">
                         {

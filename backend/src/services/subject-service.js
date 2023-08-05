@@ -79,7 +79,7 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName, u
     */    
     const queryText = `
     SELECT u.id, u.given_name, u.family_name, u.school, u.level_of_education, u.bio AS description,
-    t.commitment_end, t.preferred_communications, t.average_response_time,
+    t.commitment_end::timestamp at time zone 'UTC' at time zone 'Asia/Singapore' AS commitment_end, t.preferred_communications, t.average_response_time,
     s.id AS subject_id, s.level || ' ' || s.name AS subject, ttr.status
     FROM (
         SELECT ttr.tutor AS tutor_id, COUNT(ttr.tutor) AS num_tutees

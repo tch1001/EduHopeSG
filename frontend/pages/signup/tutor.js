@@ -260,16 +260,16 @@ const TutorSignUp = ({ subjects }) => {
             </div>
             <div className="w-full max-w-sm px-4 py-2">
                 <FormErrorDisplay field="levelOfEducation" formik={formik} />
-                <Select isSearchable isDisabled={personalParticularsSaved}
+                <Select isSearchable
                     instanceId="levelOfEducation"
                     name="levelOfEducation"
                     options={EDUCATION_TYPES.map(level => ({ value: level, label: level }))}
                     onChange={selectedOptions => {
-                        personalParticularsFormik.setFieldValue("levelOfEducation", selectedOptions)
+                        formik.setFieldValue("levelOfEducation", selectedOptions)
                     }
                     }
-                    value={personalParticularsFormik.values?.levelOfEducation}
-                    onBlur={() => personalParticularsFormik.setFieldTouched("levelOfEducation", true)}
+                    value={formik.values?.levelOfEducation}
+                    onBlur={() => formik.setFieldTouched("levelOfEducation", true)}
                     placeholder={"Current Level of Education"}
                 />
             </div>

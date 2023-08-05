@@ -9,29 +9,22 @@ import { getSubjectsByIDs } from "./subject-service.js";
 import * as tutorService from "./tutor-service.js";
 
 const EDUCATION_TYPES = [
-    'SEC_1',
-    'SEC_2',
-    'SEC_3',
-    'SEC_4',
-    'SEC_5',
-    'JC_1',
-    'JC_2',
-    'PRIVATE_O_LEVEL',
-    'PRIVATE_A_LEVEL',
-    'IP_1',
-    'IP_2',
-    'IP_3',
-    'IP_4',
-    'IP_5',
-    'IP_6',
-    'IB_1',
-    'IB_2',
-    'POLYTECHNIC_0',
-    'POLYTECHNIC_1',
-    'POLYTECHNIC_2',
-    'POLYTECHNIC_3',
-    'UNI_UNDERGRADUATE',
-    'UNI_GRADUATE'
+    'Sec 1',
+    'Sec 2',
+    'Sec 3',
+    'Sec 4',
+    'Sec 5',
+    'JC 1',
+    'JC 2',
+    'JC Graduate',
+    'Polytechnic Year 1',
+    'Polytechnic Year 2',
+    'Polytechnic Year 3',
+    'Polytechnic Graduate',
+    "Private O'Level",
+    "Private A'Level",
+    'Uni Undergraduate',
+    'Uni Graduate'
 ];
 
 const REFERRAL = [

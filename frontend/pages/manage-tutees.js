@@ -17,9 +17,10 @@ const ManageTutees = ({ initPendingTutees, initAcceptedTutees, error }) => {
         <Container className="flex flex-col gap-6 p-6 max-w-5xl">
             <h1 className="text-2xl font-bold">Tutee Requests {`(${pendingTutees.length})`}</h1>
             {pendingTutees.length == 0 && (
-                <div>
+                <div className="flex flex-col gap-1">
                     <p>{"You do not have any pending tutee requests."}</p>
                     <p> {"We'll send you an email notification when a student requests for your tutoring services!"}</p>
+                    <p>{"In the meantime, you can browse the "} <a href="/subjects" className="underline text-dark-blue hover:text-blue">Find a tutor</a> {" page to view your profile!"}</p>
                 </div>
             )}
             {pendingTutees.map((tutee, index) => (

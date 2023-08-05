@@ -252,6 +252,7 @@ const TutorSignUp = ({ subjects }) => {
                     name="school"
                     options={
                         [{ value: "In National Service", label: "In National Service" },
+                        { value: "Waiting for University to Begin", label: "Waiting for University to Begin" },                        
                         { value: "Graduated from JC", label: "Graduated from JC" },
                         { value: "Graduated from Poly", label: "Graduated from Poly" },
                         ...schools.map(school => ({ value: school, label: school }))]

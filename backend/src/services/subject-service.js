@@ -220,7 +220,7 @@ export async function getCourseSubjects(courseName) {
         RIGHT JOIN course c ON s.course = c.id         
         WHERE c.name = $1        
         GROUP BY s.id, c.id, s.name
-        ORDER BY s.id;
+        ORDER BY name ASC;
     `;
 
     const { rows: subjects } = await query(queryText, [courseName]);

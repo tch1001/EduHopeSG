@@ -30,7 +30,7 @@ export const Header = () => {
             <>
                 <Link href="/subjects" passHref>
                     Find a tutor
-                </Link>
+                </Link>          
                 <Link href="/about" passHref>
                     About us
                 </Link>
@@ -43,7 +43,7 @@ export const Header = () => {
                     ) : (
                         <>
                             <Link href="/faq" passHref>FAQ</Link>
-                            <Link href="/get-involved" passHref>Get involved</Link>
+                            <Link href="/signup/tutor" passHref>Become a Tutor</Link>                                  
                         </>
                     )
                 }

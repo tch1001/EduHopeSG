@@ -98,12 +98,12 @@ const TutorSignUp = ({ subjects }) => {
             .default("")
             .required("Required")
             .password()
-            .min(12, "Password has to be at least 12 characters long"),
+            .min(10, "Password has to be at least 10 characters long"),
         confirmPassword: Yup.string()
             .default("")
             .required("Required")
             .password()
-            .min(12, "Password has to be at least 12 characters long")
+            .min(10, "Password has to be at least 10 characters long")
             .test("test-match", "Passwords should match", (value, context) => {
                 const { password } = context.parent;
                 return password === value;

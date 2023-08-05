@@ -1,8 +1,8 @@
 import * as Yup from "yup";
 
 Yup.addMethod(Yup.string, "password", function (
-    options = { minLowercase: 2, minUppercase: 2, minNumbers: 2, minSymbols: 2 },
-    errorMessage = "Password must have at least 2 lowercase, 2 uppercase, 2 number 2 symbols/special characters"
+    options = { minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 },
+    errorMessage = "Password must have at least 1 lowercase, 1 uppercase, 1 number and 1 symbol/special character"
 ) {
     return this.test("password-strength", errorMessage, function (password) {
         const { minLowercase, minUppercase, minNumbers, minSymbols } = options;

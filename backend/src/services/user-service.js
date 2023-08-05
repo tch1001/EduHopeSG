@@ -73,11 +73,11 @@ function isStrongPassword(password) {
     if (!password) return false;
 
     return validator.isStrongPassword(password, {
-        minLength: 12,
-        minLowercase: 2,
-        minUppercase: 2,
-        minNumbers: 2,
-        minSymbols: 2
+        minLength: 10,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1
     });
 }
 

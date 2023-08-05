@@ -30,12 +30,12 @@ const resetPassword = () => {
             .default("")
             .required("Required")
             .password()
-            .min(12, "Password has to be at least 12 characters long"),
+            .min(10, "Password has to be at least 10 characters long"),
         confirmNewPassword: Yup.string()
             .default("")
             .required("Required")
             .password()
-            .min(12, "Password has to be at least 12 characters long")
+            .min(10, "Password has to be at least 10 characters long")
             .test("test-match", "Passwords should match", (value, context) => {
                 const { newPassword } = context.parent;
                 return newPassword === value;

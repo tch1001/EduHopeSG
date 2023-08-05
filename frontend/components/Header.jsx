@@ -28,22 +28,21 @@ export const Header = () => {
     const Links = () => {
         return (
             <>
-                <Link href="/subjects" passHref>
+                <Link href="/subjects" className="hover:text-dark-blue" onClick={async () => { await router.push("/subjects"); setNavbar(false) }}>
                     Find a tutor
-                </Link>          
-                <Link href="/about" passHref>
-                    About us
                 </Link>
                 {
                     user.id ? (
                         <>
-                            {user.is_tutor && <Link href="/manage-tutees" passHref>My tutees</Link>}
-                            <Link href="/manage-tutors" passHref>My tutors</Link>
+                            {user.is_tutor && <Link href="/manage-tutees" className="hover:text-dark-blue" onClick={async () => { await router.push("/manage-tutees"); setNavbar(false) }}>My tutees</Link>}
+                            <Link href="/manage-tutors" className="hover:text-dark-blue" onClick={async () => { await router.push("/manage-tutors"); setNavbar(false) }}>My tutors</Link>
+                            <Link href="/edit-profile" className="hover:text-dark-blue" onClick={async () => { await router.push("/edit-profile"); setNavbar(false) }}>Edit profile</Link>
                         </>
                     ) : (
                         <>
-                            <Link href="/faq" passHref>FAQ</Link>
-                            <Link href="/signup/tutor" passHref>Become a Tutor</Link>                                  
+                            <Link href="/signup/tutor" className="hover:text-dark-blue" onClick={async () => { await router.push("/signup/tutor"); setNavbar(false) }}>Become a Tutor</Link>
+                            <Link href="/faq" className="hover:text-dark-blue" onClick={async () => { await router.push("/faq"); setNavbar(false) }}>FAQ</Link>
+                            <Link href="/about" className="hover:text-dark-blue" onClick={async () => { await router.push("/about"); setNavbar(false) }}>About us</Link>
                         </>
                     )
                 }
@@ -52,10 +51,18 @@ export const Header = () => {
     }
 
     const HiddenLinks = () => {
+        if (!user.id) {
+            return (
+                <Button secondary href={`/login?originalURL=${router.asPath}`} className="hover:text-dark-blue" onClick={async () => { await router.push(`/login?originalURL=${router.asPath}`); setNavbar(false) }}>
+                    Login
+                </Button>
+            )
+        }
         return (
             <>
-                <Link href="/edit-profile" passHref>Edit profile</Link>
-                <div onClick={() => logout() && (window.location.href = "/")}>Logout</div>
+                <Link href="/faq" className="hover:text-dark-blue" onClick={async () => { await router.push("/faq"); setNavbar(false) }}>FAQ</Link>
+                <Link href="/about" className="hover:text-dark-blue" onClick={async () => { await router.push("/about"); setNavbar(false) }}>About us</Link>                
+                <div className="hover:text-dark-blue" onClick={async () => { logout(); window.location.href = "/"}}>Logout</div>
             </>
         )
     }

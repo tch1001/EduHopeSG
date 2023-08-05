@@ -71,9 +71,10 @@ CREATE TABLE IF NOT EXISTS course (
 CREATE TABLE IF NOT EXISTS subject (
     id SERIAL PRIMARY KEY,
     course UUID,
-    name VARCHAR(32) UNIQUE NOT NULL,
-    level LEVEL,
-    image VARCHAR NOT NULL,
+    name VARCHAR(32) NOT NULL,
+    level LEVEL NOT NULL,
+
+    UNIQUE(name, level)
 
     CONSTRAINT fk_course
         FOREIGN KEY (course)

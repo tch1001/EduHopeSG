@@ -522,8 +522,8 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
     }
 
     return (
-        <Container center className="p-6 max-w-md sm:max-w-5xl">
-            <div className={`grid ${is_tutor ? "grid-cols-2" : "grid-cols-1"} bg-slate-100 rounded-sm w-full sm:w-auto sm:min-w-xs`}>
+        <Container center className="p-6 max-w-5xl">
+            <div className={`grid ${is_tutor ? "grid-cols-2" : "grid-cols-1"} bg-slate-100 rounded-sm min-w-full xs:min-w-xs`}>
                 <button onClick={() => { setSelection("Personal Particulars") }} className={selection === "Personal Particulars" ? "bg-slate-300" : "bg-slate-100"}>
                     <div className="p-2 text-center text-lg">Personal Particulars</div>
                 </button>
@@ -534,7 +534,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                 )
                     : null}
             </div>
-            <Card className="p-4 m-2 shadow-md shadow-slate-300 w-full sm:w-auto sm:min-w-xs ">
+            <Card className="p-4 m-2 shadow-md shadow-slate-300 min-w-full xs:min-w-xs ">
                 <form
                     className={styles.form}
                     onSubmit={(e) => e.preventDefault()}
@@ -543,7 +543,7 @@ const EditProfile = ({ initPersonalParticulars, initTutorSettings, is_tutor, err
                     {profileFields[selection]}
                 </form>
             </Card>
-            <Card className="p-4 m-2 shadow-md shadow-slate-300 w-full sm:w-auto sm:min-w-xs">
+            <Card className="p-4 m-2 shadow-md shadow-slate-300 min-w-full xs:min-w-xs">
                 <form
                     className={styles.form}
                     onSubmit={(e) => e.preventDefault()}

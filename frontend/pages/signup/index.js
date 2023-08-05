@@ -380,13 +380,13 @@ const SignUp = () => {
                     </div>
                 </form>
             </Card>
-            <p className="p-2">
+            <p className="p-2 text-center">
                 Already have a tutee account with us?{" "}
-                <Link href={`/login?originalURL=${originalURL}`} className="link" passHref>Login in here</Link>
+                <Link href={`/login?originalURL=${originalURL}`} className="link whitespace-nowrap" passHref>Login in here</Link>
             </p>
-            <p className="p-1">
+            <p className="p-1 text-center">
                 Sign up as a tutor?{" "}
-                <Link href={`/signup/tutor?originalURL=${originalURL}`} className="link" passHref>Become a tutor</Link>
+                <Link href={`/signup/tutor?originalURL=${originalURL}`} className="link whitespace-nowrap" passHref>Become a tutor</Link>
             </p>
         </Container>
     );

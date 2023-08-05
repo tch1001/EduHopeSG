@@ -90,13 +90,13 @@ function Login() {
                     <Button type="submit" loading={loading}>Login</Button>
                 </form>
             </Card>
-            <p className="p-2">
+            <p className="p-2 text-center">
                 New to EduHope?{" "}
-                <Link href={`/signup?originalURL=${originalURL}`} className="link" passHref>Create an account!</Link>
+                <Link href={`/signup?originalURL=${originalURL}`} className="link whitespace-nowrap" passHref>Create an account!</Link>
             </p>
-            <p className="p-2">
+            <p className="p-2 text-center">
                 Forgot your password?{" "}
-                <Link href={`/forgot-password?originalURL=${originalURL}`} className="link" passHref>Reset password</Link>
+                <Link href={`/forgot-password?originalURL=${originalURL}`} className="link whitespace-nowrap" passHref>Reset password</Link>
             </p>            
         </Container>
     );

@@ -64,7 +64,7 @@ const ForgotPassword = () => {
 
     return (
         <Container center className="p-6 max-w-5xl">
-            <Card className="p-4 m-2 shadow-md shadow-slate-300 sm:min-w-xs">
+            <Card className="p-4 m-2 shadow-md shadow-slate-300 min-w-full xs:min-w-xs">
                 <form
                     className={styles.form}
                     onSubmit={(e) => e.preventDefault()}

@@ -481,13 +481,13 @@ const TutorSignUp = ({ subjects }) => {
                     </div>
                 </form>
             </Card>
-            <p className="p-2">
+            <p className="p-2 text-center">
                 Already have a tutor account with us?{" "}
-                <Link href={`/login?originalURL=${originalURL}`} className="link" passHref>Login in here</Link>
+                <Link href={`/login?originalURL=${originalURL}`} className="link whitespace-nowrap" passHref>Login in here</Link>
             </p>
-            <p className="p-1">
+            <p className="p-1 text-center">
                 Sign up as a tutee instead?{" "}
-                <Link href={`/signup?originalURL=${originalURL}`} className="link" passHref>Register as a tutee</Link>
+                <Link href={`/signup?originalURL=${originalURL}`} className="link whitespace-nowrap" passHref>Register as a tutee</Link>
             </p>
         </Container>
     );

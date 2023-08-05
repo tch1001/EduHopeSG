@@ -80,7 +80,7 @@ const TutorCard = ({ tutor, setTutors }) => {
                     <strong className="mr-2">Available for tutoring until: </strong> 
                     <span className='whitespace-nowrap'>{new Date(tutor.commitment_end).toLocaleDateString("en-GB", {year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 </div>                
-                <div className='flex flex-row gap-y-2 flex-wrap'>
+                <div className='flex flex-row gap-y-2 flex-wrap items-center'>
                     <strong className="mr-2">Preferred Consultation Mode(s):</strong>
                     <div className="inline-flex flex-row gap-1">
                         {
@@ -91,7 +91,7 @@ const TutorCard = ({ tutor, setTutors }) => {
                     </div>
                 </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-7 sm:mt-4">
                 <Button
                     onClick={() => handleRequest(tutor)}
                     loading={loading}

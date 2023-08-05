@@ -33,7 +33,7 @@ const ManageTutors = ({ initPendingTutors, initAcceptedTutors, error }) => {
                     setAcceptedTutors={setAcceptedTutors}
                 />
             ))}
-            <h1 className="text-2xl font-bold">Accepted Tutors {`(${acceptedTutors.length})`}</h1>
+            <h1 className="text-2xl font-bold">My Tutors {`(${acceptedTutors.length})`}</h1>
             {acceptedTutors.length == 0 && (
                 <p>You do not have any existing tutors.</p>
             )}

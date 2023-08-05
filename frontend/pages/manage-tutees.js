@@ -17,7 +17,7 @@ const ManageTutees = ({ initPendingTutees, initAcceptedTutees, error }) => {
         <Container className="flex flex-col gap-6 p-6 max-w-5xl">
             <h1 className="text-2xl font-bold">Tutee Requests {`(${pendingTutees.length})`}</h1>
             {pendingTutees.length == 0 && (
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-3 sm:gap-1">
                     <p>{"You do not have any pending tutee requests."}</p>
                     <p> {"We'll send you an email notification when a student requests for your tutoring services!"}</p>
                     <p>{"In the meantime, you can browse the "} <a href="/subjects" className="underline text-dark-blue hover:text-blue">Find a tutor</a> {" page to view your profile!"}</p>
@@ -34,7 +34,7 @@ const ManageTutees = ({ initPendingTutees, initAcceptedTutees, error }) => {
                     setAcceptedTutees={setAcceptedTutees}
                 />
             ))}
-            <h1 className="text-2xl font-bold">Accepted Tutees {`(${acceptedTutees.length})`}</h1>
+            <h1 className="text-2xl font-bold">My Tutees {`(${acceptedTutees.length})`}</h1>
             {acceptedTutees.length == 0 && (
                 <p>You do not have any existing tutees.</p>
             )}

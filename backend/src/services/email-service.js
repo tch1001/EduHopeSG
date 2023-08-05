@@ -470,7 +470,7 @@ export async function sendEmailResetPasswordLink(email, passwordResetToken, orig
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
             `You have requested to reset your password. <br/><br/>`,
             `Here is the <a href="${process.env.WEBSITE_URL}/reset-password?token=${passwordResetToken}&originalURL=${originalURL}">password reset link</a><br/><br/>`,
-            "Do note that it expires in 15 minutes! Upon expiry, you will have to request for another password reset link."
+            "Do note that it expires in 15 minutes! Upon expiry, you will have to request for another password reset link.<br/><br/>"
         ].join(" "));
 
     console.log(hydratedHTML)

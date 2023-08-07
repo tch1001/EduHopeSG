@@ -6,7 +6,7 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm"
 DROP TYPE IF EXISTS LEVEL CASCADE;
 CREATE TYPE LEVEL AS ENUM (
     'Pure',
-    'Combined',
+    'Elective',
     'H1',
     'H2',
     'H3',
@@ -71,19 +71,18 @@ CREATE TABLE IF NOT EXISTS course (
 );
 
 INSERT INTO course (name, long_name, short_form, image)
-    VALUES ('GCE N-Level', 'General Certificate of Education Normal Level', 'N-Level', 'https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2022/12/12/yaohui-wknlevel17-5030_4.jpg');
-INSERT INTO course (name, long_name, short_form, image)    
-    VALUES ('GCE O-Level', 'General Certificate of Education Ordinary Level', 'O-Level', 'https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2023/01/05/IMG5629_5.JPG');
-INSERT INTO course (name, long_name, short_form, image)    
-    VALUES ('GCE A-Level', 'General Certificate of Education Advanced Level', 'A-Level', 'https://www.asiaone.com/sites/default/files/styles/article_main_image/public/original_images/Mar2014/20140303_alevel.jpg');
+    VALUES ('GCE N-Level', 'General Certificate of Education Normal Level', 'N-Level', 'https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2022/12/12/yaohui-wknlevel17-5030_4.jpg'),
+    ('GCE O-Level', 'General Certificate of Education Ordinary Level', 'O-Level', 'https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2023/01/05/IMG5629_5.JPG'),
+    ('GCE A-Level', 'General Certificate of Education Advanced Level', 'A-Level', 'https://www.asiaone.com/sites/default/files/styles/article_main_image/public/original_images/Mar2014/20140303_alevel.jpg'),
+    ('International Baccalaureate', 'International Baccalaureate Diploma Programme', 'IB', NULL);    
     
 
 DROP TABLE IF EXISTS subjects;
 CREATE TABLE IF NOT EXISTS subject (
     id SERIAL PRIMARY KEY,
     course UUID,
-    name VARCHAR(32) NOT NULL,
-    level LEVEL NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    level LEVEL,
 
     UNIQUE(name, level)
 
@@ -93,6 +92,163 @@ CREATE TABLE IF NOT EXISTS subject (
             ON UPDATE CASCADE
             ON DELETE CASCADE
 );
+
+INSERT INTO subject (course, name, level)
+    VALUES (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'English', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Chinese', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Higher Chinese', NULL),    
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Chinese Language Basic', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Malay', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Higher Malay', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Malay Language Basic', NULL),    
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Tamil', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Higher Tamil', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Tamil Language Basic', NULL),        
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Economics', 'Pure'),     
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Literature', 'Pure'),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Chinese Literature', 'Pure'),        
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Malay Literature', 'Pure'),    
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Tamil Literature', 'Pure'),            
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'History', 'Pure'),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Geography', 'Pure'),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Social Studies', 'Elective'),                
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Literature', 'Elective'),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Chinese Literature', 'Elective'),        
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Malay Literature', 'Elective'),    
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Tamil Literature', 'Elective'),        
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'History', 'Elective'),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Geography', 'Elective'),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Elementary Mathematics', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Additional Mathematics', NULL),    
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Physics', 'Pure'),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Chemistry', 'Pure'),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Biology', 'Pure'),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Combined Science (Physics)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Combined Science (Chemistry)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Combined Science (Biology)', NULL),    
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Nutrition and Food Science', NULL),        
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Art', NULL),            
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Higher Art', NULL),                
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Design & Technology', NULL),     
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Business Studies', NULL), 
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Principles of Accounts', NULL), 
+    (( SELECT id FROM course WHERE name = 'GCE O-Level' ), 'Computing', NULL);
+  
+INSERT INTO subject (course, name, level)
+    VALUES (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'General Paper', 'H1'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Knowledge and Inquiry', 'H2'),          
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Chinese', 'H1'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Chinese Language Basic', 'H1'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Chinese Language and Literature', 'H2'),       
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Chinese Language and Literature', 'H3'), 
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Malay', 'H1'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Malay Language Basic', 'H1'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Malay Language and Literature', 'H2'),       
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Malay Language and Literature', 'H3'), 
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Tamil', 'H1'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Tamil Language Basic', 'H1'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Tamil Language and Literature', 'H2'),       
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Tamil Language and Literature', 'H3'),         
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'China Studies in Chinese', 'H2'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Geography', 'H1'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'History', 'H1'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Literature', 'H1'),    
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Economics', 'H1'),    
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Art', 'H1'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Geography', 'H2'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'History', 'H2'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Literature', 'H2'),    
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Economics', 'H2'),        
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Art', 'H2'),    
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'China Studies in English', 'H2'),        
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'English Language and Linguistics', 'H2'),    
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Theatre Studies and Drama', 'H2'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Principles of Accounting', 'H2'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Management of Business', 'H2'),  
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Music', 'H2'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Mathematics', 'H1'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Physics', 'H1'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Chemistry', 'H1'),    
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Biology', 'H1'),    
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'China Studies in English', 'H1'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Mathematics', 'H2'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Physics', 'H2'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Chemistry', 'H2'),    
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Biology', 'H2'),        
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Computing', 'H2'),       
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Further Mathematics', 'H2'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Literature', 'H3'),
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Economics (Cambridge)', 'H3'),     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Chemistry', 'H3'),       
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Physics', 'H3'),                 
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Biology', 'H3'),       
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Art', 'H3'),                     
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Mathematics', 'H3'),       
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Music', 'H3'),                 
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'Geography', 'H3'),       
+    (( SELECT id FROM course WHERE name = 'GCE A-Level' ), 'History', 'H3');  
+
+INSERT INTO subject (course, name, level)
+    VALUES (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'English Language N(A)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Chinese N(A)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Malay N(A)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Tamil N(A)', NULL),      
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'History N(A)', 'Pure'),   
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Geography N(A)', 'Pure'),       
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Literature N(A)', 'Pure'),   
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'History N(A)', 'Elective'),   
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Geography N(A)', 'Elective'),   
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Literature N(A)', 'Elective'),   
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Combined Science (Chemistry) N(A)', NULL),   
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Combined Science (Physics) N(A)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Combined Science (Biology) N(A)', NULL),   
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Art N(A)', NULL),     
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Design & Technology N(A)', NULL),     
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Principles of Accounts N(A)', NULL),  
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Nutrition and Food Science N(A)', NULL),   
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'English Language N(T)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Chinese N(T)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Malay N(T)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Tamil N(T)', NULL),
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Art N(T)', NULL),     
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Design & Technology N(T)', NULL),     
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Computer Applications N(T)', NULL),  
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Nutrition and Food Science N(T)', NULL),                    
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Elements of Business Skills N(T)', NULL),     
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Music N(T)', NULL),  
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Mobile Robotics', NULL),  
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Smart Electrical Technology', NULL),                    
+    (( SELECT id FROM course WHERE name = 'GCE N-Level' ), 'Retail Operations', NULL)    
+
+INSERT INTO subject (course, name, level)
+    VALUES (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Theory of Knowledge', NULL),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Extended Essay', NULL),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Literature (English)', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Language & Literature (English)', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Language & Literature (English)', 'HL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Chinese B', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Malay B', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Tamil B', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Hindi B', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Business Management', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Economics', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Geography', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'History', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Business Management', 'HL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Economics', 'HL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Geography', 'HL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'History', 'HL'),    
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Physics', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Chemistry', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Biology', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Computing', 'HL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Physics', 'HL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Chemistry', 'HL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Biology', 'HL'),  
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Mathematics', 'SL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Mathematics', 'HL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Music', 'HL'),
+    (( SELECT id FROM course WHERE name = 'International Baccalaureate' ), 'Visual Arts', 'HL') 
 
 -- EduHopeSG Tables
 DROP TABLE IF EXISTS eduhope_user CASCADE;

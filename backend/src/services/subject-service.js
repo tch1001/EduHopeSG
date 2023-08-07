@@ -80,7 +80,7 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName, u
     const queryText = `
     SELECT u.id, u.given_name, u.family_name, u.school, u.level_of_education, u.bio AS description,
     t.commitment_end::timestamp at time zone 'UTC' at time zone 'Asia/Singapore' AS commitment_end, t.preferred_communications, t.average_response_time,
-    s.id AS subject_id, s.level || ' ' || s.name AS subject, ttr.status
+    s.id AS subject_id, concat(s.level, ' ', s.name) AS subject, ttr.status
     FROM (
         SELECT ttr.tutor AS tutor_id, COUNT(ttr.tutor) AS num_tutees
         FROM tutee_tutor_relationship AS ttr 
@@ -89,7 +89,7 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName, u
     ) AS tutors_with_tutees
     RIGHT JOIN tutor AS t ON tutors_with_tutees.tutor_id  = t.user_id
     INNER JOIN subject AS s ON s.id = ANY(t.subjects) 
-        AND s.level || ' ' || s.name = $2
+        AND concat(s.level, ' ', s.name) = $2
     INNER JOIN course AS c ON c.id = s.course 
         AND c.name = $1
     INNER JOIN eduhope_user AS u ON u.id = t.user_id   
@@ -124,7 +124,7 @@ export async function getTutorsByCourseAndSubjectName(courseName, subjectName, u
  */
 export async function getSubjects() {
     const queryText = `
-        SELECT s.id, s.level || ' ' || s.name AS name, c.name AS course
+        SELECT s.id, concat(s.level, ' ', s.name) AS name, c.name AS course
         FROM subject AS s
         LEFT JOIN course AS c
         ON c.id = s.course
@@ -170,7 +170,7 @@ export async function getCourses() {
         RIGHT JOIN subject s ON s.id = ANY(filtered_tutors.subjects)
         RIGHT JOIN course c ON s.course = c.id   
         GROUP BY c.id, c.name
-        ORDER BY c.id;
+        ORDER BY tutor_count DESC, course_name ASC;
     `;
 
     const { rows: courses } = await query(queryText);
@@ -202,7 +202,7 @@ export async function getCourseSubjects(courseName) {
           invalid tutor is filtered out.    
     */
     const queryText = `
-        SELECT s.id AS subject_id, s.level || ' ' || s.name AS name, COUNT(tutor_id)::integer AS tutor_count,
+        SELECT s.id AS subject_id, concat(s.level, ' ', s.name) AS name, COUNT(tutor_id)::integer AS tutor_count,
             LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
         FROM (
             SELECT t.subjects AS subjects, t.user_id AS tutor_id
@@ -220,7 +220,7 @@ export async function getCourseSubjects(courseName) {
         RIGHT JOIN course c ON s.course = c.id         
         WHERE c.name = $1        
         GROUP BY s.id, c.id, s.name
-        ORDER BY name ASC;
+        ORDER BY tutor_count DESC, name ASC;
     `;
 
     const { rows: subjects } = await query(queryText, [courseName]);
@@ -259,10 +259,10 @@ async function getCourseInfoByName(courseName) {
  */
 async function getSubjectInfoByName(subjectName) {
     const queryText = `
-        SELECT s.level || ' ' || s.name AS name, s.id,
+        SELECT concat(s.level, ' ', s.name) AS name, s.id,
             LOWER(REGEXP_REPLACE(REGEXP_REPLACE(s.name,  '\\s*\\(([^\\)]*)\\)\\s*$', ' \\1'), '[\\W,]+', '-', 'g')) AS short_name
         FROM subject s
-        WHERE s.level || ' ' || s.name = $1
+        WHERE concat(s.level, ' ', s.name) = $1
     `;
 
     const { rows: subjects } = await query(queryText, [subjectName]);

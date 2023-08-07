@@ -27,7 +27,7 @@ export async function getTutors(tuteeID) {
                 u.telegram,
                 ttr.id AS relationship_id,                
                 ttr.status, 
-                s.level || ' ' || s.name AS subject,
+                concat(s.level, ' ', s.name) AS subject,
                 s.id AS subject_id,
                 t.preferred_communications
             FROM tutee_tutor_relationship AS ttr

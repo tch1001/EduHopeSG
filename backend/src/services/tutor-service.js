@@ -115,7 +115,7 @@ export async function getTutees(tutorID) {
                 u.telegram,
                 ttr.id AS relationship_id,                
                 ttr.status, 
-                s.level || ' ' || s.name AS subject
+                concat(s.level, ' ', s.name) AS subject
             FROM tutee_tutor_relationship AS ttr
             INNER JOIN eduhope_user AS u
             ON ttr.tutee = u.id

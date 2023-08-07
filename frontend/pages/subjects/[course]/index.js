@@ -23,12 +23,8 @@ export const CourseSubjects = ({ course, subjects }) => {
                 {
                     subjects.map((subject, key) => (
                         <Link key={key} href={`${currentPath}/${subject.name}`}>
-                            <Card className="max-w-xs text-center py-4 mx-auto">
-                                <div className="border rounded-full p-10 inline-block">
-                                    <Icon icon="clipboard-document" className="inline" alt="" />
-                                </div>
-
-                                <div className="pt-2 px-6">
+                            <Card className="max-w-xs text-center py-4 mx-auto hover:bg-slate-100">
+                                <div className="px-6">
                                     <p className="font-medium text-lg text-dark-aqua">{subject.name}</p>
                                     <p className="font-medium text-sm text-dark-blue">
                                         {subject.tutor_count} tutor{subject.tutor_count !== 1 ? "s" : ""} available

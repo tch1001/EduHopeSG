@@ -6,15 +6,12 @@
 }
 
 .contactSocialMedia::after {
+    @apply content-[""] translate-x-2 translate-y-2 transition-transform duration-[0.2s] ease-[ease-out] z-[-1];
     @apply rounded-lg bg-black h-12 left-0 w-full absolute;
-    content: "";
-    transform: translate(8px, 8px);
-    transition: transform .2s ease-out;
-    z-index: -1;
 }
 
 .contactSocialMedia:hover:after {
-    transform: translate(0, 0);
+    @apply translate-x-0 translate-y-0;
 }
 
 .contactSocialMedia:active {
@@ -31,18 +28,17 @@
 }
 
 .select:invalid {
-    color: grey;
+    @apply text-[grey];
 }
-
 
 @media (min-width: 576px) {
     .contactSocialMedia {
-        padding: 0 40px;
+      @apply px-10 py-0;
     }
 }
 
 @media (max-width: 685px) {
     .contactSocialMedia {
-        padding: 0 10px;
+      @apply px-2.5 py-0;
     }
 }

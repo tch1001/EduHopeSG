@@ -67,27 +67,17 @@ const Contact = ({ joinUs, connectUs }) => {
                 <div className="flex flex-col gap-1">
                     <h2 className="text-xl font-bold">Join our organisation!</h2>
                     <div className="sm:w-full flex flex-wrap justify-evenly lg:justify-evenly">
-                        <div className="mt-3 sm:mt-0 sm:ml-3">
-                            <Link href="https://forms.gle/go6DKruGaZUyQwLp9" target="_blank" passHref>
-                                <Button className={styles.contactSocialMedia} role="button">
-                                    Tutee Sign-Up
-                                </Button>
-                            </Link>
-                        </div>
-                        <div className="mt-3 sm:mt-0 sm:ml-3">
-                            <Link href="https://forms.gle/rGfEasoyakNT4oMb8" target="_blank" passHref>
-                                <Button className={styles.contactSocialMedia} role="button">
-                                    Tutor Sign-Up
-                                </Button>
-                            </Link>
-                        </div>
-                        <div className="mt-3 sm:mt-0 sm:ml-3">
-                            <Link href="https://forms.gle/1URf8q3MxHeFzefF9" target="_blank" passHref>
-                                <Button className={styles.contactSocialMedia} role="button">
-                                    EXCO Sign-Up
-                                </Button>
-                            </Link>
-                        </div>
+                        {
+                            joinUs.map(({ url, name }, i) => (
+                                <div className="mt-3 sm:mt-0 sm:ml-3" key={i}>
+                                    <Link href={url} target="_blank" passHref>
+                                        <Button className={styles.contactSocialMedia} role="button">
+                                            {name}
+                                        </Button>
+                                    </Link>
+                                </div>
+                            ))
+                        }
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -96,58 +86,23 @@ const Contact = ({ joinUs, connectUs }) => {
                     <div className="flex flex-col md:flex-row">
                         <div className="flex-1">
                             <div className="flex flex-wrap justify-evenly">
-                                <Link href="https://t.me/eduhopesg/" target="_blank" passHref>
-                                    <Button className={styles.contactSocialMedia} role="button">
-                                        <Image
-                                            className="rounded-full md:w-9 h-auto"
-                                            src="/images/telegram.png"
-                                            width={ICON_SIZE}
-                                            height={ICON_SIZE}
-                                            quality={ICON_QUALITY}
-                                            alt="Our Telegram channel"
-                                        />
-                                        <div className="hidden lg:block">Telegram</div>
-                                    </Button>
-                                </Link>
-                                <Link href="https://www.instagram.com/eduhopesg/" target="_blank" passHref>
-                                    <Button className={styles.contactSocialMedia} role="button">
-                                        <Image
-                                            className="rounded-full md:w-9 h-auto"
-                                            src="/images/instagram.png"
-                                            width={ICON_SIZE}
-                                            height={ICON_SIZE}
-                                            quality={ICON_QUALITY}
-                                            alt="Our Instagram account"
-                                        />
-                                        <div className="hidden lg:block">Instagram</div>
-                                    </Button>
-                                </Link>
-                                <Link href="https://www.tiktok.com/@eduhopesg" target="_blank" passHref>
-                                    <Button className={styles.contactSocialMedia} role="button">
-                                        <Image
-                                            className="rounded-full md:w-9 h-auto"
-                                            src="/images/tiktok.png"
-                                            width={ICON_SIZE}
-                                            height={ICON_SIZE}
-                                            quality={ICON_QUALITY}
-                                            alt="Our TikTok account"
-                                        />
-                                        <div className="hidden lg:block">TikTok</div>
-                                    </Button>
-                                </Link>
-                                <a href="mailto:eduhopesg@gmail.com">
-                                    <Button className={styles.contactSocialMedia} role="button">
-                                        <Image
-                                            className="rounded-full md:w-9 h-auto"
-                                            src="/images/email.png"
-                                            width={ICON_SIZE}
-                                            height={ICON_SIZE}
-                                            quality={ICON_QUALITY}
-                                            alt="Our email address"
-                                        />    
-                                        <div className="hidden lg:block">Email</div>
-                                    </Button>
-                                </a>
+                                {
+                                    connectUs.map(({ url, name, altText, image }, i) => (
+                                        <Link href={url} target="_blank" passHref key={i}>
+                                            <Button className={styles.contactSocialMedia} role="button">
+                                                <Image
+                                                    className="rounded-full md:w-9 h-auto"
+                                                    src={image}
+                                                    alt={altText}
+                                                    width={ICON_SIZE}
+                                                    height={ICON_SIZE}
+                                                    quality={ICON_QUALITY}
+                                                />
+                                                <div className="hidden lg:block">{name}</div>
+                                            </Button>
+                                        </Link>
+                                    ))
+                                }
                             </div>
                         </div>
                     </div>

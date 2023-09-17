@@ -6,11 +6,53 @@
         "bio": "I set EduHopeSG’s overall direction, strategy and operations, while actively partnering with organisations to reach more students."
     },
     {
-        "name": "Chien Hao Tan",
-        "role": "Technical Lead of TickNinja",
-        "image": "/images/team/chien_hao_tan.jpg",
+        "name": "Goh Heng Yi",
+        "role": "Volunteer Liason",
+        "image": "",
+        "bio": ""
+    },    
+    {
+        "name": "Cadence Wang",
+        "role": "Volunteer Liason",
+        "image": "",
         "bio": ""
     },
+    {
+        "name": "Ng Zhan Kang",
+        "role": "Volunteer Liason & Frontend Developer",
+        "image": "",
+        "bio": ""
+    },    
+    {
+        "name": "Jaime Lam",
+        "role": "Volunteer Liason",
+        "image": "",
+        "bio": ""
+    },  
+    {
+        "name": "Darrius Tan",
+        "role": "Outreach Director",
+        "image": "",
+        "bio": ""
+    },      
+    {
+        "name": "Peter Siauw",
+        "role": "Outreach Director",
+        "image": "",
+        "bio": ""
+    },       
+    {
+        "name": "Joey Chia",
+        "role": "Outreach Director",
+        "image": "",
+        "bio": ""
+    },
+    {
+        "name": "Chong Man Ling",
+        "role": "Marketing Director",
+        "image": "",
+        "bio": ""
+    },                       
     {
         "name": "Felix Isaac Lim",
         "role": "Technical Lead of EduhopeSG",
@@ -18,15 +60,15 @@
         "bio": "I'm a full-stack engineer who believes in tech for public good"
     },
     {
-        "name": "Sven Tan",
-        "role": "Frontend Developer",
+        "name": "Eugene Lek",
+        "role": "Technical Lead of EduhopeSG",
         "image": "",
-        "bio": ""
+        "bio": "I'm happy to help :)"
     },
     {
-        "name": "Glayds Lim",
-        "role": "Frontend Developer",
-        "image": "",
+        "name": "Chien Hao Tan",
+        "role": "DevOps Engineer",
+        "image": "/images/team/chien_hao_tan.jpg",
         "bio": ""
     }
 ]

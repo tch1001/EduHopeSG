@@ -16,9 +16,15 @@ as `.env.example`
    * Nodemon (optional)
    * Snyk (optional)
 
-4. Setup the database
+4. Setup the PostgreSQL database (using pgAdmin or another tool)
+   By default:
+   * Create the "eduhopesg" database owned by "postgres"/root account
+   * Create a user "eduhope" with limited privileges in ONLY the said created database
+   * Connect to the database as "eduhope" user and
 
-5. Run `tables.sql` to set up and create necessary tables and relations for PostgreSQL
+5. Run `init_database.sql` to set up and create necessary tables and relations for PostgreSQL
+with the necessary permissions and privileges to create tables.
+You can also use `utils/database.js` and call the `setup()` function to initalise the database.
 
 6. Then `npm run` to run
 
@@ -61,8 +67,8 @@ as `.env.example`
 
    GRANT ALL ON DATABASE tickninja TO eduhope;
    GRANT ALL ON SCHEMA public TO eduhope;
-   GRANT ALL ON TABLE public.eduhope_user TO eduhope;GRANT ALL ON TABLE public.tutee_tutor_relationship TO eduhope;
-
+   GRANT ALL ON TABLE public.eduhope_user TO eduhope;
+   GRANT ALL ON TABLE public.tutee_tutor_relationship TO eduhope;
    ```
 
 5. Run `init_database.sql` to set up and create necessary tables and relations for PostgreSQL

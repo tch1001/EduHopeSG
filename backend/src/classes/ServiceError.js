@@ -34,7 +34,9 @@ export default class ServiceError extends Error {
             this.name = this.name;
             this.message = errorCode;
 
-            log.warn({ error: JSON.stringify(this), message: "Encountered error without its mapping"  });
+            console.error(this);
+
+            log.warn({ error: this, message: "Encountered error without its mapping" });
             return this;
         }
 

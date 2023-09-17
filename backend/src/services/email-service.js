@@ -9,8 +9,8 @@ import { compile } from "html-to-text";
 import ServiceError from "../classes/ServiceError.js";
 import log from "../utils/logging.js";
 
-import * as UserService from "./user-service.js";
-import { getSubjects } from "./subject-service.js";
+import * as userService from "./user-service.js";
+import { getSubjectsByIDs } from "./subject-service.js";
 
 const { isEmail } = validator;
 
@@ -34,8 +34,8 @@ const TemplateNotification = fs.readFileSync(resolve(__dirname, "../assets/notif
 
 // TODO: User reporting and "Manage notifications" page, and email verification
 
-const reportLink = `${process.env.WEBSITE_URL}/how-to-report`;
-const unsubLink = `${process.env.WEBSITE_URL}/settings/notifications`;
+const reportLink = `mailto:eduhopesg@gmail.com`;
+const unsubLink = `${process.env.WEBSITE_URL}/settings/notifications`; // inactive as the unsubscribe element has been temporarily hidden in the html templates
 
 /**
  * @typedef {object} EmailResponse
@@ -78,119 +78,86 @@ async function sendEmail(email, subject, text, html) {
 }
 
 /**
+ * Email user about the successful creation of an account using this email
+ * @param {string} email email
+ * @returns {EmailResponse}
+ */
+export async function notifyUserCreation(email, is_tutor) {
+    if (!email) throw new ServiceError("missing-arguments");
+
+    if (is_tutor) {
+        var title = "Thank you for volunteering with EduhopeSG!"
+        var message = [
+            `${title} <br/><br/>`,
+            `Whenever a student requests for your tutoring services, you will receive an email notification from us! Subsequently, you can choose to either accept or decline the request.<br/><br/>`,
+            `Should you choose to accept the request, you will receive an email with your tutee's contact information, which you can use to arrange tutoring sessions with them! This contact information will also be available in the <a href="${process.env.WEBSITE_URL}/manage-tutees">My Tutees</a> page of our website.<br/><br/>`,
+            `<b>Important note:</b> Tutoring requests will be automatically declined if you do not accept/decline them within 5 days. As such, please respond to tutoring requests asap!<br/><br/>`,
+            `Visit the <a href="${process.env.WEBSITE_URL}/manage-tutees">My Tutees</a> page to view the requests for your tutoring services and/or your current tutees.<br/><br/>`,
+            `Visit the <a href="${process.env.WEBSITE_URL}/edit-profile">Edit Profile</a> page to update your Personal Particulars or Tutor Settings. <br/><br/>`,
+            `If you have any queries, feel free to contact us via our <a href=${reportLink}>email</a>. Thank you for volunteering!<br/><br/>`
+        ]
+    } else {
+        var title = "Welcome to EduhopeSG!"
+        var message = [
+            `${title} <br/><br/>`,
+            `Visit the <a href="${process.env.WEBSITE_URL}/subjects">Find a Tutor</a> page to browse the available tutors and request for one that offers the subject you need help with!<br/><br/>`,
+            `If your requested tutor accepts your request, you will receive an email notification from us! Subsequently, you can contact them via their contact information provided in the email!<br/><br/>`,
+            `If your requested tutor is unavailable, we will let you know about it via email too!<br/><br/>`,
+            `<b>Important note:</b> At any one time, you can only request for 1 tutor per subject. If you want to request for another tutor of the same subject, you must cancel the existing request first via the <a href="${process.env.WEBSITE_URL}/manage-tutees">My Tutees</a> page!<br/><br/>`,
+            `Visit the <a href="${process.env.WEBSITE_URL}/edit-profile">Edit Profile</a> page to update your Personal Particulars. <br/><br/>`,
+            `If you have any queries, feel free to contact us via our <a href=${reportLink}>email</a>. Thank you for joining EduhopeSG!<br/><br/>`
+        ]        
+    }
+
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, title)
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, message.join(" "));
+
+    //console.log(hydratedHTML)
+    return await sendEmail(
+        email,
+        `EduhopeSG: Welcome to EduhopeSG!"`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+/**
  * Sends an email request to Tutor and system notification to let Tutee know
  * of request
- * @param {UserService.BasicUser} tutee Tutee object
- * @param {UserService.User} tutor Tutor object
- * @param {number[]} subjectIDs Array of subjects IDss from TickNinja
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
  * @returns {EmailResponse}
  */
-export async function sendTuitionRequest(tutee, tutor, subjectIDs) {
-    if (!tutee || !tutor || !subjectIDs) throw new ServiceError("missing-arguments");
+export async function sendTuitionRequest(tutee, tutor, subjectID, relationshipID) {
+    if (!tutee || !tutor || !subjectID) throw new ServiceError("missing-arguments");
 
-    const subjects = await getSubjects(subjectIDs);
-    const formattedSubjects = subjects.map(d => `${d.course} ${d.name}`).join(", ");
+    const subjectArray = await getSubjectsByIDs([subjectID]);
 
     const message = "You have a new tuition request";
-    const acceptLink = `${process.env.WEBSITE_URL}/api/v0.1/tutor/accept/${tutee.id}`;
-    const declineLink = `${process.env.WEBSITE_URL}/api/v0.1/tutor/reject/${tutee.id}`;
 
     // preparing HTML file
-    const hydratedHTML = TemplateNotificationCTA
+    const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
-        .replace(/{{ PRIMARY_CTA }}/gi, "Accept")
-        .replace(/{{ SECONDARY_CTA }}/gi, "Decline")
-        .replace(/{{ PRIMARY_CTA_HREF }}/gi, acceptLink)
-        .replace(/{{ SECONDARY_CTA_HREF }}/gi, declineLink)
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            `${message} from <strong>${tutee.name}</strong> for <u>${formattedSubjects}</u>.<br/><br/>`,
-            "Please consider the following for the above tuition request:",
-            "<ul><li>You have enough bandwidth to take on another tutee</li>",
-            `<li>Who needs help with <strong>${subjectIDs.length}</strong> subjects</li>`,
+            `<p>${message} from <strong>${tutee.given_name} ${tutee.family_name}</strong> for <strong>${subjectArray[0].name}</strong>.<br/><br/>`,
+            "Please consider the following for the above tuition request:</p>",
+            "<ul><li>You have enough bandwidth to take on another tutee (if you currently have any)</li>",
+            `<li>Who needs help with <strong>${subjectArray[0].name}</strong> subjects</li>`,
             "<li>You will reply their questions within a reasonable time frame</li>",
             "<li>Enjoy teaching the subjects and helping out a fellow student :)</li></ul>",
-            `<br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
-            "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
-            "<br/><br/>Thank you for volunteering your time and effort,"
-        ].join(" "));
-
-    return await sendEmail(
-        UserService.decrypt(tutor.email.trim().toString()),
-        `EduhopeSG: ${message}!`,
-        htmlToText(hydratedHTML),
-        hydratedHTML
-    );
-}
-
-/**
- * Sends an email notification to Tutor about subject changes in
- * a tutee-tutor relationship
- * @param {UserService.BasicUser} tutee Tutee object
- * @param {UserService.User} tutor Tutor object
- * @param {number[]} newSubjectIDs Array of subject IDs from TickNinja
- * @returns {EmailResponse}
- */
-export async function notifyTuitionSubjectChange(tutee, tutor, newSubjectIDs) {
-    if (!tutee || !tutor || !subjectIDs) throw new ServiceError("missing-arguments");
-
-    // NOTE: should we change the status of the relationship back to 0
-    // when the tutee changes subjects
-    const message = "A tutee changed subjects";
-    const newSubjects = await getSubjects(newSubjectIDs);
-    const formattedSubjects = newSubjects.map(d => `${d.course} ${d.name}`).join(", ");
-
-    // preparing HTML file
-    const hydratedHTML = TemplateNotification
-        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
-        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
-        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            `${message}! <strong>${tutee.name}</strong> is now requesting for <u>${formattedSubjects}</u>.`,
-            "to be tutored by you.<br/><br/>",
-            "If these changes are not suitable for you, please message your tutee",
-            "such that both of you are agreeable to a tuition plan/schedule.",
+            `<p><br/>Please visit the <a href="${process.env.WEBSITE_URL}/manage-tutees">My Tutees</a> page to <strong>Accept/Decline</strong> this request!`,
             `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
             "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
-            "<br/><br/>Thank you for volunteering your time and effort,"
+            "<br/><br/>Thank you for volunteering your time and effort!</p>"
         ].join(" "));
 
+    //console.log(hydratedHTML)
     return await sendEmail(
-        UserService.decrypt(tutor.email.trim().toString()),
-        `EduhopeSG: ${message}!`,
-        htmlToText(hydratedHTML),
-        hydratedHTML
-    );
-}
-
-/**
- * Sends an email notification to Tutee about being accepted by
- * the request tutor and subjects
- * @param {UserService.BasicUser} tutee Tutee object
- * @param {UserService.User} tutor Tutor object
- * @param {number[]} subjectIDs Array of subjects IDss from TickNinja
- * @returns {EmailResponse}
- */
-export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
-    if (!tutee || !tutor || !subjectIDs) throw new ServiceError("missing-arguments");
-
-    const message = "Congratulations, are you enrolled";
-    const subjects = await getSubjects(subjectIDs);
-    const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
-
-    // preparing HTML file
-    const hydratedHTML = TemplateNotification
-        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
-        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
-        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            `${message}! <strong>${tutor.name}</strong> has accepted your tuition request`,
-            `for the following subjects: <ol>${formattedSubjects}</ol>`
-                `<br/><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
-            "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
-            "<br/><br/>Thank you for using our platform,"
-        ].join(" "));
-
-    return await sendEmail(
-        UserService.decrypt(tutor.email.trim().toString()),
+        userService.decrypt(tutor.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
@@ -200,38 +167,28 @@ export async function notifyTuteeAcceptance(tutee, tutor, subjectIDs) {
 /**
  * Sends an email notification to Tutee about being declined by
  * the request tutor and subjects
- * @param {UserService.BasicUser} tutee Tutee object
- * @param {UserService.User} tutor Tutor object
- * @param {number[]} subjectIDs Array of subjects IDss from TickNinja
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
  * @param {string} reason Tutor's reason for rejecting
  * @returns {EmailResponse}
  */
-export async function notifyTuteeDeclination(tutee, tutor, subjectIDs, reason) {
-    if (!tutee || !tutor || !subjectIDs || !reason) throw new ServiceError("missing-arguments");
+export async function notifyTutorRequestCancellation(tutee, tutor, subjectID) {
+    if (!tutee || !tutor || !subjectID) throw new ServiceError("missing-arguments");
 
-    const message = "Sorry, your tuition request has been declined";
-    const subjects = await getSubjects(subjectIDs);
-    const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `<strong>${tutee.given_name} ${tutee.family_name}</strong> has withdrawn his tuition request for <strong>${subjectArray[0].name}</strong>`;
 
     // preparing HTML file
     const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            `${message}. <strong>${tutor.name}</strong> has rejected your tuition request`,
-            `for the following subjects: <ol>${formattedSubjects}</ol>`,
-            `<br/>Your tutor's reason: ${reason}`,
-            "<br/><br/>Please keep in mind that our tutors are volunteer tutors.",
-            "They may have rejected your request for the following reasons:",
-            "<ul><li>They may not have enough bandwidth to take on another tutee at the moment</li>",
-            `<li>You may have requested too many subjects for the tutor</li>`,
-            "<li>The tutor cannot make it via your preferred communications channel</li><ul/>",
-            "<br/>Wishing you the best in finding your next tutor.",
-            "<br/><br/>Thank you for using our platform,"
+            `${message}.<br/><br/>`
         ].join(" "));
-
+    //console.log(hydratedHTML)
     return await sendEmail(
-        UserService.decrypt(tutor.email.trim().toString()),
+        userService.decrypt(tutor.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
@@ -241,38 +198,182 @@ export async function notifyTuteeDeclination(tutee, tutor, subjectIDs, reason) {
 /**
  * Sends an email notification to Tutee about being removed by
  * the request tutor
- * @param {UserService.BasicUser} tutee Tutee object
- * @param {UserService.User} tutor Tutor object
- * @param {number[]} subjectIDs Array of subjects IDss from TickNinja
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
  * @param {string} reason Tutor's reason for stopping
  * @returns {EmailResponse}
  */
-export async function notifyTuteeRemoval(tutee, tutor, subjectIDs, reason) {
-    if (!tutee || !tutor || !subjectIDs || !reason) throw new ServiceError("missing-arguments");
+export async function notifyTutorRemoval(tutee, tutor, subjectID) {
+    if (!tutee || !tutor || !subjectID) throw new ServiceError("missing-arguments");
 
-    const message = "Sorry, your tutor has decided to stop tutoring you";
-    const subjects = await getSubjects(subjectIDs);
-    const formattedSubjects = subjects.map(d => `<li>${d.course} ${d.name}</li>`).join("\n");
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `Sorry, <strong>${tutee.given_name} ${tutee.family_name}</strong> has decided to stop being tutored by you for <strong>${subjectArray[0].name}</strong>`;
 
     // preparing HTML file
     const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            `${message}. <strong>${tutor.name}</strong> removed you from their list of tutees.`,
-            `You were being taught: <ol>${formattedSubjects}</ol>`,
-            `<br/>Your tutor's reason: ${reason}`,
-            "<br/><br/>Please keep in mind that our tutors are volunteer tutors.",
-            "They may have stopped tutoring you for the following reasons:",
-            "<ul><li>They may not have enough bandwidth to take on another tutee at the moment</li>",
-            `<li>You may have requested too many subjects for the tutor</li>`,
-            "<li>The tutor cannot make it via your preferred communications channel</li><ul/>",
-            "<br/>Wishing you the best in finding your next tutor.",
-            "<br/><br/>Thank you for using our platform,"
+            `<p>${message}.`,
+            "<br/><br/>They may have stopped being tutored by you for the following reasons:</p>",
+            "<ul><li>They may have decided to prioritise other subjects</li>",
+            `<li>They may have improved sufficiently to study on their own</li></ul>`,
+            "<p><br/>Thank you for your contributions!</p>"
         ].join(" "));
 
+    //console.log(hydratedHTML)
     return await sendEmail(
-        UserService.decrypt(tutor.email.trim().toString()),
+        userService.decrypt(tutor.email),
+        `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+/**
+ * Sends an email reminder to the tutor about accepting
+ * the tutee's request
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
+ * @returns {EmailResponse}
+ */
+export async function remindTuteeAcceptance(tutee, tutor, subjectID) {
+    if (!tutee || !tutor || !subjectID) throw new ServiceError("missing-arguments");
+
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `Thank you for accepting <strong>${tutee.given_name} ${tutee.family_name}'s</strong> tutoring request for <strong>${subjectArray[0].name}</strong>`;
+
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `<p>${message}!`,
+            `<br/><br/>Please contact ${tutee.given_name} ${tutee.family_name} to arrange tutoring sessions with them!</p>`,
+            `<ul><li>${tutee.telegram} (Telegram)</li>`,
+            `<li>${userService.decrypt(tutee.email)} (Email)</li></ul>`,
+            `<p><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
+            "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
+            "<br/><br/>Thank you for using our platform!</p>"
+        ].join(" "));
+    //console.log(hydratedHTML)
+    return await sendEmail(
+        userService.decrypt(tutor.email),
+        `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+/**
+ * Sends an email notification to Tutee about being accepted by
+ * the request tutor and subjects
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
+ * @returns {EmailResponse}
+ */
+export async function notifyTuteeAcceptance(tutee, tutor, subjectID) {
+    if (!tutee || !tutor || !subjectID) throw new ServiceError("missing-arguments");
+
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `Congratulations, your tuition request for <strong>${subjectArray[0].name}</strong> by <strong>${tutor.given_name} ${tutor.family_name}</strong> has been accepted`;
+
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `<p>${message}!`,
+            `<br/><br/>Please contact ${tutor.given_name} ${tutor.family_name} to arrange tutoring sessions with them!</p>`,
+            `<ul><li>${tutor.telegram} (Telegram)</li>`,
+            `<li>${userService.decrypt(tutor.email)} (Email)</li></ul>`,
+            `<p><br/>As always, stay safe and <a href=${reportLink}>report any inappropriateness`,
+            "to our site admins</a> from any user on the platform to safeguard their privacy and security.",
+            "<br/><br/>Thank you for using our platform!</p>"
+        ].join(" "));
+    //console.log(hydratedHTML)
+    return await sendEmail(
+        userService.decrypt(tutee.email),
+        `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+/**
+ * Sends an email notification to Tutee about being declined by
+ * the request tutor and subjects
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
+ * @param {string} reason Tutor's reason for rejecting
+ * @returns {EmailResponse}
+ */
+export async function notifyTuteeDeclination(tutee, tutor, subjectID, reason = "Unavailable") {
+    if (!tutee || !tutor || !subjectID || !reason) throw new ServiceError("missing-arguments");
+
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `Sorry, your tuition request for <strong>${subjectArray[0].name}</strong> by <strong>${tutor.given_name} ${tutor.family_name}</strong> has been declined`;
+
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `<p>${message}.`,
+            `<br/><br/>Your tutor's reason: ${reason}`,
+            "<br/><br/>Please keep in mind that our tutors are volunteer tutors.",
+            "They may have rejected your request for the following reasons:</p>",
+            "<ul><li>They may not have enough bandwidth to take on another tutee at the moment</li>",
+            `<li>They may prefer to teach another subject</li></ul>`,
+            `<p><br/>We recommend that you <a href="${process.env.WEBSITE_URL}/subjects/${subjectArray[0].course}/${subjectArray[0].name}">request for another tutor!</a>`,
+            "<br/><br/>Thank you for using our platform!</p>"
+        ].join(" "));
+    //console.log(hydratedHTML)
+    return await sendEmail(
+        userService.decrypt(tutee.email),
+        `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+/**
+ * Sends an email notification to Tutee about being removed by
+ * the request tutor
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
+ * @param {string} reason Tutor's reason for stopping
+ * @returns {EmailResponse}
+ */
+export async function notifyTuteeRemoval(tutee, tutor, subjectID, reason) {
+    if (!tutee || !tutor || !subjectID || !reason) throw new ServiceError("missing-arguments");
+
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `Sorry, <strong>${tutor.given_name} ${tutor.family_name}</strong> has decided to stop tutoring you for <strong>${subjectArray[0].name}</strong>`;
+
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `<p>${message}.`,
+            `<br/><br/>Your tutor's reason: ${reason}`,
+            "<br/><br/>Please keep in mind that our tutors are volunteer tutors.",
+            "They may have stopped tutoring you for the following reasons:</p>",
+            "<ul><li>They may want to focus on their own school work</li>",
+            `<li>They may have started working part time and are thus unable to continue tutoring you</li></ul>`,
+            `<p><br/>We recommend that you <a href="${process.env.WEBSITE_URL}/subjects/${subjectArray[0].course}/${subjectArray[0].name}">request for another tutor!</a>`,
+            "<br/><br/>Thank you for using our platform!</p>"
+        ].join(" "));
+
+    //console.log(hydratedHTML)
+    return await sendEmail(
+        userService.decrypt(tutee.email),
         `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
@@ -281,7 +382,7 @@ export async function notifyTuteeRemoval(tutee, tutor, subjectIDs, reason) {
 
 /**
  * Email user about account changes
- * @param {UserService.User} user User object
+ * @param {userService.User} user User object
  * @returns {EmailResponse}
  */
 export async function notifyPasswordChange(user) {
@@ -291,46 +392,16 @@ export async function notifyPasswordChange(user) {
         .replace(/{{ NOTIFICATION_BANNER }}/gi, "Account password changed")
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            `Dear ${user.name},`,
-            "This email is to notify you that your account password have",
+            `Dear ${user.given_name},`,
+            "This email is to notify you that your account password has",
             "been changed. If this is an unauthorised change and you were not",
-            `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`
+            `aware of this, please contact our support team via <a href=${reportLink}>eduhopesg@gmail.com</a>`
         ].join(" "));
 
+    //console.log(hydratedHTML)
     return await sendEmail(
-        UserService.decrypt(user.email.trim().toString()),
+        userService.decrypt(user.email),
         `EduhopeSG: Account password has been updated`,
-        htmlToText(hydratedHTML),
-        hydratedHTML
-    );
-}
-
-/**
- * Email new email address to confirm transaction, and update user record
- * @param {string} newEmail To email
- * @param {string} token Token for new email address
- * @returns {EmailResponse}
- */
-export async function sendEmailUpdateConfirmation(newEmail, token) {
-    if (!newEmail || !token) throw new ServiceError("missing-arguments");
-
-    const hydratedHTML = TemplateNotificationCTA
-        .replace(/{{ NOTIFICATION_BANNER }}/gi, "Confirm new email address")
-        .replace(/{{ PRIMARY_CTA }}/gi, "Confirm")
-        .replace(/{{ SECONDARY_CTA }}/gi, "Ignore")
-        .replace(/{{ PRIMARY_CTA_HREF }}/gi, `${process.env.WEBSITE_URL}/user/settings?email_confirmation=${token}`)
-        .replace(/{{ SECONDARY_CTA_HREF }}/gi, '#')
-        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
-        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            "Confirm your new email address by clicking on the 'confirm' button. Another",
-            "email will be sent to you shortly once you have confirmed the changes. Beware of",
-            "phishing and, if this is an unauthorised change and you did not request for this change,",
-            `please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`,
-        ].join(" "));
-
-    return await sendEmail(
-        newEmail,
-        `EduhopeSG: Verify email update`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );
@@ -341,22 +412,113 @@ export async function sendEmailUpdateConfirmation(newEmail, token) {
  * @param {string} newEmail To email
  * @returns {EmailResponse}
  */
-export async function sendEmailUpdateNotification(email) {
+export async function sendEmailUpdateNotification(email, newEmail) {
     if (!email) throw new ServiceError("missing-arguments");
 
     const hydratedHTML = TemplateNotification
         .replace(/{{ NOTIFICATION_BANNER }}/gi, "Account email changed")
         .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
         .replace(/{{ NOTIFICATION_TEXT }}/gi, [
-            "This email is to notify you that your account email have",
-            "been changed. If this is an unauthorised change and you were not",
-            `aware of this, please <a href="${process.env.WEBSITE_URL}/reset-password">reset your password</a>`,
-            "and contact our support team"
+            "This email is to notify you that your account email has",
+            `been changed to <b>${newEmail}</b>. If this is an unauthorised change and you were not`,
+            `aware of this, please contact our support team via <a href=${reportLink}>eduhopesg@gmail.com</a><br/><br/>`
         ].join(" "));
 
+    //console.log(hydratedHTML)
     return await sendEmail(
         email,
         `EduhopeSG: Account email has been updated`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+
+/**
+ * Email user about email address changes
+ * @param {string} newEmail To email
+ * @param {string} passwordResetToken jwt
+ * @param {string} originalURL original url that user was on
+ * @returns {EmailResponse}
+ */
+export async function sendEmailResetPasswordLink(email, passwordResetToken, originalURL) {
+    if (!email) throw new ServiceError("missing-arguments");
+
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, "Account password reset requested")
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `You have requested to reset your password. <br/><br/>`,
+            `Here is the <a href="${process.env.WEBSITE_URL}/reset-password?token=${passwordResetToken}&originalURL=${originalURL}">password reset link</a><br/><br/>`,
+            "Do note that it expires in 15 minutes! Upon expiry, you will have to request for another password reset link.<br/><br/>"
+        ].join(" "));
+
+    //console.log(hydratedHTML)
+    return await sendEmail(
+        email,
+        `EduhopeSG: Account password reset requested"`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+/**
+ * Sends an email notification to Tutee about being declined by
+ * the request tutor and subjects
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
+ * @returns {EmailResponse}
+ */
+export async function emailRemindTutorAcceptDecline(tutee, tutor, subjectID, timeToExpiry) {
+    if (!tutee || !tutor || !subjectID) throw new ServiceError("missing-arguments");
+
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `<strong>${tutee.given_name} ${tutee.family_name}</strong>'s request for <strong>${subjectArray[0].name}</strong> tutoring expires in <b>${timeToExpiry.days} days and ${timeToExpiry.hours} hours!</b>`;
+
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `${message}`,
+            `<br/><br/>Please visit the <a href="${process.env.WEBSITE_URL}/manage-tutees">My Tutees</a> page to <strong>Accept/Decline</strong> this request before it expires in <b>${timeToExpiry.days} days and ${timeToExpiry.hours} hours</b>!<br/><br/>`
+        ].join(" "));
+    //console.log(hydratedHTML)
+    return await sendEmail(
+        userService.decrypt(tutor.email),
+        `EduhopeSG: ${message}!`,
+        htmlToText(hydratedHTML),
+        hydratedHTML
+    );
+}
+
+/**
+ * Sends an email notification to Tutor about the tutee's request being auto-declined after 5 days
+ * @param {userService.BasicUser} tutee Tutee object
+ * @param {userService.User} tutor Tutor object
+ * @param {number} subjectID subjects ID from
+ * @returns {EmailResponse}
+ */
+export async function notifyRequestExpiry(tutee, tutor, subjectID) {
+    if (!tutee || !tutor || !subjectID) throw new ServiceError("missing-arguments");
+
+    const subjectArray = await getSubjectsByIDs([subjectID]);
+    const message = `Sorry, <strong>${tutee.given_name} ${tutee.family_name}</strong>'s request for <strong>${subjectArray[0].name}</strong> tutoring has expired`;
+
+    // preparing HTML file
+    const hydratedHTML = TemplateNotification
+        .replace(/{{ NOTIFICATION_BANNER }}/gi, message)
+        .replace(/{{ UNSUB_HREF }}/gi, unsubLink)
+        .replace(/{{ NOTIFICATION_TEXT }}/gi, [
+            `${message}.`,
+            `<br/><br/>This request was automatically declined after 5 days so that the system will allow <strong>${tutee.given_name} ${tutee.family_name}</strong> to request for another tutor instead.`,
+            "<br/><br/>Thank you for using our platform!<br/><br/>"
+        ].join(" "));
+    //console.log(hydratedHTML)
+    return await sendEmail(
+        userService.decrypt(tutor.email),
+        `EduhopeSG: ${message}!`,
         htmlToText(hydratedHTML),
         hydratedHTML
     );

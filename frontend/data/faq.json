@@ -1,32 +1,24 @@
 {
     "tutee": [
         {
-            "header": "Is this programme free?",
-            "body": "Yes, it is free forever. We do not start charging after a few lessons, nor do we run a freemium model. It is completely free for all."
-        },
+            "header": "How do I request for a tutor?",
+            "body": "Browse the \"Find a tutor\" page and request for the tutor that offers the subject and course you need help with!"
+        },        
         {
-            "header": "Why is the crash courses/topical revisions on a 1-to-1 basis?",
-            "body": "This format retains the usefulness of courses while relieving the load for tutors. This is because tutors do not feel pressured to make polished slides meant for an audience."
-        },
+            "header": "How many tutors can I request for?",
+            "body": "One per subject, at any one time. If you wish to request for another tutor of the same subject, you must visit the \"My tutors\" page to cancel the existing request first!"
+        },        
         {
-            "header": "Why is sharing of notes on a 1-to-1 basis?",
-            "body": "Tutors may be uncomfortable sharing their high effort notes to everyone. In a 1-to-1 setting, the tutor is likely to feel more comfortable as they know their tutee, and the notes complement consultations/crash courses and topical revisions."
-        },
-        {
-            "header": "How am I paired with my tutor?",
-            "body": "Firstly, we consider the subjects you indicated you require help in. Secondly, we aim to provide as many tutees as possible with one of their top 3 choices. Lastly, should there be multiple tutees requesting the same tutor, tutees with more comprehensive study plans will be paired with the tutor."
-        },
-        {
-            "header": "What subjects must I take?",
-            "body": "All subjects in secondary school and Junior College are welcome."
+            "header": "How long will it take for my tutor request to be accepted?",
+            "body": "It depends on how quickly your requested tutor responds to our email notification. If they do not respond within 5 days, the request will be automatically declined."
         },
         {
             "header": "How is the tuition conducted?",
-            "body": "It is up to the agreement between tutors and tutees. You may choose to only communicate via Telegram, through virtual consultations or a mix of both. It depends on what is most convenient for you and your tutor."
+            "body": "It is up to the agreement between tutors and tutees. You may choose to only communicate via Telegram, through virtual consultations, through face-to-face consultations, or a mix of all. It depends on what is most convenient for you and your tutor!"
         },
         {
             "header": "When are the tuition sessions?",
-            "body": "Should you choose to have virtual consultations, the dates and timings are flexible. Feel free to work out with your tutor on the most convenient timings."
+            "body": "The dates and timings are flexible. Feel free to work out with your tutor on the most convenient timings."
         },
         {
             "header": "What if my tutor does not answer my questions promptly?",
@@ -35,37 +27,24 @@
         {
             "header": "How do I know that my tutor is qualified?",
             "body": "We take into account feedback from tutees to ensure that our tutors are of the highest quality, not hesitating to remove them if necessary."
-        },
-        {
-            "header": "Can I extend my participation beyond 4 weeks?",
-            "body": "Yes, at the end of the cycle, we will send you an email for you to “renew” your subscription. We will try to match you to the same tutor. However, should they no longer be volunteering with us, we will match you with another qualified tutor."
-        },
-        {
-            "header": "When will I know my pairing?",
-            "body": "We will release all pairings by 10 September 2359. Should you not hear from us by then, feel free to drop us an email at eduhopesg@gmail.com."
-        }
-        
+        }        
     ],
     "tutor": [
         {
             "header": "How is the tuition conducted?",
-            "body": "It is up to the agreement between tutors and tutees. You may choose to only communicate via text, through virtual consultations or a mix of both. It depends on what is most convenient for you and your tutee."
+            "body": "It is up to the agreement between tutors and tutees. You may choose to only communicate via Telegram, through virtual consultations, through face-to-face consultations, or a mix of all. It depends on what is most convenient for you and your tutor!"
         },
         {
             "header": "When are the tuition sessions?",
-            "body": "Should you and your tutee choose to have virtual consultations, the dates and timings are flexible. Feel free to work out with your tutee on the most convenient timings."
-        },
-        {
-            "header": "How long must I commit each week?",
-            "body": "This varies depending on the needs of the tutee. However, we recommend that tutors commit no more than 1.5 hours per week per tutee."
+            "body": "The dates and timings are flexible. Feel free to work out with your tutor on the most convenient timings."
         },
         {
             "header": "What is the minimum commitment period?",
             "body": "1 month. This is to ensure continuity in the help rendered while providing interested tutors a chance to try out teaching."
         },
         {
-            "header": "Will I receive anything after completing my volunteer service?",
-            "body": "When requested, volunteers will receive an e-certificate recognising them for their contributions."
+            "header": "If something crops up, how do I end my tutoring commitment prematurely?",
+            "body": "Please visit the \"Edit profile\" page to change the \"When can you volunteer until?\" field to today's date. This way, your profile will no longer be displayed to students looking for a tutor. If you have an existing tutee, please let them know that you are unable to continue tutoring them and visit the \"My tutees\" page to remove them from your list of tutees."
         },
         {
             "header": "Can I extend my commitment in the future?",

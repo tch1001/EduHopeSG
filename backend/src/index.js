@@ -10,6 +10,8 @@ import RouteError from "./classes/RouteError.js";
 import ServiceError from "./classes/ServiceError.js";
 import log from "./utils/logging.js";
 
+import { cronJobs } from "./cronJobs.js";
+
 /**
  * NOTE: Since "express-rate-limit" package stores the IP addresses
  * of requests in server heap memory, it would not be scalable compared
@@ -31,7 +33,7 @@ const limiterOptions = {
 // Standard rate limiter for all endpoints (3 requests/second)
 const globalLimiter = rateLimit({
     windowMs: 1000, // 1 second
-    max: 3, // Limit each IP to 3 requests 1 second
+    max: 10, // Limit each IP to 10 requests 1 second
     ...limiterOptions
 });
 
@@ -39,7 +41,7 @@ const globalLimiter = rateLimit({
 // as there are expensive operations involved
 const userLimiter = rateLimit({
     windowMs: 1000, // 1 second
-    max: 1, // Limit each IP to 3 requests 1 second
+    max: 3, // Limit each IP to 3 requests 1 second
     ...limiterOptions
 })
 
@@ -49,6 +51,7 @@ import userRoutes from "./routes/user-route.js";
 import tuteeRoutes from "./routes/tutee-route.js";
 import tutorRoutes from "./routes/tutor-route.js";
 import subjectRoutes from "./routes/subject-route.js";
+import schoolRoutes from "./routes/school-route.js";
 import pool from "./utils/database.js";
 
 const app = express();
@@ -62,7 +65,7 @@ app.use(compression({
 }))
 
 // App security
-app.use(cors());
+app.use(cors({ origin: process.env.FRONTEND_ORIGIN, credentials: true }));
 app.use(helmet());
 app.disable("x-powered-by");
 
@@ -86,6 +89,8 @@ apiV1Router.use("/user", userRoutes);
 apiV1Router.use("/tutee", tuteeRoutes);
 apiV1Router.use("/tutor", tutorRoutes);
 apiV1Router.use("/subjects", subjectRoutes);
+
+apiV1Router.use("/school", schoolRoutes)
 app.use("/api/v0.1", apiV1Router);
 
 export function standardRouteErrorCallback(res, req, err) {
@@ -124,9 +129,12 @@ app.use((err, req, res, next) => {
     next();
 })
 
+// Call cron job
+cronJobs()
+
 // Server and safe existing when process stops/when FATAL error occurs
 
-const server = app.listen(process.env.EXPRESS_APP_PORT || 5000, () => {
+const server = app.listen(process.env.BACKEND_PORT || 5000, () => {
     const { address, family, port } = server.address();
 
     log.info(

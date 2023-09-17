@@ -1,26 +1,174 @@
+import validator from "validator";
 import ServiceError from "../classes/ServiceError.js";
 import { query } from "../utils/database.js";
-import { notifyTuteeAcceptance, notifyTuteeDeclination } from "./email-service.js";
+import { notifyTuteeAcceptance, remindTuteeAcceptance, notifyTuteeDeclination, notifyTuteeRemoval } from "./email-service.js";
+import * as userService from "../services/user-service.js";
+
+/**
+ * @typedef {Object} Tutor
+ * @property {string[]} subjects subject IDs corresponding from EduHope
+ * @property {number} tutee_limit Maximum number of tutees to be taken on
+ * @property {Date} commitment_end Expected date when tutor stops volunteering with Eduhope
+ * @property {string[]} preferred_communications Array of preferred communication [Texting, Zoom, etc.] 
+ * @property {string} description
+ * @property {string} average_response_time Expected and usual time to reply a tutee's inquiry
+ * 
+ * @typedef {BasicUser & Tutor} User
+ */
+
+
+/**
+ * Get a user object by their ID
+ * @param {string} id User ID
+ * @param {string=} additionalFields Fields to request from database separated by a single space
+ * @returns {Promise<User?|Error>} Returns possible User with fields requested ONLY
+ */
+export async function getByID(id, additionalFields = "") {
+    if (!id) throw new ServiceError("user-by-id");
+
+    const fields = additionalFields ? additionalFields.split(" ") : [];
+    fields.unshift("user_id");
+
+    const { rows } = await query({
+        text: `SELECT ${fields.join(", ")} FROM tutor WHERE user_id = $1`,
+        values: [id]
+    });
+
+    return rows[0];
+}
+
+/**
+ * Update tutor attributes in the database
+ * @param {string} tutorID Tutor ID
+ * @param {Tutor} attributes Tutor object
+ * @returns {{success: true, message: string}} Success message
+ */
+export async function update(tutorID, attributes = {}) {
+    if (!tutorID || !attributes || !Object.keys(attributes).length) {
+        throw new ServiceError("user-invalid")
+    }
+
+    const valid = userService.validateUserObject(
+        attributes,
+        Object.fromEntries(Object.keys(attributes).map(field => {
+            // Do not validate commitment end when it is being updated via the edit-profile page
+            if (field != "commitment_end") { return [field, true] }
+            else { return [field, false] }
+        }))
+    );
+    if (!valid) throw new ServiceError("user-invalid");
+
+    try {
+        if (attributes.commitment_end) {
+            await query("UPDATE tutor SET commitment_end = $1 WHERE user_id = $2", [attributes.commitment_end, tutorID])
+        }
+
+        if (attributes.preferred_communications) {
+            await query("UPDATE tutor SET preferred_communications = $1 WHERE user_id = $2", [attributes.preferred_communications, tutorID])
+        }
+
+        if (attributes.tutee_limit) {
+            await query("UPDATE tutor SET tutee_limit = $1 WHERE user_id = $2", [attributes.tutee_limit, tutorID])
+        }
+
+        if (attributes.subjects) {
+            await query("UPDATE tutor SET subjects = $1 WHERE user_id = $2", [attributes.subjects, tutorID])
+        }
+
+        if (attributes.average_response_time) {
+            await query("UPDATE tutor SET average_response_time = $1 WHERE user_id = $2", [attributes.average_response_time, tutorID])
+        }
+
+        if (attributes.description) {
+            await query("UPDATE tutor SET description = $1 WHERE user_id = $2", [attributes.description, tutorID])
+        }
+
+        await query("UPDATE tutor SET updated_on = now() WHERE user_id = $1", [tutorID]);
+
+        return {
+            success: true,
+            message: `Updated the following attributes: ${Object.keys(attributes)}`
+        }
+    } catch (err) {
+        throw new ServiceError("user-update");
+    }
+}
+
+/**
+ * Get the tutee objects associated with a given tutor id.
+ * @param {string} id Tutor ID
+ * @returns {Promise<Users?|Error>} Returns all Tutee objects linked to the Tutor ID.
+ */
+export async function getTutees(tutorID) {
+    if (!tutorID) throw new ServiceError("tutee-tutor-not-found");
+
+    const { rows } =
+        await query(
+            `SELECT 
+                u.id, 
+                u.given_name, 
+                u.family_name, 
+                u.school, 
+                u.level_of_education,
+                u.bio AS description,
+                u.email,
+                u.telegram,
+                ttr.id AS relationship_id,                
+                ttr.status, 
+                concat(s.level, ' ', s.name) AS subject
+            FROM tutee_tutor_relationship AS ttr
+            INNER JOIN eduhope_user AS u
+            ON ttr.tutee = u.id
+            INNER JOIN subject AS s
+            ON s.id = ttr.subject            
+            AND ttr.tutor = $1`,
+            [tutorID]
+        );
+    rows.forEach(tutee => {
+        tutee.email = userService.decrypt(tutee.email)
+    });
+    return rows;
+}
 
 /**
  * Rejects a tutee's request by deleing the request
  * @param {string} relationshipID Tutor-tutee relationship ID
  * @returns {{success: true, message: string}} Success message
  */
-export async function acceptTutee(relationshipID) {
+export async function acceptTutee(relationshipID, tutorID) {
     if (!relationshipID) throw new ServiceError("invalid-tutee-tutor-relationship");
+
+    // check if the tutee limit has been reached
+    const { rows: limitHit } = await query(
+        `SELECT t.user_id 
+        FROM (
+            SELECT ttr.tutor AS tutor_id, COUNT(ttr.tutor) AS num_tutees
+            FROM tutee_tutor_relationship AS ttr 
+            WHERE ttr.status = 'ACCEPTED' AND ttr.tutor = $1
+            GROUP BY ttr.tutor   
+        ) AS filtered_tutor_id
+        INNER JOIN tutor AS t on t.user_id = filtered_tutor_id.tutor_id 
+        AND filtered_tutor_id.num_tutees >= t.tutee_limit`
+        , [tutorID])
+
+    if (!!limitHit.length) throw new ServiceError("tutor-hit-tutee-limit2")
 
     const { rows } =
         await query(
-            "UPDATE tutee_tutor_relationship SET relationship_status = 1 WHERE id = $1",
+            "UPDATE tutee_tutor_relationship SET status = 'ACCEPTED' WHERE id = $1 RETURNING *",
             [relationshipID]
         );
 
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
-    const { tutee_id, tutor_id, subjects } = rows[0];
+    const { tutee: tuteeID, subject: subjectID } = rows[0];
+
+    const tutee = await userService.getByID(tuteeID, "email telegram")
+    const tutor = await userService.getByID(tutorID, "email telegram")
 
     // notify tutee of acceptance
-    await notifyTuteeAcceptance(tutee_id, tutor_id, subjects);
+    await notifyTuteeAcceptance(tutee, tutor, subjectID);
+    // remind tutor to contact tutee
+    await remindTuteeAcceptance(tutee, tutor, subjectID);
 
     return {
         success: true,
@@ -40,11 +188,14 @@ export async function rejectTutee(relationshipID, reason) {
     const { rows } = await query(`SELECT * ${queryText}`, [relationshipID]);
 
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
-    const { tutee_id, tutor_id, subjects } = rows[0];
+    const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
+
+    const tutee = await userService.getByID(tuteeID, "email")
+    const tutor = await userService.getByID(tutorID, "email")
 
     // notify tutee of rejection
     await query(`DELETE ${queryText}`, [relationshipID]);
-    await notifyTuteeDeclination(tutee_id, tutor_id, subjects, reason);
+    await notifyTuteeDeclination(tutee, tutor, subjectID, reason);
 
     return {
         success: true,
@@ -59,19 +210,21 @@ export async function rejectTutee(relationshipID, reason) {
  * @param {string} reason Tutor's reason for removing tutee
  * @returns {{ success: true, message: string}} Success message
  */
-export async function removeTutee(tuteeID, tutorID, reason) {
-    if (!tuteeID || !tutorID || !reason) throw new ServiceError("invalid-tutee-tutor-relationship");
+export async function removeTutee(relationshipID, reason) {
+    if (!relationshipID || !reason) throw new ServiceError("invalid-tutee-tutor-relationship");
 
-    const relationshipID = `${tuteeID}:${tutorID}`;
     const queryText = "FROM tutee_tutor_relationship WHERE id = $1";
     const { rows } = await query(`SELECT * ${queryText}`, [relationshipID]);
 
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
-    const { tutee_id, tutor_id, subjects } = rows[0];
+    const { tutee: tuteeID, tutor: tutorID, subject: subjectID } = rows[0];
+
+    const tutee = await userService.getByID(tuteeID, "email")
+    const tutor = await userService.getByID(tutorID, "email")
 
     // notify tutee of removal
     await query(`DELETE ${queryText}`, [relationshipID]);
-    await notifyTuteeDeclination(tutee_id, tutor_id, subjects, reason);
+    await notifyTuteeRemoval(tutee, tutor, subjectID, reason);
 
     return {
         success: true,
@@ -89,13 +242,13 @@ export async function removeAllTutees(tutorID, reason) {
     if (!tutorID || !reason) throw new ServiceError("invalid-tutee-tutor-relationship");
 
     const results = [];
-    const queryText = "SELECT * FROM tutee_tutor_relationship WHERE tutor_id = $1";
+    const queryText = "SELECT * FROM tutee_tutor_relationship WHERE tutor = $1";
     const { rows } = await query(queryText, [tutorID]);
 
     if (!rows.length) throw new ServiceError("invalid-tutee-tutor-relationship");
 
     for (let i = 0; i < rows.length; i++) {
-        const { success } = await removeTutee(relationship.tutee_id, tutorID, reason);
+        const { success } = await removeTutee(relationship.tutee, tutorID, reason);
         results.push(success);
     }
 

@@ -1,23 +1,26 @@
 import Link from "next/link";
-import Image from "next/image";
 import Container from '../../components/Container';
 import Card from '../../components/Card';
+import Icon from "../../components/Icon";
+import { useRouter } from "next/router";
 
 export const Courses = ({ courses }) => {
+    const router = useRouter();
+    const currentPath = router.asPath;
+
     return (
         <Container className="p-6 max-w-5xl">
-            <div>
-                <h1 className="text-3xl font-bold">Available subjects</h1>
-                <p className="text-xl">Browse our tutors by your stream or course</p>
+            <div className="flex flex-col items-center sm:items-start gap-2 sm:gap-0"> 
+                <h1 className="text-3xl font-bold text-center sm:text-left">Available subjects</h1>
+                <p className="text-xl text-center sm:text-left">Browse our tutors by your stream or course!</p>
             </div>
-            <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 py-8 justify-items-center">
+            <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 py-8">
                 {
                     courses.map((course, key) => (
-                        <Link key={key} href={course.link} passHref>
-                            <Card className="max-w-xs">
-                                <Image className="min-w-full" src={course.image} width={322} height={200} alt="" />
-                                <div className="pt-2 pb-4 px-6">
-                                    <p className="font-medium text-lg text-dark-aqua">{course.name}</p>
+                        <Link key={key} href={`${currentPath}/${course.short_name}`} passHref>
+                            <Card className="max-w-xs text-center py-4 mx-auto hover:bg-slate-100">
+                                <div className="px-6">
+                                    <p className="font-medium text-lg text-dark-aqua">{course.course_name}</p>
                                     <p className="font-medium text-sm text-dark-blue">{course.tutor_count} tutors available</p>
                                 </div>
                             </Card>
@@ -29,9 +32,16 @@ export const Courses = ({ courses }) => {
     )
 }
 
-export const getStaticProps = async () => {
-    const transform = (object) => JSON.parse(JSON.stringify(object));
-    const courses = transform((await import("../../data/courses.json")).default);
+export const getServerSideProps = async () => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subjects`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include"
+    });
+
+    const { courses } = await response.json();
 
     return {
         props: {

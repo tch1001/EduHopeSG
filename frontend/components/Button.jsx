@@ -1,10 +1,21 @@
 import Link from "next/link";
+import Spinner from "./Spinner";
+import styles from "../styles/button.module.css"
 
-export const Button = ({ secondary = false, href, children, ...props }) => {
-    const styling = secondary ? "boarder-grey-600 bg-white" : "border-sky-blue bg-[#bfe7ff]";
-
+export const Button = ({
+    secondary = false,
+    loading = false,
+    href,
+    children,
+    ...props
+}) => {
     const ButtonComponent = (
-        <button className={`border ${styling} px-6 py-2 rounded-md`} {...props}>
+        <button
+            className={`${styles.button} ${secondary ? styles.secondary : ""}`}
+            disabled={loading}
+            {...props}
+        >
+            {loading && <Spinner/>}
             {children}
         </button>
     );

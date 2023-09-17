@@ -1,17 +1,16 @@
 import Image from "next/image";
 import Container from "../components/Container";
 import TestimonialCard from "../components/home/TestimonialCard";
+import Button from "../components/Button";
 import { useEffect, useState } from "react";
 
-import styles from "../styles/Home.module.css";
-import Button from "../components/Button";
+import styles from "../styles/home.module.css";
 
 const SCROLL_MULTIPLIER = 2;
 const LISTENER_OPTIONS = {
     capture: true,
     passive: true
 }
-
 
 const Home = ({ testimonials }) => {
     const [width, setWidth] = useState(0);
@@ -84,7 +83,7 @@ const Home = ({ testimonials }) => {
 
     return (
         <div>
-            <div className="relative text-center text-white">
+            <div className="relative text-center">
                 <Image
                     src="/images/landing_page/cover_banner.jpg"
                     className="w-screen h-fit object-cover"
@@ -95,24 +94,23 @@ const Home = ({ testimonials }) => {
                     priority
                     alt=""
                 />
-                <div className={`${styles.cover} flex flex-col gap-1 m-auto text-white text-center text-3xl`}>
-                    <p className="uppercase font-bold">Connect, Learn and Grow</p>
-                    <p>To create a more affordable alternative for students seeking supplementary education.</p>
+                <div className={`${styles.cover} flex flex-col gap-12 m-auto`}>
+                    <div className="flex flex-col gap-5 m-auto text-white text-center drop-shadow-[0_5px_5px_rgba(0,0,0,1)]">
+                        <p className="font-bold text-5xl">EduhopeSG</p>
+                        <p className="text-2xl">Creating a free alternative for students seeking supplementary education.</p>
+                    </div>
+                    <div className="flex justify-center space-x-10 md:space-x-15 lg:space-x-20 uppercase font-bold text-2xl mx-3">
+                        <Button href="/subjects">
+                            Find a Tutor!
+                        </Button>
+                        <Button href="/signup/tutor">
+                            Become a Tutor!
+                        </Button>
+                    </div>
                 </div>
             </div>
-            
-            <div className="flex justify-center space-x-20 my-16 uppercase font-bold text-2xl"> 
-                <Button href="/subjects">
-                    Find a Tutor! 
-                </Button>
-                <Button href="/signup/tutor">
-                    Become a Tutor!
-                </Button>
-            </div>
-
-            <Container className="flex flex-col gap-20 my-16">
-               
-                <div className="flex flex-col gap-16 my-20">
+            <Container className="flex flex-col gap-16 my-16">
+                <div className="flex flex-col gap-16">
                     <div className="flex flex-col items-center gap-9">
                         <p className="text-2xl font-semibold">
                             Testimonials from {" "}

@@ -2,8 +2,7 @@
 
 [EduhopeSG's website](https://eduhopesg.com) frontend and backend code.
 
-This is project EduHope - which was started by a group of four A-level graduates 
-from RI and HCI. This project hopes to leverage peer-to-peer consults to provide a
+This is project EduHope, which hopes to leverage peer-to-peer consults to provide a
 more affordable option for students.
 It first started when we saw how the cheapest tuition rates go for tens of dollars
 per hour, which means that many of us that are left out by the virtue of our inability to pay.
